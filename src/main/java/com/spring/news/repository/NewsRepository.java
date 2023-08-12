@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface NewsRepository extends JpaRepository<News, Long> {
 
-    List<NewsViewResponseDTO> findByTitleContaining(String keyword);
+    List<News> findByTitleContaining(String keyword);
 
 
 }
