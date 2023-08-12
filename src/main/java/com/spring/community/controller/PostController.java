@@ -10,4 +10,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/post")
 public class PostController {
 
+    @RequestMapping("/test")
+    public String test(){
+        return "테스트";
+    }
 }

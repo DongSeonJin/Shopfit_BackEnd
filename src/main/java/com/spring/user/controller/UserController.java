@@ -2,7 +2,7 @@ package com.spring.user.controller;
 
 import com.spring.user.DTO.AddUserRequestDTO;
 import com.spring.user.service.UserDetailService;
-import com.spring.user.service.UserService;
+import com.spring.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final UserDetailService userDetailService;
 
 
