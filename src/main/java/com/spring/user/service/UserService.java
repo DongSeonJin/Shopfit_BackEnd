@@ -1,6 +1,7 @@
 package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface UserService {
     User createUser(User user);
     List<User> getAllUsers();
     User getUserById(Long id);
-    User updateUser(User user);
+    void updateUser(UserUpdateDTO userUpdateDTO);
     void deleteUserById(Long id);
 
 }

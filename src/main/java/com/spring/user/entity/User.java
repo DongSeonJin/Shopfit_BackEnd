@@ -1,5 +1,6 @@
 package com.spring.user.entity;
 
+import com.spring.user.DTO.UserUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -85,5 +86,13 @@ public class User implements UserDetails {
     @Override // 계정 사용 가능 여부 반환
     public boolean isEnabled() {
         return true;
+    }
+
+    // 엔터티의 불변성을 지키려려면, @Setter를 사용하지 않는게 좋기때문에 넣은 별도의 업데이트 메서드.
+    // builder패턴은 JPA에서 변경을 감지하지 못하기때문에 문제의 여지가 있음.
+    public void update(UserUpdateDTO userUpdateDTO) {
+        this.nickname = userUpdateDTO.getNickname();
+        this.password = userUpdateDTO.getPassword();
+        this.imageUrl = userUpdateDTO.getImageUrl();
     }
 }

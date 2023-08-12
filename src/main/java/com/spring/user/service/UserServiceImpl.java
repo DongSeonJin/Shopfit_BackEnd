@@ -1,6 +1,7 @@
 package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
 
-    @Autowired
-    private final UserRepository userRepository;
-
-    @Autowired
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+     UserRepository userRepository;
+     BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Override
@@ -50,8 +48,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public void updateUser(UserUpdateDTO userUpdateDTO) {
+
+        User updateUser = userRepository.findById(userUpdateDTO.getUserId()).get();
+
+        updateUser.update(userUpdateDTO);
+
+        userRepository.save(updateUser);
     }
 
     @Override
