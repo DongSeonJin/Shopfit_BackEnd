@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/post")
 public class PostController {
 
+
     // 각 메서드에 예외처리 추가 예정
 
     private final PostService postService;
