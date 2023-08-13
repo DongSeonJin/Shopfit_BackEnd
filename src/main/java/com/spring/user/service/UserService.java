@@ -1,26 +1,19 @@
 package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
-import com.spring.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
 
-@RequiredArgsConstructor
-@Service
-public class UserService {
+public interface UserService {
+    void save(AddUserRequestDTO dto);
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    User createUser(User user);
+    List<User> getAllUsers();
+    User getUserById(Long id);
+    void updateUser(UserUpdateDTO userUpdateDTO);
+    void deleteUserById(Long id);
 
-    public void save(AddUserRequestDTO dto) {
-
-         userRepository.save(User.builder()
-                .email(dto.getEmail())
-                .password(bCryptPasswordEncoder.encode(dto.getPassword()))
-                .build()
-         );
-    }
 }
