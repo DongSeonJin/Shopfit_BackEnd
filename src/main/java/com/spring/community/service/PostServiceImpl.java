@@ -5,7 +5,6 @@ import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,11 +30,12 @@ public class PostServiceImpl implements PostService{
 
 
     @Override
-    public Post savePost(Post post) {
+    public Post savePost(Post post) { // 아래 주석 전부 JPA로 교체
         // post 저장 전, 시간정보와 조회수 설정
-        post.setCreatedAt(LocalDateTime.now());
-        post.setUpdatedAt(LocalDateTime.now());
-        post.setViewCount(0L); // post를 처음 저장할 때 조회수를 Long 타입으로 0으로 초기화
+//        post.setCreatedAt(LocalDateTime.now());
+//        post.setUpdatedAt(LocalDateTime.now());
+//        post.setViewCount(0L); // post를 처음 저장할 때 조회수를 Long 타입으로 0으로 초기화
+
         return postRepository.save(post);
     }
 
@@ -45,14 +45,12 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override // 파라미터에 DTO만 넣어 구현해보려다가, findById메서드의 타입과 맞지않아 id는 다로받음.
-    public void update(Long userId, PostUpdateDTO postUpdateDTO) {
-        Post post = postRepository.findById(userId)
-                .orElseThrow(() -> new PostIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + userId));
+    public void update(PostUpdateDTO postUpdateDTO) {
+        Post post = postRepository.findById(postUpdateDTO.getPostId())
+                .orElseThrow(() -> new PostIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + postUpdateDTO.getPostId()));
 
-        post.setTitle(postUpdateDTO.getTitle());
-        post.setContent(postUpdateDTO.getContent());
-        post.setUpdatedAt(LocalDateTime.now()); // 게시글 업데이트 된 시간 업데이트
-        // 필요한 경우 다른 필드들도 업데이트
+        post.update(postUpdateDTO); // post 엔터티에 있는 update메서드
+                                    // 업데이트 정보 받아온 후 post 에 할당
 
         postRepository.save(post);
     }

@@ -3,15 +3,14 @@ package com.spring.user.service;
 import com.spring.user.DTO.AddUserRequestDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
+import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -50,7 +49,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public void updateUser(UserUpdateDTO userUpdateDTO) {
 
-        User updateUser = userRepository.findById(userUpdateDTO.getUserId()).get();
+        User updateUser = userRepository.findById(userUpdateDTO.getUserId())
+                .orElseThrow(() -> new UserIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + userUpdateDTO.getUserId()));
 
         updateUser.update(userUpdateDTO);
 
