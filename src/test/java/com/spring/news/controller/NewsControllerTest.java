@@ -17,12 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 
-import java.time.LocalDateTime;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,37 +37,104 @@ public class NewsControllerTest {
     @Autowired
     NewsRepository newsRepository;
 
+//    @Test
+//    @Transactional
+//    public void getAllNewsTest() throws Exception {
+//        // given : fixture 설정, 접속 주소 저장
+//        long newsId = 1;
+//        String title = "Title 1";
+//        String content = "Content 1";
+//        String imgUrl = "Img Url1";
+//        String newsUrl = "News Url1";
+//        LocalDateTime createdAt = LocalDateTime.of(2023, 8, 12, 0, 0, 0);
+//        String url = "/news";
+//
+//        newsRepository.save(News.builder()
+//                .newsId(newsId)
+//                .title(title)
+//                .content(content)
+//                .imageUrl(imgUrl)
+//                .newsUrl(newsUrl)
+//                .createdAt(createdAt)
+//                .build());
+//        System.out.println(newsRepository.findAll());
+//        // when : 설정한 url 주소로 접속 후 json 데이터 리턴받아 저장하기
+//        ResultActions resultActions = mockMvc.perform(get(url)
+//                .accept(MediaType.APPLICATION_JSON));
+//        // then: 응답 데이터와 fixture 비교하여 검증하기
+//
+//        resultActions
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[0].content").value(content))
+//                .andExpect(jsonPath("$[0].title").value(title));
+//
+//    }
+
     @Test
-    @Transactional
-    public void findAllNewsTest() throws Exception {
-        // given : fixture 설정, 접속 주소 저장
-        long newsId = 1;
-        String title = "Title 1";
-        String content = "Content 1";
-        String imgUrl = "Img Url1";
-        String newsUrl = "News Url1";
-        LocalDateTime createdAt = LocalDateTime.of(2023, 8, 12, 0, 0, 0);
-        String url = "/news";
+    public void getAllNewsTest() throws Exception {
+        // given: 더미 데이터를 DB에 적재함, url fixture 세팅
+        String url = "/news/list/1";
 
-        newsRepository.save(News.builder()
-                .newsId(newsId)
-                .title(title)
-                .content(content)
-                .imageUrl(imgUrl)
-                .newsUrl(newsUrl)
-                .createdAt(createdAt)
-                .build());
-        System.out.println(newsRepository.findAll());
-        // when : 설정한 url 주소로 접속 후 json 데이터 리턴받아 저장하기
+        // when: /news/list/1 로 Get 요청 수행 후 결과를 저장하기
         ResultActions resultActions = mockMvc.perform(get(url)
-                .accept(MediaType.APPLICATION_JSON));
-        // then: 응답 데이터와 fixture 비교하여 검증하기
+                        .contentType(MediaType.APPLICATION_JSON));
 
+        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 10
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].content").value(content))
-                .andExpect(jsonPath("$[0].title").value(title));
-
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(10));
     }
+
+    @Test
+    public void redirectToNewsSiteTest() throws Exception {
+        // given: 테스트용 데이터베이스에 존재하는 뉴스의 ID fixture, 요청 경로 세팅
+        long newsId = 1L;
+        String url = "/news/" + newsId;
+
+        // when: 세팅한 경로로 Get 요청 수행 후 결과 저장
+        ResultActions resultActions = mockMvc.perform(get(url)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then: 예상한 경로로 리다이렉트되는지 확인
+        resultActions
+                .andExpect(redirectedUrl("https://google.com"));
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteNewsById() throws Exception {
+        // given: fixture 세팅
+        long newsId = 1L;
+        String url = "/news/" + newsId;
+
+        // when: 삭제로직 실행
+        ResultActions resultActions = mockMvc.perform(delete(url)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then: 응답코드는 200이다
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    public void testSearchNews() throws Exception {
+        // given: 테스트용 데이터베이스에 존재하는 뉴스의 키워드, 페이지번호 및 url fixture 설정
+        String keyword = "Breaking";
+        int pageNum = 1;
+        String url = "/news/search/" + keyword + "/" + pageNum;
+
+        // when: 검색 로직 실행
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 1개
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(1));
+    }
+
+
+
 
 }

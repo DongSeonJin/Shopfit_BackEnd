@@ -21,7 +21,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private Long userId;
+    private User user;
 
     @Column(name="nickname", nullable = false)
     private String nickname;
