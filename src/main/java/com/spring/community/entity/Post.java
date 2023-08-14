@@ -1,17 +1,25 @@
 package com.spring.community.entity;
 
+import com.spring.community.DTO.PostUpdateDTO;
+import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 
-@Getter @Setter
+@Getter
 @ToString
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class) //CreatedAt, updatedAt 자동으로 현제시간 설정하는 JPA
 public class Post {
 
     @Id
@@ -21,7 +29,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private Long userId;
+    private User user;
 
     @Column(name="nickname", nullable = false)
     private String nickname;
@@ -36,12 +44,14 @@ public class Post {
     private String content;
 
     @Column(name = "view_count")
-    private Long viewCount;
+    private Long viewCount = 0L; // default 0으로 생성
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate //자동으로 생성일자로 설정
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate // 자동으로 업데이트일자로 설정
     private LocalDateTime updatedAt;
 
     @Column(name = "image_url1")
@@ -52,5 +62,12 @@ public class Post {
 
     @Column(name = "image_url3")
     private String imageUrl3;
+
+    public void update(PostUpdateDTO postUpdateDTO) {
+        this.postId = postUpdateDTO.getPostId();
+        this.nickname = postUpdateDTO.getNickname();
+        this.title = postUpdateDTO.getTitle();
+        this.content = postUpdateDTO.getContent();
+    }
 
 }

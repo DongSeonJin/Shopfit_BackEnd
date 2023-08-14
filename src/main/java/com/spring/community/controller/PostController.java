@@ -53,7 +53,7 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody PostUpdateDTO postUpdateDTO) {
-        postService.update(id, postUpdateDTO);
+        postService.update(postUpdateDTO);
         return ResponseEntity.noContent() // 204 No Content -> 리소스 업데이트 시 자주 사용됨.
                 .build();
 
