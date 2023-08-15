@@ -22,7 +22,7 @@ public class NewsCrawler {
     public static void main(String[] args) {
 
         String baseUrl = "https://www.ggjil.com/";
-        String url = baseUrl + "section.php?thread=24r01&numberpart=&file2=&file=&area=&etc2=&etc3=&searchtxt=&date_search=&pg=1&start_date=&end_date=";
+        String url = baseUrl + "section.php?thread=24r01";
 
         try {
             // Jsoup를 사용하여 웹 페이지 가져오기
@@ -32,7 +32,7 @@ public class NewsCrawler {
             Elements elements = document.select(".title a");                    // 최신 기사 선택
             String latestNews = baseUrl + elements.get(0).attr("href");       // 최신 기사 url
             int latestNewsNumber = Integer.parseInt(getNewsId(latestNews));              // 최신 기사 news_id
-            int newsDataRange = 10;                                                      // db 크기 설정
+            int newsDataRange = 20;                                                       // db 크기 설정
             int lastNewsId = latestNewsNumber-newsDataRange+1;
 
 
@@ -48,23 +48,24 @@ public class NewsCrawler {
             Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
 
             // MySQL 입력 쿼리 및 데이터 입력
-            String insertQuery = "INSERT INTO news (news_id, title, content, image_url, news_link_url, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+            String insertQuery = "INSERT INTO news (news_id, title, content, image_url, news_url, created_at) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
 
             // news_id 중복 체크를 위한 Set
-            Set<String> existingNewsIds = new HashSet<>();
+            Set<Integer> existingNewsIds = new HashSet<>();
 
             // 이미 있는 news_id 값들을 가져와 Set 에 저장
             String existingNewsIdQuery = "SELECT news_id FROM news";
             PreparedStatement existingNewsIdStatement = connection.prepareStatement(existingNewsIdQuery);
             ResultSet existingNewsIdResultSet = existingNewsIdStatement.executeQuery();
             while (existingNewsIdResultSet.next()) {
-                existingNewsIds.add(existingNewsIdResultSet.getString("news_id"));
+                existingNewsIds.add(existingNewsIdResultSet.getInt("news_id"));
             }
 
             // 크롤링 범위 설정 (최신 기사 ~ n번 째 기사 까지)
             for (int newsId = latestNewsNumber; newsId >= lastNewsId; newsId--) {
                 String newsUrl = "https://www.ggjil.com/detail.php?number="+newsId+"&thread=24r01";     // 크롤링 할 n번 째 기사 url
+                int count = 1;
 
                 // news_id 중복 확인
                 if (existingNewsIds.contains(newsId)) {
@@ -74,8 +75,7 @@ public class NewsCrawler {
 
                 String newsTitle = getNewsTitle(newsUrl);                           // 기사 페이지 제목
                 String newsContent = getNewsContent(newsUrl);                       // 기사 페이지 첫 내용
-                String newsImageUrl = getNewsImageUrl(newsUrl);                     // 기사 페이지 썸네일 이미지 url
-                String newsLinkUrl = getNewsLinkUrl(newsUrl);                       // 기사 페이지 썸네일 이미지 url
+                String newsImageUrl = getNewsImageUrl(newsUrl, newsId);                     // 기사 페이지 썸네일 이미지 url
                 String newsDate = getNewsDate(newsUrl);                             // 기사 페이지 날짜
 
                 // 데이터 입력
@@ -83,9 +83,12 @@ public class NewsCrawler {
                 preparedStatement.setString(2, newsTitle);
                 preparedStatement.setString(3, newsContent);
                 preparedStatement.setString(4, newsImageUrl);
-                preparedStatement.setString(5, newsLinkUrl);
+                preparedStatement.setString(5, newsUrl);
                 preparedStatement.setString(6, newsDate);
                 preparedStatement.executeUpdate();
+
+                // 크롤링 진행 상황
+                System.out.println(count+"/"+newsDataRange+"완료");
             }
 
             preparedStatement.close();
@@ -99,9 +102,9 @@ public class NewsCrawler {
 
 
     // getNews...
-    private static String getNewsId(String newsUrl) throws IOException {
+    private static String getNewsId(String newsPageUrl) throws IOException {
         try {
-            Document document = Jsoup.connect(newsUrl).get();
+            Document document = Jsoup.connect(newsPageUrl).get();
             Element newsLinkElement = document.select(".thumb a").first();
             String newsLinkUrl = "https://www.ggjil.com" + Objects.requireNonNull(newsLinkElement).attr("href");
 
@@ -143,21 +146,20 @@ public class NewsCrawler {
         return inputData;
     }
 
-    private static String getNewsImageUrl(String newsUrl) throws IOException {
-        Document document = Jsoup.connect(newsUrl).get();
-        Element imgElement = document.select(".thumb img").first();
+    private static String getNewsImageUrl(String newsUrl, int newsId) throws IOException {
+        Document document = Jsoup.connect("https://www.ggjil.com/section.php?thread=24r01").get();
+        Element Element = document.select(".thumb a[href*="+ newsId + "] img").first();
 
-        if (imgElement != null) {
-            return "https://www.ggjil.com"+imgElement.attr("src");
+        // document 내 썸네일 이미지가 없는 경우가 많음 -> 해당 경우 기사 내 첫 이미지를 썸네일로 대체
+        if (Element != null) {
+            return "https://www.ggjil.com" + Element.attr("src");
         } else {
-            return "null";                                          // 썸네일 이미지 없을 경우; 예외처리
+            Document document2 = Jsoup.connect(newsUrl).get();
+            Element ctDiv = document2.getElementById("ct");
+            Element Element2 = Objects.requireNonNull(ctDiv).select("img").first();
+            return "https://www.ggjil.com" + (Element2 != null ? Element2.attr("src") : "");
         }
-    }
 
-    private static String getNewsLinkUrl(String newsUrl) throws IOException {
-        Document document = Jsoup.connect(newsUrl).get();
-        Element newsLinkElement = document.select(".thumb a").first();
-        return "https://www.ggjil.com"+ Objects.requireNonNull(newsLinkElement).attr("href");
     }
 
     private static String getNewsDate(String newsUrl) throws IOException {
