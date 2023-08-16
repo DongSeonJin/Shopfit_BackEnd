@@ -9,9 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Entity @Getter @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED) @AllArgsConstructor
 @Table(name = "users")// mysql에서 USER를 테이블명으로 지정할 수 없으므로 users로 생성
 public class User implements UserDetails {
 
@@ -42,9 +41,6 @@ public class User implements UserDetails {
 
     @Column(name = "is_admin", nullable = false)
     private boolean isAdmin;
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
 
     @Builder
     public User(String email, String password){
@@ -90,9 +86,4 @@ public class User implements UserDetails {
 
     // 엔터티의 불변성을 지키려려면, @Setter를 사용하지 않는게 좋기때문에 넣은 별도의 업데이트 메서드.
     // builder패턴은 JPA에서 변경을 감지하지 못하기때문에 문제의 여지가 있음.
-    public void update(UserUpdateDTO userUpdateDTO) {
-        this.nickname = userUpdateDTO.getNickname();
-        this.password = userUpdateDTO.getPassword();
-        this.imageUrl = userUpdateDTO.getImageUrl();
-    }
 }

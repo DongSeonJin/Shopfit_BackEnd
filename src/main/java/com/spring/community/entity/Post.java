@@ -4,21 +4,22 @@ import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
-@ToString
-@Builder
+@Getter @ToString @Builder
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class) //CreatedAt, updatedAt 자동으로 현제시간 설정하는 JPA
 public class Post {
 
@@ -29,22 +30,25 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE) // on delete cascasde; 유저 탈퇴시 게시글도 같이 삭제
     private User user;
 
     @Column(name="nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "category_name", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "category_name")
     private String categoryName;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "view_count")
-    private Long viewCount = 0L; // default 0으로 생성
+    @ColumnDefault("0L")
+    @Column(name = "view_count", nullable = false)
+    private Long viewCount;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate //자동으로 생성일자로 설정
@@ -63,11 +67,10 @@ public class Post {
     @Column(name = "image_url3")
     private String imageUrl3;
 
-    public void update(PostUpdateDTO postUpdateDTO) {
-        this.postId = postUpdateDTO.getPostId();
-        this.nickname = postUpdateDTO.getNickname();
-        this.title = postUpdateDTO.getTitle();
-        this.content = postUpdateDTO.getContent();
-    }
+    @OneToMany(mappedBy = "post", // post가 부모이므로 매핑
+            cascade = CascadeType.REMOVE, //post 삭제시 like 삭제
+            orphanRemoval = true, // 연관관계 제거시 like 삭제
+            fetch = FetchType.LAZY) // post 엔터티 로드할 때 likes 엔터티를 지연 로딩 -> 성능 최적화
+    private List<Like> likes;
 
 }
