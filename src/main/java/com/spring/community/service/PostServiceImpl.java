@@ -44,13 +44,17 @@ public class PostServiceImpl implements PostService{
         postRepository.deleteById(id);
     }
 
-    @Override // 파라미터에 DTO만 넣어 구현해보려다가, findById메서드의 타입과 맞지않아 id는 다로받음.
+    @Override
     public void update(PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(postUpdateDTO.getPostId())
                 .orElseThrow(() -> new PostIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + postUpdateDTO.getPostId()));
 
-        post.update(postUpdateDTO); // post 엔터티에 있는 update메서드
-                                    // 업데이트 정보 받아온 후 post 에 할당
+        // entity에 setter를 넣는것은 불변성을 위반하기 때문에 builder로 구현.
+        post.builder()
+                .title(postUpdateDTO.getTitle())
+                .content(postUpdateDTO.getContent())
+                .updatedAt(LocalDateTime.now());
+
 
         postRepository.save(post);
     }

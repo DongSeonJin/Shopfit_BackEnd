@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 public class PostUpdateDTO {
 
-    private User userId;
     private long postId;
     private String nickname;
     private String title;
@@ -21,7 +20,6 @@ public class PostUpdateDTO {
     private LocalDateTime updatedAt;
 
     public PostUpdateDTO(Post post){
-        this.userId = post.getUser();
         this.postId = post.getPostId();
         this.nickname = post.getNickname();
         this.title = post.getTitle();

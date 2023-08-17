@@ -52,7 +52,10 @@ public class UserServiceImpl implements UserService{
         User updateUser = userRepository.findById(userUpdateDTO.getUserId())
                 .orElseThrow(() -> new UserIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + userUpdateDTO.getUserId()));
 
-        updateUser.update(userUpdateDTO);
+        updateUser.builder()
+                .nickname(userUpdateDTO.getNickname())
+                .password(userUpdateDTO.getPassword())
+                .imageUrl(userUpdateDTO.getImageUrl());
 
         userRepository.save(updateUser);
     }
