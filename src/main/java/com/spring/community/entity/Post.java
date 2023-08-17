@@ -1,7 +1,5 @@
 package com.spring.community.entity;
 
-import com.spring.community.DTO.PostUpdateDTO;
-import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

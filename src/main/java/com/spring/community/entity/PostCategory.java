@@ -13,7 +13,7 @@ public class PostCategory {
     @Column
     private Integer categoryId;
 
-    @Column
+    @Column(nullable = false)
     private String categoryName;
 
 }
