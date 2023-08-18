@@ -25,6 +25,7 @@ public class Product {
     @Column(name = "product_id")
     private Long productId;
 
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private ShopCategory category;
@@ -32,11 +33,14 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     private String productName;
 
+
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
+  
 
     @Column(name = "price", nullable = false)
     private Long price;
+
 
     @Column(name = "stock_quantity", nullable = false)
     private Long stockQuantity; // 재고수량
@@ -49,7 +53,9 @@ public class Product {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 productImage도 삭제
     private List<ProductImage> productImages = new ArrayList<>();
 
 }
+
