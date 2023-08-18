@@ -11,10 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class ShoppingCrawler {
@@ -51,10 +48,11 @@ public class ShoppingCrawler {
             Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
 
             // MySQL 입력 쿼리 및 데이터 입력
-            String insertQuery = "INSERT INTO product (product_id, shop_category, product_name, thumbnail_url, price, quantity) VALUES (?, ?, ?, ?, ?, ?)";
-//            String insertQuery = "INSERT INTO product (product_id, shop_category, product_name, thumbnail_url, price, quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String insertProduct = "INSERT INTO product (product_id, category_id, product_name, thumbnail_url, price, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+            String insertProductImage = "INSERT INTO product_image (product_id, image_url) VALUES (?, ?)";
+//            String insertProduct = "INSERT INTO product (product_id, category_id, product_name, thumbnail_url, price, quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+            PreparedStatement preparedStatement = connection.prepareStatement(insertProduct);
 
             // news_id 중복 체크를 위한 Set
             Set<Integer> existingProductIds = new HashSet<>();
@@ -68,47 +66,68 @@ public class ShoppingCrawler {
             }
 
 
-            for (int productId = 20000; productId >= 0; productId--) {
+            for (int productId = 8976; productId >= 8976; productId--) {
                 String productUrl = "https://www.rankingdak.com/product/view?productCd=" + productId;
-                int count = 1;
+                System.out.println(productId + " 진행 중");
 
                 if (existingProductIds.contains(productId)) {
                     System.out.println("Skipping duplicate productId: " + productId);
                     continue;
                 }
-                
-                String shopCategory = getShopCategory(productUrl);
-                if (shopCategory == "") {
-                    System.out.println("shopCategory null:" + productId);
+
+                String categoryId = getCategoryId(productUrl);
+                if (categoryId == "") {
+                    System.out.println("categoryId null:");
                     continue;
                 }
 
                 String productName = getProductName(productUrl);
                 if (productName == "") {
-                    System.out.println("productName null:" + productId);
+                    System.out.println("productName null:");
                     continue;
                 }
 
                 String thumbnailUrl = getProductThumbnailUrl(productUrl);
                 if (thumbnailUrl == "") {
-                    System.out.println("thumbnailUrl null:" + productId);
+                    System.out.println("thumbnailUrl null:");
                     continue;
                 }
 
                 int price = Integer.parseInt(getPrice(productUrl));
-
                 int quantity = 500;
 
+                Elements elements = getCheckImageAmount(productUrl);
+                System.out.println(elements.size());
+                for(Element element : elements){
+                    Elements divTags = element.select("div");
+                    for (Element divTag : divTags) {
+                        Elements imgTags = divTag.select("img"); // Select all <img> tags within the element
+                        System.out.println(imgTags.size());
+                        for (Element imgTag : imgTags) {
+                            String imgUrl = imgTag.attr("src"); // Get the value of the 'src' attribute
+                            System.out.println("Image URL: " + imgUrl);
+                        }
+                    }
+                }
+
+                // product_image table 데이터 입력
+//                for (Element element : elements) {
+//                    PreparedStatement preparedPrImg = connection.prepareStatement(insertProductImage);
+//                    preparedPrImg.setInt(1, productId);
+//                    preparedPrImg.setString(2, element.attr("src"));
+//                    preparedPrImg.executeUpdate();
+//                    preparedPrImg.close();
+//                }
+
+                // product table 데이터 입력
                 preparedStatement.setInt(1, productId);
-                preparedStatement.setString(2, shopCategory);
+                preparedStatement.setString(2, categoryId);
                 preparedStatement.setString(3, productName);
                 preparedStatement.setString(4, thumbnailUrl);
                 preparedStatement.setInt(5, price);
                 preparedStatement.setInt(6, quantity);
 
                 preparedStatement.executeUpdate();
-                System.out.println(count);
-                count += 1;
             }
 
             preparedStatement.close();
@@ -120,18 +139,18 @@ public class ShoppingCrawler {
     }
 
     // getNews...
-    private static String getShopCategory(String productUrl) throws IOException {
+    private static String getCategoryId(String productUrl) throws IOException {
         Document document = Jsoup.connect(productUrl).get();
-        Element inputTag = document.selectFirst("input[type=hidden][name=categoryCd]");
-        if(inputTag != null){
-            return inputTag.attr("value");
+        Element categoryId = document.selectFirst("input[type=hidden][name=categoryCd]");
+        if (categoryId != null) {
+            return categoryId.attr("value");
         }
         return "";
     }
 
     private static String getProductThumbnailUrl(String productUrl) throws IOException {
         Document document = Jsoup.connect(productUrl).get();
-        Element imgTag = document.selectFirst("div.goods-top img");
+        Element imgTag = document.selectFirst("div.goods-img-area img");
         String imgUrl = imgTag.attr("src");
         if (imgTag != null) {
             return imgUrl;
@@ -157,4 +176,9 @@ public class ShoppingCrawler {
         return "";
     }
 
+    private static Elements getCheckImageAmount(String productUrl) throws IOException {
+        Document document = Jsoup.connect(productUrl).get();
+        return document.select(".inner-content.productCont");
+//        return document.select("img");
+    }
 }
