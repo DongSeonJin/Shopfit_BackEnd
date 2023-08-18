@@ -45,4 +45,18 @@ public class OrderProduct {
     @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public void setProductId(Product product) {
+        this.product = product;
+    }
+
+    public void setProductName(String productName) {
+    }
+
+    public void setPrice(Long price) {
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
 }
