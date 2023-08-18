@@ -17,8 +17,9 @@ public class ShopCategory {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @OneToOne
-    @JoinColumn(name = "category_name")
+
+    @Column(name = "category_name", nullable = false)
     private String categoryName;
 
 }
+

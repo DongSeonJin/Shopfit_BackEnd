@@ -27,4 +27,7 @@ public class ProductImage {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
+
+
 }
+
