@@ -3,6 +3,7 @@ package com.spring.user.entity;
 import com.spring.user.DTO.UserUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -34,12 +35,13 @@ public class User implements UserDetails {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_admin", nullable = false)
+    @ColumnDefault("false")
+    @Column(name = "is_admin")
     private boolean isAdmin;
 
     @Builder
