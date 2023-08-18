@@ -55,7 +55,8 @@ public class UserServiceImpl implements UserService{
         updateUser.builder()
                 .nickname(userUpdateDTO.getNickname())
                 .password(userUpdateDTO.getPassword())
-                .imageUrl(userUpdateDTO.getImageUrl());
+                .imageUrl(userUpdateDTO.getImageUrl())
+                .build();
 
         userRepository.save(updateUser);
     }
