@@ -12,6 +12,8 @@ import lombok.*;
 public class LikeSaveDTO {
 
     private Long likeId;
+    private String nickname;
     private User user;
     private Post post;
+
 }

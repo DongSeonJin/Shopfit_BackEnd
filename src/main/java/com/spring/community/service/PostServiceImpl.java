@@ -1,5 +1,6 @@
 package com.spring.community.service;
 
+import com.spring.community.DTO.LikeSaveDTO;
 import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
@@ -74,7 +75,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void saveLike(String nickname, Long userId, Long postId){
-        dynamicLikeRepository.createDynamicLike(nickname, userId, postId);
+    public void saveLike(LikeSaveDTO likeSaveDTO){
+        dynamicLikeRepository.createDynamicLike(likeSaveDTO);
+        dynamicLikeRepository.insertDynamicLike(likeSaveDTO);
     }
 }
