@@ -1,5 +1,6 @@
 package com.spring.community.controller;
 
+import com.spring.community.DTO.LikeSaveDTO;
 import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
@@ -64,9 +65,8 @@ public class PostController {
     }
 
     @GetMapping("/{like}")
-    public ResponseEntity<String> pushlike(@RequestBody String nickname, Long userId, Long postId){
-        postService.saveLike(nickname, userId, postId);
-
+    public ResponseEntity<String> pushlike(@RequestBody LikeSaveDTO likeSaveDTO){
+        postService.saveLike(likeSaveDTO);
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
 

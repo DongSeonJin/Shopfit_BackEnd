@@ -35,7 +35,7 @@ public class Post {
     private String nickname;
 
     @ManyToOne
-    @JoinColumn(name = "category_Id")
+    @JoinColumn(name = "category_id")
     private PostCategory postCategory;
 
     @Column(name = "title", nullable = false)

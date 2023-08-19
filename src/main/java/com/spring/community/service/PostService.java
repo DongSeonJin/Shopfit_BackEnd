@@ -1,5 +1,6 @@
 package com.spring.community.service;
 
+import com.spring.community.DTO.LikeSaveDTO;
 import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
@@ -16,6 +17,6 @@ public interface PostService {
     void deletePostById(Long id);
     void update(PostUpdateDTO postUpdateDTO);
 
-    void saveLike(String nickname, Long userId, Long postId);
+    void saveLike(LikeSaveDTO likeSaveDTO);
 
 }
