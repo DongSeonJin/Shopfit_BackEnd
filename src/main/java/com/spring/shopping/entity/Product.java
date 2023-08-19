@@ -57,5 +57,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 productImage도 삭제
     private List<ProductImage> productImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+
 }
 

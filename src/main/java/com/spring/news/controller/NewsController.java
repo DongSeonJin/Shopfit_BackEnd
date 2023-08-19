@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/news")
 public class NewsController {
 
-    private NewsService newsService;
+    private final NewsService newsService;
 
     @Autowired
     public NewsController(NewsService newsService) {

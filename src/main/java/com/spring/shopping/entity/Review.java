@@ -36,8 +36,8 @@ public class Review {
     @OnDelete(action = OnDeleteAction.CASCADE) // 상품 삭제 시 리뷰도 같이 삭제
     private Product product;
 
-    @Column(name = "rating", nullable = false)
-    private Long rating;
+    @Column(name = "rating")
+    private Double rating; // 리뷰의 평점은 소수점까지 사용
 
     @Column(name = "comment", nullable = false)
     private String comment;

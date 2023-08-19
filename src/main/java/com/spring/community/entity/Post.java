@@ -35,7 +35,7 @@ public class Post {
     private String nickname;
 
     @ManyToOne
-    @JoinColumn(name = "category_name")
+    @JoinColumn(name = "category_id")
     private PostCategory postCategory;
 
     @Column(name = "title", nullable = false)
@@ -44,7 +44,7 @@ public class Post {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @ColumnDefault("0L")
+    @ColumnDefault("0")
     @Column(name = "view_count", nullable = false)
     private Long viewCount;
 
