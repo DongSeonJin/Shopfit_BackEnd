@@ -1,5 +1,6 @@
 package com.spring.community.controller;
 
+import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import com.spring.community.service.PostService;
@@ -40,10 +41,12 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
-    @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post savedPost = postService.savePost(post);
-        return ResponseEntity.ok(savedPost);
+    @PostMapping("/create")
+    public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
+        System.out.println(postSaveDTO);
+        postService.savePost(postSaveDTO);
+
+        return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
 
     @DeleteMapping("/{id}")
@@ -58,6 +61,13 @@ public class PostController {
         return ResponseEntity.noContent() // 204 No Content -> 리소스 업데이트 시 자주 사용됨.
                 .build();
 
+    }
+
+    @GetMapping("/{like}")
+    public ResponseEntity<String> pushlike(@RequestBody String nickname, Long userId, Long postId){
+        postService.saveLike(nickname, userId, postId);
+
+        return ResponseEntity.ok("좋아요 누르기 성공");
     }
 
 

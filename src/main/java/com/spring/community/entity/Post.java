@@ -44,31 +44,28 @@ public class Post {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @ColumnDefault("0")
-    @Column(name = "view_count", nullable = false)
-    private Long viewCount;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "view_count")
+    @Builder.Default // viewcount의 default값을 0으로 설정할 시, 넣어야 할 어노테이션. 없으면 builder가 무시됨.
+    private Long viewCount = 0L;
+
+
+    @Column(name = "created_at")
     @CreatedDate //자동으로 생성일자로 설정
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     @LastModifiedDate // 자동으로 업데이트일자로 설정
     private LocalDateTime updatedAt;
 
-    @Column(name = "image_url1")
+    @Column(name = "image_url1", nullable = true)
     private String imageUrl1;
 
-    @Column(name = "image_url2")
+    @Column(name = "image_url2", nullable = true)
     private String imageUrl2;
 
-    @Column(name = "image_url3")
+    @Column(name = "image_url3", nullable = true)
     private String imageUrl3;
 
-    @OneToMany(mappedBy = "post", // post가 부모이므로 매핑
-            cascade = CascadeType.REMOVE, //post 삭제시 like 삭제
-            orphanRemoval = true, // 연관관계 제거시 like 삭제
-            fetch = FetchType.LAZY) // post 엔터티 로드할 때 likes 엔터티를 지연 로딩 -> 성능 최적화
-    private List<Like> likes;
 
 }

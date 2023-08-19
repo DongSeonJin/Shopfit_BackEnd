@@ -31,9 +31,10 @@ public class DeletedUser {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column
     private LocalDateTime updatedAt;
 
     @Column(name = "is_admin", nullable = false)

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
-public class NewsServiceTest {
+public class  NewsServiceTest {
 
     @Autowired
     NewsService newsService;
