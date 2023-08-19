@@ -32,7 +32,7 @@ public class NewsCrawler {
             Elements elements = document.select(".title a");                    // 최신 기사 선택
             String latestNews = baseUrl + elements.get(0).attr("href");       // 최신 기사 url
             int latestNewsNumber = Integer.parseInt(getNewsId(latestNews));              // 최신 기사 news_id
-            int newsDataRange = 20;                                                       // db 크기 설정
+            int newsDataRange = 120;                                                       // db 크기 설정
             int lastNewsId = latestNewsNumber-newsDataRange+1;
 
 
@@ -70,12 +70,18 @@ public class NewsCrawler {
                 // news_id 중복 확인
                 if (existingNewsIds.contains(newsId)) {
                     System.out.println("Skipping duplicate news_id: " + newsId);
+                    count += 1;
                     continue;                                                       // 중복 되는 경우 스킵
                 }
 
                 String newsTitle = getNewsTitle(newsUrl);                           // 기사 페이지 제목
+                if(newsTitle == ""){
+                    System.out.println("Skipping null newsTitle: " + newsId);
+                    count += 1;
+                    continue;
+                }
                 String newsContent = getNewsContent(newsUrl);                       // 기사 페이지 첫 내용
-                String newsImageUrl = getNewsImageUrl(newsUrl, newsId);                     // 기사 페이지 썸네일 이미지 url
+                String newsImageUrl = getNewsImageUrl(newsUrl, newsId);             // 기사 페이지 썸네일 이미지 url
                 String newsDate = getNewsDate(newsUrl);                             // 기사 페이지 날짜
 
                 // 데이터 입력
@@ -89,6 +95,7 @@ public class NewsCrawler {
 
                 // 크롤링 진행 상황
                 System.out.println(count+"/"+newsDataRange+"완료");
+                count += 1;
             }
 
             preparedStatement.close();
@@ -130,7 +137,7 @@ public class NewsCrawler {
     private static String getNewsTitle(String newsUrl) throws IOException {
         Document document = Jsoup.connect(newsUrl).get();
         Element titleElement = document.select("h2.font_22.font_malgun.de_tit").first();
-        return Objects.requireNonNull(titleElement).text();
+        return (titleElement != null? titleElement.text() : "");
     }
 
     private static String getNewsContent(String newsUrl) throws IOException {

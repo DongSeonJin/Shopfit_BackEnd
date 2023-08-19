@@ -4,6 +4,8 @@ import com.spring.user.DTO.UserUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,8 +38,12 @@ public class User implements UserDetails {
     private String imageUrl;
 
     @Column(name = "created_at")
+    @CreatedDate // 자동으로 생성일자로 설정
+
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    @LastModifiedDate // 자동으로 업데이트일자로 설정
     private LocalDateTime updatedAt;
 
     @ColumnDefault("false")
