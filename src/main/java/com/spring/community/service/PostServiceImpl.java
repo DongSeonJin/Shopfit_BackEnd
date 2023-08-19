@@ -4,6 +4,7 @@ import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
+import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class PostServiceImpl implements PostService{
 
     PostRepository postRepository;
     DynamicPostRepository dynamicPostRepository;
+
+    DynamicLikeRepository dynamicLikeRepository;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository){
@@ -68,5 +71,10 @@ public class PostServiceImpl implements PostService{
 
 
         postRepository.save(post);
+    }
+
+    @Override
+    public void saveLike(String nickname, Long userId, Long postId){
+        dynamicLikeRepository.createDynamicLike(nickname, userId, postId);
     }
 }

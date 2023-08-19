@@ -16,4 +16,6 @@ public interface PostService {
     void deletePostById(Long id);
     void update(PostUpdateDTO postUpdateDTO);
 
+    void saveLike(String nickname, Long userId, Long postId);
+
 }

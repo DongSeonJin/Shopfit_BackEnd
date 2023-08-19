@@ -2,7 +2,20 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.spring.community.repository.DynamicPostRepository">
+<mapper namespace="com.spring.community.repository.DynamicLikeRepository">
+    <insert id="createDynamicLike">
+        CREATE TABLE IF NOT EXISTS like_#{nickName} (
+        like_id BIGINT AUTO_INCREMENT,
+        user_id BIGINT NOT NULL,
+        post_id BIGINT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user(user_id),
+        FOREIGN KEY (post_id) REFERENCES post(post_id),
+        PRIMARY KEY (like_id)
+    </insert>
 
+    <insert id="insertDynamicLike">
+        INSERT INTO like_#{nickName} (user_id, post_id)
+        VALUES (#{likerId}, #{postId});
+    </insert>
 
 </mapper>
