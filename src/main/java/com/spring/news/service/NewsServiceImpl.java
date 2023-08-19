@@ -1,6 +1,5 @@
 package com.spring.news.service;
 
-import com.spring.news.DTO.NewsViewResponseDTO;
 import com.spring.news.entity.News;
 import com.spring.news.exception.NewsIdNotFoundException;
 import com.spring.news.repository.NewsRepository;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class NewsServiceImpl implements NewsService{
