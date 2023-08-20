@@ -21,9 +21,12 @@ import java.util.List;
 public class PostServiceImpl implements PostService{
 
 
+    @Autowired
     PostRepository postRepository;
+    @Autowired
     DynamicPostRepository dynamicPostRepository;
 
+    @Autowired
     DynamicLikeRepository dynamicLikeRepository;
 
     @Autowired
@@ -64,7 +67,7 @@ public class PostServiceImpl implements PostService{
                 .orElseThrow(() -> new PostIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + postUpdateDTO.getPostId()));
 
         // entity에 setter를 넣는것은 불변성을 위반하기 때문에 builder로 구현.
-        post.builder()
+        Post.builder()
                 .title(postUpdateDTO.getTitle())
                 .content(postUpdateDTO.getContent())
                 .updatedAt(LocalDateTime.now())

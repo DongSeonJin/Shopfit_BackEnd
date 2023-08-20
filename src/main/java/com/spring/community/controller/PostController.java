@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/post")
+
 public class PostController {
 
 
@@ -36,9 +37,9 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        Post post = postService.getPostById(id);
+    @GetMapping("/{postId}")
+    public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
+        Post post = postService.getPostById(postId);
         return ResponseEntity.ok(post);
     }
 
@@ -50,9 +51,9 @@ public class PostController {
         return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePostById(@PathVariable Long id) {
-        postService.deletePostById(id);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePostById(@PathVariable Long postId) {
+        postService.deletePostById(postId);
         return ResponseEntity.noContent().build();
     }
 
@@ -64,7 +65,7 @@ public class PostController {
 
     }
 
-    @GetMapping("/{like}")
+    @GetMapping("/{postId}/like")
     public ResponseEntity<String> pushlike(@RequestBody LikeSaveDTO likeSaveDTO){
         postService.saveLike(likeSaveDTO);
         return ResponseEntity.ok("좋아요 누르기 성공");
