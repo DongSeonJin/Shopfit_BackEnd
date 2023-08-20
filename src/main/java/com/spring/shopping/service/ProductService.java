@@ -22,7 +22,12 @@ public interface ProductService {
     // 검색
     Page<Product> searchProductsByKeyword(String keyword, int pageNum);
 
-    // 저장
+  
     public boolean saveProductAndImage(ProductSaveRequestDTO requestDTO);
+  
+  
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    Product getProductInfo(Long productId);
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 }

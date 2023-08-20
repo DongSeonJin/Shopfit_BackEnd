@@ -1,9 +1,8 @@
-package com.spring.shopping;
+package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.OrderDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.repository.OrderRepository;
-import com.spring.shopping.service.OrderServiceImpl;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 

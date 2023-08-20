@@ -111,6 +111,7 @@ public class ProductServiceImpl implements ProductService{
         return searchResults;
     }
 
+
     @Override
     public boolean saveProductAndImage(ProductSaveRequestDTO requestDTO) {
         try {
@@ -144,8 +145,10 @@ public class ProductServiceImpl implements ProductService{
             return false;
         }
     }
-
-
-
-
+      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @Override
+    public Product getProductInfo(Long productId) {
+        return productRepository.findById(productId).orElse(null);
+    }
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }
