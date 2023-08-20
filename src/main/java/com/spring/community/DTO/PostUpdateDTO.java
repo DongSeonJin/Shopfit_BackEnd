@@ -26,4 +26,6 @@ public class PostUpdateDTO {
         this.content = post.getContent();
         this.updatedAt = post.getUpdatedAt();
     }
+
+
 }
