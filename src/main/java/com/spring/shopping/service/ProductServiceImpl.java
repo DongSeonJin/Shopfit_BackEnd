@@ -95,4 +95,11 @@ public class ProductServiceImpl implements ProductService{
 
         return searchResults;
     }
+
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @Override
+    public Product getProductInfo(Long productId) {
+        return productRepository.findById(productId).orElse(null);
+    }
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }

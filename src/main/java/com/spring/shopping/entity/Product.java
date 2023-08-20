@@ -61,5 +61,11 @@ public class Product {
     private List<Review> reviews = new ArrayList<>();
 
 
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }
 

@@ -1,11 +1,10 @@
-package com.spring.shopping;
+package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.repository.OrderProductRepository;
-import com.spring.shopping.service.OrderProductServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatcher;

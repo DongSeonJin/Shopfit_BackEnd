@@ -19,4 +19,7 @@ public interface ProductService {
     // 검색
     Page<Product> searchProductsByKeyword(String keyword, int pageNum);
 
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    Product getProductInfo(Long productId);
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }
