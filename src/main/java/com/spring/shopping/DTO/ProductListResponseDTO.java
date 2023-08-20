@@ -24,7 +24,7 @@ public class ProductListResponseDTO { // 상품 목록 조회 시 사용하는 D
 
     public ProductListResponseDTO(Product product) { // 엔티티를 DTO로 바꾸는 생성자
         this.productId = product.getProductId();
-        this.categoryId = product.getCategory().getCategoryId();
+        this.categoryId = product.getShopCategory().getCategoryId();
         this.productName = product.getProductName();
         this.thumbnailUrl = product.getThumbnailUrl();
         this.price = product.getPrice();

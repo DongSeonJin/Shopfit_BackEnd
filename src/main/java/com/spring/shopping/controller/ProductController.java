@@ -3,15 +3,14 @@ package com.spring.shopping.controller;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductListResponseDTO;
+import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/shopping")
@@ -55,10 +54,6 @@ public class ProductController {
     }
 
 
-
-
-
-
     // 검색
     @GetMapping({"/search/{keyword}/{pageNum}", "/search/{keyword}"})
     public ResponseEntity<Page<ProductListResponseDTO>> searchProducts(@PathVariable String keyword,
@@ -70,6 +65,18 @@ public class ProductController {
                 .map(ProductListResponseDTO::new);
 
         return ResponseEntity.ok(searchResultsDTOPage);
+    }
+
+    // 등록
+    @PostMapping("/save")
+    public ResponseEntity<String> saveProductAndImage(@RequestBody ProductSaveRequestDTO requestDTO) {
+        boolean success = productService.saveProductAndImage(requestDTO);
+
+        if (success) {
+            return ResponseEntity.ok("상품 및 이미지 저장에 성공했습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("상품 및 이미지 저장에 실패했습니다.");
+        }
     }
 
 

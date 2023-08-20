@@ -1,10 +1,16 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
+import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.entity.Product;
+import com.spring.shopping.entity.ProductImage;
+import com.spring.shopping.entity.ShopCategory;
 import com.spring.shopping.exception.CategoryIdNotFoundException;
 import com.spring.shopping.exception.ProductIdNotFoundException;
+import com.spring.shopping.repository.ProductImageRepository;
 import com.spring.shopping.repository.ProductRepository;
+import com.spring.shopping.repository.ShopCategoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,16 +18,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
+    private final ShopCategoryRepository shopCategoryRepository;
 
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 상품을 조회할지
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository,
+                              ProductImageRepository productImageRepository,
+                              ShopCategoryRepository shopCategoryRepository) {
         this.productRepository = productRepository;
+        this.productImageRepository = productImageRepository;
+        this.shopCategoryRepository = shopCategoryRepository;
     }
 
 
@@ -43,7 +58,7 @@ public class ProductServiceImpl implements ProductService{
     // 카테고리별 조회 - 디폴트 정렬 : productId 기준 내림차순
     @Override
     public Page<Product> getProductsByCategory(Long categoryId, int pageNum) {
-        Page<Product> productsByCategory = productRepository.findByCategoryCategoryId(
+        Page<Product> productsByCategory = productRepository.findByShopCategoryCategoryId(
                 categoryId,
                 PageRequest.of(pageNum - 1, PAGE_SIZE, Sort.Direction.DESC, "productId")
         );
@@ -53,7 +68,7 @@ public class ProductServiceImpl implements ProductService{
         }
 
         if (productsByCategory.getTotalPages() < pageNum) {
-            return productRepository.findByCategoryCategoryId(
+            return productRepository.findByShopCategoryCategoryId(
                     categoryId,
                     PageRequest.of(productsByCategory.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC, "productId")
             );
@@ -95,4 +110,42 @@ public class ProductServiceImpl implements ProductService{
 
         return searchResults;
     }
+
+    @Override
+    public boolean saveProductAndImage(ProductSaveRequestDTO requestDTO) {
+        try {
+            // 상품 정보 추출
+            ShopCategory category = shopCategoryRepository.findById(requestDTO.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 categoryId"));
+
+            Product newProduct = Product.builder()
+                    .shopCategory(category)
+                    .productName(requestDTO.getProductName())
+                    .thumbnailUrl(requestDTO.getThumbnailUrl())
+                    .price(requestDTO.getPrice())
+                    .stockQuantity(requestDTO.getStockQuantity())
+                    .build();
+
+            Product savedProduct = productRepository.save(newProduct);
+
+            // 이미지 정보 추출 및 저장
+            List<ProductImage> productImages = requestDTO.getProductImageUrls().stream()
+                    .map(imageUrl -> ProductImage.builder()
+                            .product(savedProduct)
+                            .imageUrl(imageUrl)
+                            .build())
+                    .collect(Collectors.toList());
+
+            productImageRepository.saveAll(productImages);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
 }
