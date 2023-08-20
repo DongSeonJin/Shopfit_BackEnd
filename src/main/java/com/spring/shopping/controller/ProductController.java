@@ -55,10 +55,6 @@ public class ProductController {
     }
 
 
-
-
-
-
     // 검색
     @GetMapping({"/search/{keyword}/{pageNum}", "/search/{keyword}"})
     public ResponseEntity<Page<ProductListResponseDTO>> searchProducts(@PathVariable String keyword,

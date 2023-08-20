@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService{
     // 카테고리별 조회 - 디폴트 정렬 : productId 기준 내림차순
     @Override
     public Page<Product> getProductsByCategory(Long categoryId, int pageNum) {
-        Page<Product> productsByCategory = productRepository.findByCategoryCategoryId(
+        Page<Product> productsByCategory = productRepository.findByShopCategoryCategoryId(
                 categoryId,
                 PageRequest.of(pageNum - 1, PAGE_SIZE, Sort.Direction.DESC, "productId")
         );
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService{
         }
 
         if (productsByCategory.getTotalPages() < pageNum) {
-            return productRepository.findByCategoryCategoryId(
+            return productRepository.findByShopCategoryCategoryId(
                     categoryId,
                     PageRequest.of(productsByCategory.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC, "productId")
             );

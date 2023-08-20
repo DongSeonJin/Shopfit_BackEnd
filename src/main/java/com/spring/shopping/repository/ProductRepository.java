@@ -12,7 +12,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findAll(Pageable pageable);
 
     // 카테고리별 조회
-    Page<Product> findByCategoryCategoryId(Long categoryId, Pageable pageable);
+    Page<Product> findByShopCategoryCategoryId(Long categoryId, Pageable pageable);
 
     // 상세 조회
     Product findByProductId(Long productId);

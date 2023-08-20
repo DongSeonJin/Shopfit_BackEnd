@@ -1,5 +1,6 @@
 package com.spring.shopping.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = {"productImages", "reviews"}) //상호 참조로 인한 무한 재귀 호출 방지
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +29,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private ShopCategory category;
+    private ShopCategory shopCategory;
 
     @Column(name = "product_name", nullable = false)
     private String productName;
@@ -57,7 +58,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 productImage도 삭제
     private List<ProductImage> productImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 해당 review도 삭제
     private List<Review> reviews = new ArrayList<>();
 
 
