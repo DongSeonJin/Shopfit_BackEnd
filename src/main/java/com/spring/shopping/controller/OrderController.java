@@ -3,14 +3,15 @@ package com.spring.shopping.controller;
 import com.spring.shopping.DTO.OrderDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.service.OrderService;
+import com.spring.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/shopping/orders")
+@RequestMapping("/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -20,36 +21,22 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    // 주문 생성 엔드포인트
-    @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        Order createdOrder = orderService.createOrder(orderDTO);
-        return ResponseEntity.ok(new OrderDTO(createdOrder));
+    @GetMapping("/user/{userId}")
+    public List<OrderDTO> getOrdersByUser(@PathVariable Long userId) {
+        // 사용자 정보 가져오는 로직
+        User user = orderService.getUserInfo(userId);
+        return orderService.getOrdersByUser(user);
     }
 
-    // 모든 주문 목록 조회 엔드포인트
-    @GetMapping
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        List<OrderDTO> orderDTOList = orderService.getAllOrders();
-        return ResponseEntity.ok(orderDTOList);
-    }
-
-    // 주문 아이디로 주문 조회 엔드포인트
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
-        OrderDTO orderDTO = orderService.getOrderById(orderId);
-        if (orderDTO == null) {
-            return ResponseEntity.notFound().build();                       // 주문이 없을 경우 404 응답 반환
-        }
-        return ResponseEntity.ok(orderDTO);
+    public Optional<OrderDTO> getOrderById(@PathVariable Long orderId) {
+        Order order = orderService.getOrderInfo(orderId);
+        return orderService.getOrderById(orderId);
     }
 
-    // 주문 취소 엔드포인트
-    @DeleteMapping("/{orderId}")
-    public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
-        orderService.cancelOrder(orderId);
-        return ResponseEntity.ok("주문이 취소되었습니다");                // 주문 취소 성공 메시지 반환
+    @PutMapping("/{orderId}/status")
+    public int updateOrderStatus(@PathVariable Long orderId, @RequestParam String orderStatus) {
+        return orderService.updateOrderStatus(orderId, orderStatus);
     }
 
-    // 기타 주문과 관련된 엔드포인트 추가 가능
 }

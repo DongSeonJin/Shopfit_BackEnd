@@ -46,17 +46,21 @@ public class OrderProduct {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void setProductId(Product product) {
+    public OrderProduct(Order order, Product product, Long quantity) {
+        this.order = order;
         this.product = product;
-    }
-
-    public void setProductName(String productName) {
-    }
-
-    public void setPrice(Long price) {
+        this.quantity = quantity;
     }
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }
