@@ -1,8 +1,11 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
+import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.entity.Product;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 
 public interface ProductService {
@@ -18,5 +21,8 @@ public interface ProductService {
 
     // 검색
     Page<Product> searchProductsByKeyword(String keyword, int pageNum);
+
+    // 저장
+    public boolean saveProductAndImage(ProductSaveRequestDTO requestDTO);
 
 }

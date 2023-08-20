@@ -27,8 +27,8 @@ public class ProductDetailResponseDTO {
 
 
     // static으로 from 메서드를 만드는 방식 : 주로 데이터 변환 로직에 사용된다.
-
-    // // Product에서 가져온 정보를 상품 상세 정보 조회에 필요한 DTO에 설정하기 위한 메서드
+    // 엔터티를 DTO로 변환
+    // Product에서 가져온 정보를 상품 상세 정보 조회에 필요한 DTO에 설정하기 위한 메서드
     public static ProductDetailResponseDTO from(Product product) {
         ProductDetailResponseDTO dto = new ProductDetailResponseDTO();
         dto.setProductId(product.getProductId());

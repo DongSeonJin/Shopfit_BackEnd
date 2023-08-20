@@ -1,6 +1,11 @@
 package com.spring.shopping.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.entity.Product;
+import com.spring.shopping.entity.ProductImage;
+import com.spring.shopping.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,7 +15,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,6 +39,9 @@ public class ProductControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     // 전체 조회 테스트
     @Test
@@ -82,7 +97,7 @@ public class ProductControllerTest {
 
     }
 
-
+    // 검색 테스트
     @Test
     public void searchProductsTest() throws Exception {
         // given: 테스트용 데이터베이스에 존재하는 상품의 키워드, 페이지번호 및 url fixture 설정
@@ -101,6 +116,47 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.content.length()").value(3));
     }
 
+    // 저장 테스트
+    @Test
+    @Transactional
+    public void saveProductAndImageTest() throws Exception {
+        // given: fixture 설정 및 dto 만들기
+        long categoryId = 1;
+        String productName = "테스트";
+        String thumbnailUrl = "썸네일 이미지 URL";
+        long price = 10000;
+        long stockQuantity = 50;
+        List<String> productImageUrls = new ArrayList<>();
+        productImageUrls.add("이미지 URL 1");
+        productImageUrls.add("이미지 URL 2");
+        productImageUrls.add("이미지 URL 3");
+
+        ProductSaveRequestDTO requestDTO = ProductSaveRequestDTO.builder()
+                .categoryId(categoryId)
+                .productName(productName)
+                .thumbnailUrl(thumbnailUrl)
+                .price(price)
+                .stockQuantity(stockQuantity)
+                .productImageUrls(productImageUrls)
+                .build();
+
+        String url = "/shopping/save";
+
+        // 데이터 직렬화
+        final String requestBody = objectMapper.writeValueAsString(requestDTO);
+
+        // when : 직렬화된 데이터를 이용해 post 방식으로 url에 요청
+
+        ResultActions resultActions = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON) // 전달 자료는 json
+                .content(requestBody));  // 위에서 직렬화한 requestBody 변수를 전달
+
+        // then : 응답코드 200
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(content().string("상품 및 이미지 저장에 성공했습니다."));
+
+    }
 
 }
 

@@ -1,6 +1,7 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
+import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.entity.Product;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest
@@ -76,6 +80,27 @@ public class ProductServiceTest {
 
         // then: 검색 결과는 3개의 상품을 가져와야 함
         assertThat(searchResults.getTotalElements()).isEqualTo(3);
+    }
+
+    // 저장 테스트
+    @Test
+    public void saveProductAndImageTest() {
+        // given : 픽스쳐 설정
+        ProductSaveRequestDTO requestDTO = ProductSaveRequestDTO.builder()
+                .categoryId(1L)
+                .productName("테스트")
+                .thumbnailUrl("썸네일 이미지 URL")
+                .price(10000L)
+                .stockQuantity(50L)
+                .productImageUrls(Arrays.asList("이미지 URL 1", "이미지 URL 2", "이미지 URL 3"))
+                .build();
+
+        // when : 저장 로직 실행
+        boolean success = productService.saveProductAndImage(requestDTO);
+
+        // then : 저장 성공
+        assertTrue(success);
+
     }
 
 
