@@ -5,14 +5,16 @@ import com.spring.shopping.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // 전체 조회
     Page<Product> findAll(Pageable pageable);
 
     // 카테고리별 조회
-    Page<Product> findByCategoryCategoryId(Long categoryId, Pageable pageable);
+    Page<Product> findByShopCategoryCategoryId(Long categoryId, Pageable pageable);
 
     // 상세 조회
     Product findByProductId(Long productId);
@@ -22,4 +24,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByProductNameContainingIgnoreCase(String keyword, Pageable pageable);
 
 
+    Product findByProductName(String productName);
 }
