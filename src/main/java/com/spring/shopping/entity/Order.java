@@ -56,4 +56,36 @@ public class Order {
     @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void setDeliveryDate(LocalDateTime deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
 }

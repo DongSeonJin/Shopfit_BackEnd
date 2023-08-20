@@ -1,6 +1,5 @@
 package com.spring.user.entity;
 
-import com.spring.user.DTO.UserUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -94,4 +93,16 @@ public class User implements UserDetails {
 
     // 엔터티의 불변성을 지키려려면, @Setter를 사용하지 않는게 좋기때문에 넣은 별도의 업데이트 메서드.
     // builder패턴은 JPA에서 변경을 감지하지 못하기때문에 문제의 여지가 있음.
+
+
+
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // 테스트코드 우회 접근
+    public static User createUser() {
+        return new User();
+    }
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }
