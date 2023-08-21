@@ -39,8 +39,4 @@ public class Wishlist {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Wishlist(User user, Product product) {
-        this.user = user;
-        this.product = product;
-    }
 }
