@@ -1,6 +1,6 @@
 package com.spring.shopping.controller;
 
-import com.spring.shopping.entity.Wishlist;
+import com.spring.shopping.DTO.WishlistDTO;
 import com.spring.shopping.service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,32 +21,24 @@ public class WishlistController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Wishlist> addItemToWishlist(@RequestBody Wishlist wishlistItem) {
-        Wishlist addedItem = wishlistService.addItemToWishlist(wishlistItem);
-        return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
+    public ResponseEntity<WishlistDTO> addToWishlist(@RequestParam Long userId, @RequestParam Long productId) {
+        WishlistDTO wishlistItem = wishlistService.addToWishlist(userId, productId);
+        if (wishlistItem != null) {
+            return new ResponseEntity<>(wishlistItem, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/remove/{wishlistId}")
-    public ResponseEntity<String> removeItemFromWishlist(@PathVariable Long wishlistId) {
-        wishlistService.removeItemFromWishlist(wishlistId);
-        return new ResponseEntity<>("Item removed from wishlist", HttpStatus.OK);
+    public ResponseEntity<Void> removeFromWishlist(@PathVariable Long wishlistId) {
+        wishlistService.removeFromWishlist(wishlistId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Wishlist>> getUserWishlist(@PathVariable Long userId) {
-        List<Wishlist> userWishlist = wishlistService.getUserWishlist(userId);
-        return new ResponseEntity<>(userWishlist, HttpStatus.OK);
-    }
-
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Wishlist>> getProductWishlist(@PathVariable Long productId) {
-        List<Wishlist> productWishlist = wishlistService.getProductWishlist(productId);
-        return new ResponseEntity<>(productWishlist, HttpStatus.OK);
-    }
-
-    @GetMapping("/product/{productId}/likeCount")
-    public ResponseEntity<Integer> getProductLikeCount(@PathVariable Long productId) {
-        int likeCount = wishlistService.getProductLikeCount(productId);
-        return new ResponseEntity<>(likeCount, HttpStatus.OK);
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<WishlistDTO>> getUserWishlist(@PathVariable Long userId) {
+        List<WishlistDTO> wishlistItems = wishlistService.getUserWishlist(userId);
+        return new ResponseEntity<>(wishlistItems, HttpStatus.OK);
     }
 }
