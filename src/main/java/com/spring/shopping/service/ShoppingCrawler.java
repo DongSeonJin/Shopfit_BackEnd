@@ -48,9 +48,7 @@ public class ShoppingCrawler {
             Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
 
             // MySQL 입력 쿼리 및 데이터 입력
-            String insertProduct = "INSERT INTO product (product_id, category_id, product_name, thumbnail_url, price, quantity) VALUES (?, ?, ?, ?, ?, ?)";
-            String insertProductImage = "INSERT INTO product_image (product_id, image_url) VALUES (?, ?)";
-//            String insertProduct = "INSERT INTO product (product_id, category_id, product_name, thumbnail_url, price, quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String insertProduct = "INSERT INTO product (product_id, price, product_name, stock_quantity, thumbnail_url, category_id) VALUES (?, ?, ?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = connection.prepareStatement(insertProduct);
 
@@ -66,7 +64,7 @@ public class ShoppingCrawler {
             }
 
 
-            for (int productId = 8976; productId >= 8976; productId--) {
+            for (int productId = 20000; productId >= 1; productId--) {
                 String productUrl = "https://www.rankingdak.com/product/view?productCd=" + productId;
                 System.out.println(productId + " 진행 중");
 
@@ -75,11 +73,12 @@ public class ShoppingCrawler {
                     continue;
                 }
 
-                String categoryId = getCategoryId(productUrl);
-                if (categoryId == "") {
-                    System.out.println("categoryId null:");
-                    continue;
-                }
+//                String categoryId = getCategoryId(productUrl);
+//                if (categoryId == "") {
+//                    System.out.println("categoryId null:");
+//                    continue;
+//                }
+                int categoryId = 1;
 
                 String productName = getProductName(productUrl);
                 if (productName == "") {
@@ -94,38 +93,15 @@ public class ShoppingCrawler {
                 }
 
                 int price = Integer.parseInt(getPrice(productUrl));
-                int quantity = 500;
-
-                Elements elements = getCheckImageAmount(productUrl);
-                System.out.println(elements.size());
-                for(Element element : elements){
-                    Elements divTags = element.select("div");
-                    for (Element divTag : divTags) {
-                        Elements imgTags = divTag.select("img"); // Select all <img> tags within the element
-                        System.out.println(imgTags.size());
-                        for (Element imgTag : imgTags) {
-                            String imgUrl = imgTag.attr("src"); // Get the value of the 'src' attribute
-                            System.out.println("Image URL: " + imgUrl);
-                        }
-                    }
-                }
-
-                // product_image table 데이터 입력
-//                for (Element element : elements) {
-//                    PreparedStatement preparedPrImg = connection.prepareStatement(insertProductImage);
-//                    preparedPrImg.setInt(1, productId);
-//                    preparedPrImg.setString(2, element.attr("src"));
-//                    preparedPrImg.executeUpdate();
-//                    preparedPrImg.close();
-//                }
+                int stockQuantity = 500;
 
                 // product table 데이터 입력
                 preparedStatement.setInt(1, productId);
-                preparedStatement.setString(2, categoryId);
+                preparedStatement.setInt(2, price);
                 preparedStatement.setString(3, productName);
-                preparedStatement.setString(4, thumbnailUrl);
-                preparedStatement.setInt(5, price);
-                preparedStatement.setInt(6, quantity);
+                preparedStatement.setInt(4, stockQuantity);
+                preparedStatement.setString(5, thumbnailUrl);
+                preparedStatement.setInt(6, categoryId);
 
                 preparedStatement.executeUpdate();
             }
@@ -174,11 +150,5 @@ public class ShoppingCrawler {
             return priceString.text().replace(",", "").trim();
         }
         return "";
-    }
-
-    private static Elements getCheckImageAmount(String productUrl) throws IOException {
-        Document document = Jsoup.connect(productUrl).get();
-        return document.select(".inner-content.productCont");
-//        return document.select("img");
     }
 }
