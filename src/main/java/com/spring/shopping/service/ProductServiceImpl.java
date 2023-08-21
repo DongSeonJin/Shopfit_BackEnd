@@ -2,6 +2,7 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.ProductImage;
 import com.spring.shopping.entity.ShopCategory;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,7 +114,9 @@ public class ProductServiceImpl implements ProductService{
     }
 
 
+    // 저장
     @Override
+    @Transactional
     public boolean saveProductAndImage(ProductSaveRequestDTO requestDTO) {
         try {
             // 상품 정보 추출
@@ -130,12 +134,12 @@ public class ProductServiceImpl implements ProductService{
             Product savedProduct = productRepository.save(newProduct);
 
             // 이미지 정보 추출 및 저장
-            List<ProductImage> productImages = requestDTO.getProductImageUrls().stream()
-                    .map(imageUrl -> ProductImage.builder()
-                            .product(savedProduct)
-                            .imageUrl(imageUrl)
-                            .build())
-                    .collect(Collectors.toList());
+            List<ProductImage> productImages = requestDTO.getProductImageUrls().stream() // requestDTO 객체에서 이미지 URL들을 가져와서 리스트 요소들을 순차적으로 처리하기 위해 스트림 생성
+                    .map(imageUrl -> ProductImage.builder() // 각 이미지 URL들을 사용하여 새로운 ProductImage 객체를 생성하는 매핑과정. 빌더를 생성하고
+                            .product(savedProduct) // product에 updatedProduct를 넣고
+                            .imageUrl(imageUrl) // imageUrl에 imgUrl을 넣어서
+                            .build())// ProductImage 객체 생성하기
+                    .collect(Collectors.toList()); // 스트림의 결과로 생성된 ProductImage 객체들을 리스트로 수집하여 반환
 
             productImageRepository.saveAll(productImages);
 
@@ -145,7 +149,67 @@ public class ProductServiceImpl implements ProductService{
             return false;
         }
     }
-      // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    // 삭제
+    @Override
+    public void deleteProductById(long productId) {
+        productRepository.deleteById(productId);
+
+    }
+
+
+    // 수정
+    @Override
+    @Transactional
+    public boolean updateProduct(ProductUpdateRequestDTO requestDTO) {
+        try {
+            // 기존 상품 정보 가져오기
+            Product product = productRepository.findById(requestDTO.getProductId())
+                    .orElse(null);
+
+            // 카테고리 정보 불러오기
+            ShopCategory category = shopCategoryRepository.findById(requestDTO.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 categoryId"));
+
+
+            if (product == null) {
+                return false; // 기존 상품이 없으면 수정 실패
+            }
+
+            Product updatingProduct = Product.builder()
+                    .productId(requestDTO.getProductId())
+                    .shopCategory(category)
+                    .productName(requestDTO.getProductName())
+                    .thumbnailUrl(requestDTO.getThumbnailUrl())
+                    .price(requestDTO.getPrice())
+                    .stockQuantity(requestDTO.getStockQuantity())
+                    .updatedAt(LocalDateTime.now())
+                    .productImages(null)
+                    .build();
+
+            // 업데이트된 엔티티 저장
+            Product updatedProduct = productRepository.save(updatingProduct);
+
+            // 이미지 정보 추출 및 업데이트
+            List<ProductImage> productImages =
+                    requestDTO.getProductImageUrls().stream() // requestDTO 객체에서 이미지 URL들을 가져와서 리스트 요소들을 순차적으로 처리하기 위해 스트림 생성
+                            .map(imageUrl -> ProductImage.builder()  // 각 이미지 URL들을 사용하여 새로운 ProductImage 객체를 생성하는 매핑과정. 빌더를 생성하고
+                                    .product(updatedProduct) // product 정보에 updatedProduct를 넣고
+                                    .imageUrl(imageUrl) // imageUrl에 imgUrl을 넣어서
+                                    .build()) // ProductImage 객체 생성하기
+                            .collect(Collectors.toList()); // 스트림의 결과로 생성된 ProductImage 객체들을 리스트로 수집하여 반환
+
+            productImageRepository.saveAll(productImages);
+
+            return true;
+        } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+         }
+    }
+
+
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     @Override
     public Product getProductInfo(Long productId) {
         return productRepository.findById(productId).orElse(null);

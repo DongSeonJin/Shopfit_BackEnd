@@ -1,10 +1,9 @@
 package com.spring.shopping.controller;
 
 
-import com.spring.shopping.DTO.ProductDetailResponseDTO;
-import com.spring.shopping.DTO.ProductListResponseDTO;
-import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.*;
 import com.spring.shopping.entity.Product;
+import com.spring.shopping.exception.ProductIdNotFoundException;
 import com.spring.shopping.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -76,6 +75,45 @@ public class ProductController {
             return ResponseEntity.ok("상품 및 이미지 저장에 성공했습니다.");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("상품 및 이미지 저장에 실패했습니다.");
+        }
+    }
+
+    // ID로 삭제
+    @DeleteMapping("delete/{productId}")
+    public ResponseEntity<String> deleteProductById(@PathVariable long productId){
+        productService.deleteProductById(productId);
+
+        return ResponseEntity.ok("상품이 삭제되었습니다");
+    }
+
+
+    // 수정을 위해 기존 데이터 가져오기
+    @GetMapping("/update/{productId}")
+    public ResponseEntity<ProductUpdateResponseDTO> updateProduct(@PathVariable long productId) {
+        Product product = productService.getProductInfo(productId);
+        if(product == null) {
+            throw new ProductIdNotFoundException("없는 상품 번호입니다 : " + productId);
+        }
+        ProductUpdateResponseDTO dto = ProductUpdateResponseDTO.toProductUpdateResponseDTO(product); // 엔터티를 DTO로 변환
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @RequestMapping(value="/update/{productId}", method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public ResponseEntity<String> updateProduct(@PathVariable Long productId,
+                                                @RequestBody ProductUpdateRequestDTO requestDTO) {
+
+        // json 데이터에 productId를 포함하는 대신 url에 포함시켰으므로 requestBody에 추가해줘야 함
+        requestDTO.setProductId(productId);
+        boolean success = productService.updateProduct(requestDTO);
+
+//        System.out.println(requestDTO.toString());
+        //ProductUpdateRequestDTO{productId=1, categoryId=2, productName='Updated Product', thumbnailUrl='http://example.com/thumbnail.jpg', price=15000, stockQuantity=100, productImageUrls=[http://example.com/image1.jpg, http://example.com/image2.jpg]}
+
+        if (success) {
+            return ResponseEntity.ok("상품 정보 수정에 성공했습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("상품 정보 수정에 실패했습니다.");
         }
     }
 
