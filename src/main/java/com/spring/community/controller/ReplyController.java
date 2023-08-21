@@ -1,5 +1,6 @@
 package com.spring.community.controller;
 
+import com.spring.community.DTO.ReplyResponseDTO;
 import com.spring.community.entity.Reply;
 import com.spring.community.exception.NotFoundReplyByReplyIdException;
 import com.spring.community.service.ReplyService;
@@ -10,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reply")
@@ -25,12 +28,18 @@ public class ReplyController {
     }
 
     @GetMapping("/{postId}/all")
-    public ResponseEntity<List<Reply>> getAllRepliesByPostId (@PathVariable long postId) {
+    public ResponseEntity<List<ReplyResponseDTO>> getAllRepliesByPostId (@PathVariable long postId) {
         List<Reply> replies = replyService.findAllByPostId(postId);
+
+        List<ReplyResponseDTO> replyResponseDTOS = new ArrayList<>();
+        for (Reply reply : replies) {
+            ReplyResponseDTO replyResponseDTO = new ReplyResponseDTO(reply);
+            replyResponseDTOS.add(replyResponseDTO);
+        }
 
         return ResponseEntity
                 .ok()
-                .body(replies);
+                .body(replyResponseDTOS);
     }
 
     @GetMapping("/{replyId}")

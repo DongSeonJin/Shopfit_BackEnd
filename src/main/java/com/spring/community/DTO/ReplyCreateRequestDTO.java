@@ -4,21 +4,16 @@ import com.spring.community.entity.Reply;
 import com.spring.user.entity.User;
 import lombok.*;
 
-//@AllArgsConstructor
-@Getter
-@Setter
-@Builder @ToString
-@NoArgsConstructor
+import java.time.LocalDateTime;
+
+@Getter @Setter @AllArgsConstructor
+@NoArgsConstructor @Builder @ToString
 public class ReplyCreateRequestDTO {
-    // 글번호, 댓글 내용, 글쓴이
+
+    // 글번호, 댓글쓴이, 댓글 내용, 생성일자
     private long postId;
     private String content;
     private User user;
-
-    public ReplyCreateRequestDTO(long postId, String content, User user) {
-        this.postId = postId;
-        this.content = content;
-        this.user = user;
-    }
+    private LocalDateTime createdAt;
 
 }
