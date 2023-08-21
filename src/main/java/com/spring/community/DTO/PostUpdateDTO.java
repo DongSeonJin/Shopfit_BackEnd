@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class PostUpdateDTO {
 
-    private long postId;
+    private Long postId;
     private String nickname;
     private String title;
     private String content;

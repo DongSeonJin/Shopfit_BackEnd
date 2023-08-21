@@ -7,13 +7,10 @@ import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
-import com.spring.community.repository.PostRepository;
+import com.spring.community.repository.PostJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +19,7 @@ public class PostServiceImpl implements PostService{
 
 
     @Autowired
-    PostRepository postRepository;
+    PostJPARepository postRepository;
     @Autowired
     DynamicPostRepository dynamicPostRepository;
 
@@ -30,7 +27,7 @@ public class PostServiceImpl implements PostService{
     DynamicLikeRepository dynamicLikeRepository;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository){
+    public PostServiceImpl(PostJPARepository postRepository){
         this.postRepository = postRepository;
     }
 
@@ -63,18 +60,18 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void update(PostUpdateDTO postUpdateDTO) {
-        Post post = postRepository.findById(postUpdateDTO.getPostId())
-                .orElseThrow(() -> new PostIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + postUpdateDTO.getPostId()));
+        //Post post = postRepository.findById(postUpdateDTO.getPostId()).get();
+
 
         // entity에 setter를 넣는것은 불변성을 위반하기 때문에 builder로 구현.
-        Post.builder()
+        Post modifiedPost = Post.builder()
+                .postId(postUpdateDTO.getPostId())
                 .title(postUpdateDTO.getTitle())
                 .content(postUpdateDTO.getContent())
                 .updatedAt(LocalDateTime.now())
                 .build(); // 추후 DTO에 메서드 추가하고, builder붙여서 DTO로 모두 교체하는 리펙토링 시도.
 
-
-        postRepository.save(post);
+        postRepository.save(modifiedPost); // JPA의 save메서드는 DB에 존재하는 id일경우 update, 없을경우 insert
     }
 
     @Override

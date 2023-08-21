@@ -18,7 +18,7 @@
         image_url1 VARCHAR(255),
         image_url2 VARCHAR(255),
         image_url3 VARCHAR(255),
-        FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
         );
 
     </insert>
@@ -27,7 +27,7 @@
         INSERT INTO post_${nickname}
         (user_id, nickname, category_id, title, content, image_url1, image_url2, image_url3, created_at, updated_at)
         VALUES
-        (#{user.userId}, #{nickname}, #{postCategory.categoryId}, #{title}, #{content}, #{imageUrl1}, #{imageUrl2}, #{imageUrl3}, NOW(), NOW())
+        (#{userId}, #{nickname}, #{categoryId}, #{title}, #{content}, #{imageUrl1}, #{imageUrl2}, #{imageUrl3}, NOW(), NOW())
 
     </insert>
 
@@ -35,9 +35,10 @@
         INSERT INTO post
         (user_id, nickname, category_id, title, content, image_url1, image_url2, image_url3, created_at, updated_at)
         VALUES
-        (#{user.userId}, #{nickname}, #{postCategory.categoryId}, #{title}, #{content}, #{imageUrl1}, #{imageUrl2}, #{imageUrl3}, NOW(), NOW())
+        (#{userId}, #{nickname}, #{categoryId}, #{title}, #{content}, #{imageUrl1}, #{imageUrl2}, #{imageUrl3}, NOW(), NOW())
 
     </insert>
 
 
 </mapper>
+
