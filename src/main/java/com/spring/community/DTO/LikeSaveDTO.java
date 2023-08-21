@@ -1,7 +1,5 @@
 package com.spring.community.DTO;
 
-import com.spring.community.entity.Post;
-import com.spring.user.entity.User;
 import lombok.*;
 
 @NoArgsConstructor
@@ -13,7 +11,7 @@ public class LikeSaveDTO {
 
     private Long likeId;
     private String nickname;
-    private User user;
-    private Post post;
+    private Long userId;
+    private Long postId;
 
 }

@@ -17,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/post")
-
 public class PostController {
 
 
@@ -57,8 +56,9 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody PostUpdateDTO postUpdateDTO) {
+    @RequestMapping(value = "/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
+    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
+        postUpdateDTO.setPostId(postId);
         postService.update(postUpdateDTO);
         return ResponseEntity.noContent() // 204 No Content -> 리소스 업데이트 시 자주 사용됨.
                 .build();

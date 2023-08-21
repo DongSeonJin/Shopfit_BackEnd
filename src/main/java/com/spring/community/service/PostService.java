@@ -5,6 +5,7 @@ import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
 import java.util.List;

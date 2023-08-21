@@ -8,14 +8,14 @@
         like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
         user_id BIGINT NOT NULL,
         post_id BIGINT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
         FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE
         );
     </insert>
 
     <insert id="insertDynamicLike" parameterType="com.spring.community.DTO.LikeSaveDTO">
         INSERT INTO like_#{nickName} (user_id, post_id)
-        VALUES (#{user.userId}, #{post.postId});
+        VALUES (#{userId}, #{postId});
     </insert>
 
 </mapper>
