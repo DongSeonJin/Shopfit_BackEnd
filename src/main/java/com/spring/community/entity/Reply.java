@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@ToString @Getter @Builder
+@ToString @Getter @Builder @Setter
 @EntityListeners(AuditingEntityListener.class) //CreatedAt, updatedAt 자동으로 현제시간 설정하는 JPA
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_id")
-    private Integer replyId;
+    private Long replyId;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
