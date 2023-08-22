@@ -37,7 +37,7 @@ public class ShoppingCrawler {
 
 
             // MySQL 연결 정보
-            String jdbcUrl = "jdbc:mysql://localhost:3306/nc_project";                   // 스키마 : nc_project
+            String jdbcUrl = "jdbc:mysql://localhost:3306/nc_project_test";                   // 스키마 : nc_project
             String username = "root";
             String password = "mysql";
 

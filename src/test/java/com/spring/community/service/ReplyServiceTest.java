@@ -2,7 +2,7 @@ package com.spring.community.service;
 
 import com.spring.community.entity.Post;
 import com.spring.community.entity.Reply;
-import com.spring.community.repository.PostRepository;
+//import com.spring.community.repository.PostRepository;
 import com.spring.community.repository.ReplyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
