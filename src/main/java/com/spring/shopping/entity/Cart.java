@@ -48,5 +48,9 @@ public class Cart {
     private LocalDateTime updatedAt;
 
 
-
+    public Cart(User user, Product product, Long quantity) {
+        this.user = user;
+        this.product = product;
+        this.quantity = quantity;
+    }
 }
