@@ -87,4 +87,10 @@ public class PostServiceImpl implements PostService{
         dynamicLikeRepository.createDynamicLike(likeSaveDTO);
         dynamicLikeRepository.insertDynamicLike(likeSaveDTO);
     }
+
+    // post 조회수 증가
+    @Override
+    public void increaseViewCount (Long postId) {
+        postJPARepository.increaseViewCount(postId);
+    }
 }

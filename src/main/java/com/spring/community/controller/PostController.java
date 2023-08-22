@@ -46,6 +46,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
+        postService.increaseViewCount(postId); // post 조회수 증가
         Post post = postService.getPostById(postId);
         return ResponseEntity.ok(post);
     }

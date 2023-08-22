@@ -16,7 +16,7 @@ public interface PostService {
     void savePost(PostSaveDTO postSaveDTO);
     void deletePostById(Long id);
     void update(PostUpdateDTO postUpdateDTO);
-
     void saveLike(LikeSaveDTO likeSaveDTO);
+    void increaseViewCount (Long postId);
 
 }
