@@ -4,6 +4,7 @@ package com.spring.shopping.controller;
 import com.spring.shopping.DTO.*;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.exception.ProductIdNotFoundException;
+import com.spring.shopping.service.ProductImageService;
 import com.spring.shopping.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductImageService productImageService;
 
     @Autowired
-    public ProductController(ProductService productService){
+    public ProductController(ProductService productService, ProductImageService productImageService){
         this.productService = productService;
+        this.productImageService = productImageService;
     }
 
 
@@ -89,7 +92,7 @@ public class ProductController {
 
     // 수정을 위해 기존 데이터 가져오기
     @GetMapping("/update/{productId}")
-    public ResponseEntity<ProductUpdateResponseDTO> updateProduct(@PathVariable long productId) {
+    public ResponseEntity<ProductUpdateResponseDTO> getUpdateProduct(@PathVariable long productId) {
         Product product = productService.getProductInfo(productId);
         if(product == null) {
             throw new ProductIdNotFoundException("없는 상품 번호입니다 : " + productId);
@@ -99,6 +102,8 @@ public class ProductController {
         return ResponseEntity.ok(dto);
     }
 
+
+    // 수정 로직
     @RequestMapping(value="/update/{productId}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public ResponseEntity<String> updateProduct(@PathVariable Long productId,
                                                 @RequestBody ProductUpdateRequestDTO requestDTO) {
@@ -115,6 +120,27 @@ public class ProductController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("상품 정보 수정에 실패했습니다.");
         }
+    }
+    
+    
+    // 상품 수정과 관련하여 프론트에서 기존에 DB에 저장된 사진을 삭제할 때 사용하는 메서드 => 리액트에서 수정 페이지에 버튼으로 만들어야 함
+    // productImageId로 해당 이미지를 삭제하기
+    @DeleteMapping("/delete/img/{productImageId}")
+    public ResponseEntity<String> deleteImage(@PathVariable Long productImageId) {
+
+        try {
+            System.out.println(productImageId);
+            if (productImageId != null) {
+                productImageService.deleteImageById(productImageId); // 이미지 ID를 기반으로 이미지 삭제
+                return ResponseEntity.ok("이미지 삭제 성공");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 이미지를 찾을 수 없음");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 삭제 실패");
+        }
+
+
     }
 
 

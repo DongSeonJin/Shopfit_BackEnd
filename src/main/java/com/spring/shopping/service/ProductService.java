@@ -4,6 +4,7 @@ import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public interface ProductService {
 
     // 수정
     boolean updateProduct(ProductUpdateRequestDTO requestDTO);
+
+
   
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     Product getProductInfo(Long productId);

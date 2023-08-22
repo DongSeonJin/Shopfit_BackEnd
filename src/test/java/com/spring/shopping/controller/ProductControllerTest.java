@@ -2,29 +2,36 @@ package com.spring.shopping.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.ProductImage;
+import com.spring.shopping.entity.ShopCategory;
 import com.spring.shopping.repository.ProductRepository;
+import com.spring.shopping.service.ProductService;
 import jakarta.transaction.Transactional;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -82,18 +89,18 @@ public class ProductControllerTest {
     @Test
     public void getProductDetailTest() throws Exception {
         // given: 테스트용 데이터베이스에 존재하는 상품의 ID fixture, 요청 경로 세팅
-        long productId = 1L;
+        long productId = 3L;
         String url = "/shopping/products/" + productId;
 
         // when: 세팅한 경로로 Get 요청 수행 후 결과 저장
         ResultActions resultActions = mockMvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // then:
+        // then: 값 비교
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.price").value(500000)) // 가격은 500000
-                .andExpect(jsonPath("$.reviews",hasSize(2))); // 리뷰 개수는 2개
+                .andExpect(jsonPath("$.price").value(40000)) // 가격은 40000
+                .andExpect(jsonPath("$.reviews",hasSize(1))); // 리뷰 개수는 1개
 
     }
 
@@ -157,6 +164,93 @@ public class ProductControllerTest {
                 .andExpect(content().string("상품 및 이미지 저장에 성공했습니다."));
 
     }
+
+    // 삭제 테스트
+    @Test
+    @Transactional
+    public void deleteProductByIdTest() throws Exception {
+        //given : 테스트에 사용할 상품 ID
+        long productId = 1L;
+
+        //when: 삭제로직 실행
+        ResultActions resultActions = mockMvc.perform(delete("/shopping/delete/" + productId)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+
+        // then: 응답코드 200
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(content().string("상품이 삭제되었습니다"));
+    }
+
+    // 수정을 위해 기존 데이터 가져오기 테스트
+    @Test
+    public void testGetUpdateProduct() throws Exception {
+        // given
+        long productId = 3L;
+        String url = "/shopping/update/"+ productId;
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+
+        // then : 응답코드 200
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value(40000)); // 가격은 40000
+    }
+
+    // 수정 로직 테스트
+    @Test
+    @Transactional
+    public void testUpdateProduct() throws Exception {
+        // given : fixture 및 url 세팅
+        long productId = 3L;
+        String url = "/shopping/update/"+ productId;
+
+        // 업데이트할 상품 정보
+        ProductUpdateRequestDTO requestDTO = new ProductUpdateRequestDTO();
+        requestDTO.setCategoryId(2L);
+        requestDTO.setProductName("Updated Product");
+        requestDTO.setThumbnailUrl("http://example.com/thumbnail.jpg");
+        requestDTO.setPrice(15000L);
+        requestDTO.setStockQuantity(100L);
+        requestDTO.setProductImageUrls(Arrays.asList("http://example.com/image1.jpg", "http://example.com/image2.jpg"));
+
+        String requestBody = objectMapper.writeValueAsString(requestDTO);
+
+        // when: PUT 요청으로 상품 업데이트 수행
+        ResultActions resultActions = mockMvc.perform(put(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk());
+
+        // then: 응답코드 200
+        resultActions.andExpect(status().isOk());
+    }
+
+    // 상품 수정과 관련하여 프론트에서 기존에 DB에 저장된 사진을 삭제할 때 사용하는 메서드 테스트
+    // productImageId로 해당 이미지를 삭제하기
+    @Test
+    @Transactional
+    public void testDeleteImage() throws Exception {
+        // given : fixture 및 url 세팅
+        long productImageId = 2L;
+        String url = "/shopping/delete/img/" + productImageId;
+
+        // when: DELETE 요청으로 이미지 삭제 수행
+        ResultActions resultActions = mockMvc.perform(delete(url)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        // then: 응답코드 200
+        resultActions.andExpect(status().isOk());
+    }
+
+
+
 
 }
 

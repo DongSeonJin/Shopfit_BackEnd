@@ -2,17 +2,24 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
+import com.spring.shopping.entity.ProductImage;
+import com.spring.shopping.entity.ShopCategory;
+import com.spring.shopping.repository.ProductImageRepository;
+import com.spring.shopping.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
@@ -20,6 +27,12 @@ public class ProductServiceTest {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    ProductImageRepository productImageRepository;
 
     private static final int PAGE_SIZE = 20;
 
@@ -103,6 +116,77 @@ public class ProductServiceTest {
 
     }
 
+    @Test
+    @Transactional
+    public void deleteProductByIdTest() {
+        // given : 픽스쳐 설정
+        Product product = Product.builder()
+                .productId(100L)
+                .shopCategory(new ShopCategory())
+                .productName("테스트")
+                .thumbnailUrl("썸네일 이미지 URL")
+                .price(10000L)
+                .stockQuantity(50L)
+                .productImages(List.of(new ProductImage()))
+                .build();
+
+        long productId = product.getProductId();
+
+        // when : 삭제 로직 실행
+        productRepository.deleteById(productId);
+
+        // then : productId로 존재하는지 조회 시 false
+        assertFalse(productRepository.existsById(productId));
+    }
+
+
+
+    @Test
+    @Transactional
+    public void updateProductTest() {
+        // given: 픽스쳐 설정
+        ProductSaveRequestDTO requestDTO = ProductSaveRequestDTO.builder()
+                .categoryId(1L)
+                .productName("테스트")
+                .thumbnailUrl("썸네일 이미지 URL")
+                .price(10000L)
+                .stockQuantity(50L)
+                .productImageUrls(Arrays.asList("이미지 URL 1", "이미지 URL 2", "이미지 URL 3"))
+                .build();
+
+        boolean saveSuccess = productService.saveProductAndImage(requestDTO);
+        assertTrue(saveSuccess, "픽스쳐 데이터 저장 성공");
+
+        // when: 업데이트 로직 실행
+        ProductUpdateRequestDTO updateRequestDTO = ProductUpdateRequestDTO.builder()
+                .productId(1L)  // 픽스쳐 데이터의 productId를 사용
+                .categoryId(2L) // 업데이트할 categoryId
+                .productName("수정된 상품명")
+                .thumbnailUrl("수정된 썸네일 이미지 URL")
+                .price(15000L)
+                .stockQuantity(30L)
+                .productImageUrls(Arrays.asList("수정된 이미지 URL 1", "수정된 이미지 URL 2"))
+                .build();
+
+        boolean updateSuccess = productService.updateProduct(updateRequestDTO);
+
+        // then: 업데이트 성공
+        assertTrue(updateSuccess, "업데이트 성공");
+
+        // 테스트에 따라 업데이트 된 값들을 DB에서 조회하여 확인
+        Product updatedProduct = productRepository.findById(1L).orElse(null);
+        assertNotNull(updatedProduct, "업데이트된 상품 정보를 찾을 수 없음");
+        assertEquals(updateRequestDTO.getCategoryId(), updatedProduct.getShopCategory().getCategoryId());
+        assertEquals(updateRequestDTO.getProductName(), updatedProduct.getProductName());
+        assertEquals(updateRequestDTO.getThumbnailUrl(), updatedProduct.getThumbnailUrl());
+        assertEquals(updateRequestDTO.getPrice(), updatedProduct.getPrice());
+        assertEquals(updateRequestDTO.getStockQuantity(), updatedProduct.getStockQuantity());
+
+    }
+
+
+
+
 
 
 
@@ -113,10 +197,10 @@ public class ProductServiceTest {
 ///*Dummy Data input query (TEST DB ONLY)*/
 //INSERT INTO product (category_id, product_name, thumbnail_url, price, stock_quantity, created_at, updated_at)
 //    VALUES
-//            (1, '찜닭', 'smartphone.jpg', 500000, 50, NOW(), NOW()),
-//        (2, '프로틴', 'tshirt.jpg', 20000, 100, NOW(), NOW()),
-//        (2, '영양제', 'jeans.jpg', 40000, 75, NOW(), NOW()),
-//        (3, '덤벨', 'blender.jpg', 80000, 30, NOW(), NOW()),
+//        (1, '찜닭', '1.jpg', 500000, 50, NOW(), NOW()),
+//        (2, '프로틴', '2.jpg', 20000, 100, NOW(), NOW()),
+//        (2, '영양제', '3.jpg', 40000, 75, NOW(), NOW()),
+//        (3, '덤벨', '4.jpg', 80000, 30, NOW(), NOW()),
 //        (1, 'Chicken Breast', 'chicken_breast.jpg', 15000, 100, NOW(), NOW()),
 //        (1, 'Grilled Chicken', 'grilled_chicken.jpg', 18000, 80, NOW(), NOW()),
 //        (1, 'Chicken Nuggets', 'chicken_nuggets.jpg', 12000, 120, NOW(), NOW()),
