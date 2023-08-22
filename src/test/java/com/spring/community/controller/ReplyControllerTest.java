@@ -56,14 +56,14 @@ public class ReplyControllerTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
     @Transactional
     public void getReplyByReplyIdTest() throws Exception {
         // given
-        String url = "/reply/1";
+        String url = "/reply/2";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -72,7 +72,7 @@ public class ReplyControllerTest {
         // then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value("This is a reply to the first post."));
+                .andExpect(jsonPath("$.content").value("This is a reply to the second post."));
     }
 
     @Test

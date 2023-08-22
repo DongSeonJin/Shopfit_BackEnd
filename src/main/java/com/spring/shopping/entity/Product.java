@@ -55,10 +55,12 @@ public class Product {
     private LocalDateTime updatedAt;
 
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 productImage도 삭제
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 productImage도 삭제
+    @OneToMany(mappedBy = "product")
     private List<ProductImage> productImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 해당 review도 삭제
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true) // product 삭제 시 해당 review도 삭제
+    @OneToMany(mappedBy = "product")
     private List<Review> reviews = new ArrayList<>();
 
 
