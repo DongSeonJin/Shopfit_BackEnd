@@ -39,7 +39,7 @@ public class PostControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    PostJPARepository postRepository;
+    PostJPARepository postJPARepository;
 
     @BeforeEach
     public void setMockMvc() {
@@ -49,7 +49,7 @@ public class PostControllerTest {
     @Test
     @Transactional
     public void getAllPostsTest() throws Exception {
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postJPARepository.findAll();
         assertThat(postList.size()).isEqualTo(4);
 
         String url = "/post/list";
@@ -63,6 +63,22 @@ public class PostControllerTest {
 
     @Test
     @Transactional
+    public void getPostsByCategoryId() throws Exception {
+        int categoryId = 2;
+        String url = "/post/list/2";
+
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[3].postCategory.categoryId").value(categoryId));
+
+
+    }
+
+    @Test
+    @Transactional
     public void getPostById() throws Exception {
         // given
         String title = "제목 2";
@@ -71,7 +87,7 @@ public class PostControllerTest {
         String url = "/post/2";
 
         // when
-        final ResultActions resultActions = mockMvc.perform(get(url)
+        ResultActions resultActions = mockMvc.perform(get(url)
                 .accept(MediaType.APPLICATION_JSON));
 
         // then
@@ -81,6 +97,7 @@ public class PostControllerTest {
                 .andExpect(jsonPath("$.postId").value(postId));
 
     }
+
 
     @Test
     @Transactional
@@ -127,7 +144,7 @@ public class PostControllerTest {
         mockMvc.perform(delete(url).accept(MediaType.TEXT_PLAIN));
 
         // then
-        assertEquals(3, postRepository.findAll().size());
+        assertEquals(3, postJPARepository.findAll().size());
     }
 
     @Test

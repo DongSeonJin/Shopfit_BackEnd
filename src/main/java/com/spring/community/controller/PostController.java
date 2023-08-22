@@ -1,15 +1,12 @@
 package com.spring.community.controller;
 
 import com.spring.community.DTO.LikeSaveDTO;
+import com.spring.community.DTO.PostListResponseDTO;
 import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import com.spring.community.service.PostService;
-import com.spring.community.service.PostServiceImpl;
-import org.apache.coyote.Response;
-import org.hibernate.grammars.hql.HqlParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +27,26 @@ public class PostController {
     }
 
 
-    @GetMapping({"/list", "/list/{pageNumber}"})
+    @GetMapping("/list")
     public ResponseEntity<List<Post>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
+
         return ResponseEntity.ok(posts);
     }
 
+    @GetMapping("/list/{categoryId}")
+    public ResponseEntity<List<PostListResponseDTO>> getPostsByCategoryId(@PathVariable Integer categoryId){
+        List<PostListResponseDTO> posts = postService.getPostsByCategoryId(categoryId);
+        return ResponseEntity
+                .ok()
+                .body(posts);
+    }
+
+
+
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
+        postService.increaseViewCount(postId); // post 조회수 증가
         Post post = postService.getPostById(postId);
         return ResponseEntity.ok(post);
     }
@@ -65,13 +74,11 @@ public class PostController {
 
     }
 
-    @GetMapping("/{postId}/like")
+    @GetMapping("/like/{postId}")
     public ResponseEntity<String> pushlike(@RequestBody LikeSaveDTO likeSaveDTO){
         postService.saveLike(likeSaveDTO);
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
-
-
 
 
 }

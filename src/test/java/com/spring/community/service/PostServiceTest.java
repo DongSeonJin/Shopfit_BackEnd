@@ -1,37 +1,48 @@
 package com.spring.community.service;
 
+import com.spring.community.DTO.PostListResponseDTO;
 import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
+import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
+import static net.bytebuddy.matcher.ElementMatchers.isEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 //@ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
 
-//    @Mock
-//    private PostRepository postRepository;
-//    @Mock
-//    private DynamicPostRepository dynamicPostRepository;
-//
+    @Mock
+    private PostJPARepository postRepository;
+    @Mock
+    private DynamicPostRepository dynamicPostRepository;
+
 //    @InjectMocks
 //    private PostServiceImpl postService;
 
     @Autowired
-    PostServiceImpl postService;
+    PostService postService;
 
-    @Autowired
-    private PostJPARepository postRepository;
+//
+//    @Autowired
+//    private PostJPARepository postRepository;
 
     @Test
     @Transactional
@@ -40,8 +51,18 @@ public class PostServiceTest {
         List<Post> postList = postService.getAllPosts();
 
         // then : 길이 3
-        assertEquals(4, postList.size());
+        assertEquals(10, postList.size());
     }
+
+    @Test
+    @Transactional
+    public void getPostsByCategoryId() {
+        int id = 2;
+        List<PostListResponseDTO> postList = postService.getPostsByCategoryId(id);
+        System.out.println(postList);
+        assertEquals(5, postList.size());
+    }
+
 
     @Test
     @Transactional
@@ -119,6 +140,22 @@ public class PostServiceTest {
 
         // then
         assertEquals(title, postService.getPostById(postUpdateDTO.getPostId()).getTitle());
+
+    }
+
+    @Test
+    @Transactional
+    public void increaseViewCountTest() {
+        // given
+        long postId = 105;
+
+        // when
+        postService.increaseViewCount(postId);
+
+        // then
+        Optional<Post> viewedPost = postRepository.findById(postId);
+        assertThat(viewedPost.get().getViewCount()).isEqualTo(1);
+
 
     }
 }
