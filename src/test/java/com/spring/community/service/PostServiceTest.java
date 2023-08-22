@@ -14,13 +14,17 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 import static net.bytebuddy.matcher.ElementMatchers.is;
 import static net.bytebuddy.matcher.ElementMatchers.isEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 //@ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
@@ -136,6 +140,22 @@ public class PostServiceTest {
 
         // then
         assertEquals(title, postService.getPostById(postUpdateDTO.getPostId()).getTitle());
+
+    }
+
+    @Test
+    @Transactional
+    public void increaseViewCountTest() {
+        // given
+        long postId = 105;
+
+        // when
+        postService.increaseViewCount(postId);
+
+        // then
+        Optional<Post> viewedPost = postRepository.findById(postId);
+        assertThat(viewedPost.get().getViewCount()).isEqualTo(1);
+
 
     }
 }
