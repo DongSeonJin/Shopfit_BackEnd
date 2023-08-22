@@ -3,7 +3,6 @@ package com.spring.shopping.service;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -37,7 +36,7 @@ public class ShoppingCrawler {
 
 
             // MySQL 연결 정보
-            String jdbcUrl = "jdbc:mysql://localhost:3306/nc_project_test";                   // 스키마 : nc_project
+            String jdbcUrl = "jdbc:mysql://localhost:3306/nc_project";                   // 스키마 : nc_project
             String username = "root";
             String password = "mysql";
 
@@ -64,7 +63,7 @@ public class ShoppingCrawler {
             }
 
 
-            for (int productId = 20000; productId >= 1; productId--) {
+            for (int productId = 19938; productId >= 1; productId--) {
                 String productUrl = "https://www.rankingdak.com/product/view?productCd=" + productId;
                 System.out.println(productId + " 진행 중");
 
@@ -73,12 +72,12 @@ public class ShoppingCrawler {
                     continue;
                 }
 
-//                String categoryId = getCategoryId(productUrl);
-//                if (categoryId == "") {
-//                    System.out.println("categoryId null:");
-//                    continue;
-//                }
-                int categoryId = 1;
+                String categoryId = getCategoryId(productUrl);
+                if (categoryId == "") {
+                    System.out.println("categoryId null:");
+                    continue;
+                }
+
 
                 String productName = getProductName(productUrl);
                 if (productName == "") {
@@ -101,7 +100,7 @@ public class ShoppingCrawler {
                 preparedStatement.setString(3, productName);
                 preparedStatement.setInt(4, stockQuantity);
                 preparedStatement.setString(5, thumbnailUrl);
-                preparedStatement.setInt(6, categoryId);
+                preparedStatement.setString(6, categoryId);
 
                 preparedStatement.executeUpdate();
             }

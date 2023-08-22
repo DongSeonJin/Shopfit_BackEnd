@@ -2,17 +2,19 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.WishlistDTO;
 import com.spring.shopping.entity.Product;
-import com.spring.user.entity.User;
 import com.spring.shopping.entity.Wishlist;
 import com.spring.shopping.repository.ProductRepository;
-import com.spring.user.repository.UserRepository;
 import com.spring.shopping.repository.WishlistRepository;
+import com.spring.user.entity.User;
+import com.spring.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WishlistServiceImpl implements WishlistService {
@@ -68,6 +70,32 @@ public class WishlistServiceImpl implements WishlistService {
         }
 
         return new ArrayList<>();
+    }
+
+    @Override
+    public Map<Long, Long> getProductRowCountMap() {
+        List<Wishlist> wishlistItems = wishlistRepository.findAll();
+
+        // 위시리스트에서 각 productId의 등장 횟수를 계산합니다
+        return wishlistItems.stream()
+                .collect(Collectors.groupingBy(Wishlist::getProductId, Collectors.counting()));
+
+    }
+
+    @Override
+    public List<Product> getTopProducts(int limit) {
+        // 위시리스트에서 가장 많이 등장한 상위 상품을 가져옵니다.
+        List<Wishlist> topProducts = wishlistRepository.findTopProducts(limit);
+
+        // 이미지 URL을 포함하여 상품 데이터를 생성합니다.
+        List<Product> topProductsWithImageUrls = new ArrayList<>();
+        for (Wishlist wishlistItem : topProducts) {
+            Product product = wishlistItem.getProduct();
+            product.setThumbnailUrl(product.getThumbnailUrl()); // 이미지 URL 설정
+            topProductsWithImageUrls.add(product);
+        }
+
+        return topProductsWithImageUrls;
     }
 
     private WishlistDTO convertToDTO(Wishlist wishlist) {

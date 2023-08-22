@@ -1,8 +1,10 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.WishlistDTO;
+import com.spring.shopping.entity.Product;
 
 import java.util.List;
+import java.util.Map;
 
 public interface WishlistService {
 
@@ -12,4 +14,7 @@ public interface WishlistService {
 
     List<WishlistDTO> getUserWishlist(Long userId);
 
+    Map<Long, Long> getProductRowCountMap();
+
+    List<Product> getTopProducts(int limit);
 }
