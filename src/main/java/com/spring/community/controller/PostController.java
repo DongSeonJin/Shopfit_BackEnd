@@ -65,13 +65,11 @@ public class PostController {
 
     }
 
-    @GetMapping("/{postId}/like")
+    @GetMapping("/like/{postId}")
     public ResponseEntity<String> pushlike(@RequestBody LikeSaveDTO likeSaveDTO){
         postService.saveLike(likeSaveDTO);
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
-
-
 
 
 }

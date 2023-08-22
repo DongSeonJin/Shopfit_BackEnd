@@ -1,9 +1,11 @@
 package com.spring.community.controller;
 
 import com.spring.community.DTO.ReplyResponseDTO;
+import com.spring.community.DTO.ReplyUpdateRequestDTO;
 import com.spring.community.entity.Reply;
 import com.spring.community.exception.NotFoundReplyByReplyIdException;
 import com.spring.community.service.ReplyService;
+import com.spring.user.entity.User;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +55,8 @@ public class ReplyController {
                 return new ResponseEntity<>("댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
             }
         }
-        return ResponseEntity.ok(reply);
+        ReplyResponseDTO replyResponseDTO = new ReplyResponseDTO(reply);
+        return ResponseEntity.ok(replyResponseDTO);
     }
 
     @PostMapping
@@ -68,16 +71,26 @@ public class ReplyController {
         try {
             replyService.deleteByReplyId(replyId);
 
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("댓글이 삭제되었습니다.");
         } catch (NotFoundReplyByReplyIdException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @RequestMapping(value = "/{replyId}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public ResponseEntity<String> updateReply(@PathVariable long replyId, @RequestBody Reply reply) {
+    public ResponseEntity<String> updateReply(@PathVariable long replyId, @RequestBody ReplyUpdateRequestDTO replyUpdateRequestDTO) {
         try {
-            reply.setReplyId(replyId);
+            Reply reply = Reply.builder()
+                    .replyId(replyId)
+                    .content(replyUpdateRequestDTO.getContent())
+                    .updatedAt(replyUpdateRequestDTO.getUpdatedAt())
+                    .build();
+
+            User user = User.builder()
+                    .nickname(replyUpdateRequestDTO.getNickname())
+                    .build();
+
+            reply.setUser(user);
             replyService.update(reply);
 
             return ResponseEntity.ok("댓글이 수정되었습니다.");
