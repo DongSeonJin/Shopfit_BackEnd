@@ -1,6 +1,7 @@
 package com.spring.community.service;
 
 import com.spring.community.DTO.LikeSaveDTO;
+import com.spring.community.DTO.PostListResponseDTO;
 import com.spring.community.DTO.PostSaveDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
@@ -13,13 +14,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService{
 
 
     @Autowired
-    PostJPARepository postRepository;
+    PostJPARepository postJPARepository;
     @Autowired
     DynamicPostRepository dynamicPostRepository;
 
@@ -28,23 +30,29 @@ public class PostServiceImpl implements PostService{
 
     @Autowired
     public PostServiceImpl(PostJPARepository postRepository){
-        this.postRepository = postRepository;
+        this.postJPARepository = postRepository;
     }
 
     // 생성자 주입으로 변경
 
     @Override
     public Post getPostById(Long id) {
-        return postRepository.findById(id)
+        return postJPARepository.findById(id)
                 .orElseThrow(() -> new PostIdNotFoundException("Post with id " + id + " not found."));
     }
 
     @Override
     public List<Post> getAllPosts() {
 
-        return postRepository.findAll();
+        return postJPARepository.findAll();
     }
 
+    @Override
+    public List<PostListResponseDTO> getPostsByCategoryId(Integer categoryId){
+        List<PostListResponseDTO> Postlist = postJPARepository.findByPostCategory_CategoryId(categoryId)
+                .stream().map(PostListResponseDTO::new).collect(Collectors.toList()); // entity를 DTO로 변환해주는 메서드
+        return  Postlist;
+    }
 
     @Override
     public void savePost(PostSaveDTO postSaveDTO) {
@@ -55,7 +63,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void deletePostById(Long id) {
-        postRepository.deleteById(id);
+        postJPARepository.deleteById(id);
     }
 
     @Override
@@ -71,7 +79,7 @@ public class PostServiceImpl implements PostService{
                 .updatedAt(LocalDateTime.now())
                 .build(); // 추후 DTO에 메서드 추가하고, builder붙여서 DTO로 모두 교체하는 리펙토링 시도.
 
-        postRepository.save(modifiedPost); // JPA의 save메서드는 DB에 존재하는 id일경우 update, 없을경우 insert
+        postJPARepository.save(modifiedPost); // JPA의 save메서드는 DB에 존재하는 id일경우 update, 없을경우 insert
     }
 
     @Override

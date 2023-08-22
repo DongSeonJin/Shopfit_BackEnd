@@ -21,6 +21,17 @@ public class PostSaveDTO {
     private String imageUrl2;
     private String imageUrl3;
 
+    public PostSaveDTO(Post post){
+        this.userId = post.getUser().getUserId();
+        this.nickname = post.getUser().getNickname();
+        this.categoryId = post.getPostCategory().getCategoryId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.imageUrl1 = post.getImageUrl1();
+        this.imageUrl2 = post.getImageUrl2();
+        this.imageUrl3 = post.getImageUrl3();
+    }
+
 
 
 }
