@@ -33,9 +33,9 @@
 
     <insert id="insertPostTable" parameterType="com.spring.community.DTO.PostSaveDTO">
         INSERT INTO post
-        (user_id, nickname, category_id, title, content, image_url1, image_url2, image_url3, created_at, updated_at)
+        (user_id, nickname, category_id, title, content, view_count, image_url1, image_url2, image_url3, created_at, updated_at)
         VALUES
-        (#{userId}, #{nickname}, #{categoryId}, #{title}, #{content}, #{imageUrl1}, #{imageUrl2}, #{imageUrl3}, NOW(), NOW())
+        (#{userId}, #{nickname}, #{categoryId}, #{title}, #{content}, #{viewCount}, #{imageUrl1}, #{imageUrl2}, #{imageUrl3}, NOW(), NOW())
 
     </insert>
 
