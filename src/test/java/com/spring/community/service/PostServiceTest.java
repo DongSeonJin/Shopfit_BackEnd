@@ -121,7 +121,7 @@ public class PostServiceTest {
     @Transactional
     public void updateTest() {
         // given
-        Long postId = 3L;
+        Long postId = 20L;
         String title = "수정제목";
         String content = "수정본문";
 

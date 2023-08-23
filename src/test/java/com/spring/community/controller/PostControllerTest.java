@@ -158,7 +158,7 @@ public class PostControllerTest {
                 .content(updateContent)
                 .build();
 
-        String url = "/post/2";
+        String url = "/post/20";
         System.out.println("테스트코드" + postUpdateDTO);
 
         final String requestBody = objectMapper.writeValueAsString(postUpdateDTO);
@@ -171,6 +171,7 @@ public class PostControllerTest {
         // then
         final ResultActions resultActions = mockMvc.perform(get(url)
                 .accept(MediaType.APPLICATION_JSON));
+
 
         resultActions
                 .andExpect(status().isOk())

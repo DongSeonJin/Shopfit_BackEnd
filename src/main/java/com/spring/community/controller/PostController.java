@@ -66,6 +66,7 @@ public class PostController {
 
     @RequestMapping(value = "/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
     public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
+        System.out.println(postUpdateDTO);
         postUpdateDTO.setPostId(postId);
         postService.update(postUpdateDTO);
         return ResponseEntity.noContent() // 204 No Content -> 리소스 업데이트 시 자주 사용됨.
@@ -73,9 +74,9 @@ public class PostController {
 
     }
 
-    @GetMapping("/like/{postId}")
+    @PostMapping("/like")
     public ResponseEntity<String> pushlike(@RequestBody LikeSaveDTO likeSaveDTO){
-        postService.saveLike(likeSaveDTO);
+        postService.saveLike(likeSaveDTO); //받아야 할 정보 : 글주인 nickname과 postId, 좋아요 누른사람 userId
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
 
