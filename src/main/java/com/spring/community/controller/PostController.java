@@ -66,15 +66,15 @@ public class PostController {
     }
 
     @RequestMapping(value = "/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
-    public ResponseEntity<String > updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
+    public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
         postUpdateDTO.setPostId(postId);
         postService.update(postUpdateDTO);
         return ResponseEntity.ok("게시글이 수정되었습니다.");
     }
 
-    @GetMapping("/like/{postId}")
-    public ResponseEntity<String> pushLike(@RequestBody LikeSaveDTO likeSaveDTO){
-        postService.saveLike(likeSaveDTO);
+    @PostMapping("/like")
+    public ResponseEntity<String> pushlike(@RequestBody LikeSaveDTO likeSaveDTO){
+        postService.saveLike(likeSaveDTO); //받아야 할 정보 : 글주인 nickname과 postId, 좋아요 누른사람 userId
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
 
