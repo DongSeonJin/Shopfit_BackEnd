@@ -113,6 +113,22 @@ public class ProductServiceImpl implements ProductService{
         return searchResults;
     }
 
+    // 카테고리 내 검색
+    @Override
+    public Page<Product> searchProductsByCategoryByKeyword(Long categoryId, String keyword, int pageNum){
+        Pageable pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, Sort.Direction.DESC,"productId");
+        return productRepository.findByShopCategoryCategoryIdAndProductNameContainingIgnoreCase(categoryId, keyword, pageable);
+//        Page<Product> searchResults = productRepository.findByCategoryIdAndProductNameContainingIgnoreCase(categoryId, keyword, pageable);
+//        if(searchResults.getTotalElements() == 0){
+//            return Page.empty(pageable);
+//        }
+//        if(searchResults.getTotalPages() < pageNum){
+//            pageable = PageRequest.of(searchResults.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC,"productId");
+//            searchResults = productRepository.findByCategoryIdAndProductNameContainingIgnoreCase(categoryId, keyword, pageable);
+//        }
+//        return searchResults;
+    }
+
 
     // 저장
     @Override
