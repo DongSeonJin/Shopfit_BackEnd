@@ -1,6 +1,7 @@
 insert into post_category (category_name)
 values
     ('오운완'),
+    ('식단'),
     ('자유게시판');
 
     INSERT INTO users (email, password, nickname, point, image_url, created_at, updated_at, is_admin) VALUES

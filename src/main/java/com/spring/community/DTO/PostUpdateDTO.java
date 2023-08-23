@@ -14,14 +14,12 @@ import java.time.LocalDateTime;
 public class PostUpdateDTO {
 
     private Long postId;
-    private String nickname;
     private String title;
     private String content;
     private LocalDateTime updatedAt;
 
     public PostUpdateDTO(Post post){
         this.postId = post.getPostId();
-        this.nickname = post.getNickname();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.updatedAt = post.getUpdatedAt();
