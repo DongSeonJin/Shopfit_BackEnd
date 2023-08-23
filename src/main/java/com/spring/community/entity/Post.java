@@ -45,7 +45,8 @@ public class Post {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "view_count")
+
+    @Column(name = "view_count", nullable = false)
     @Builder.Default // viewcount의 default값을 0으로 설정할 시, 넣어야 할 어노테이션. 없으면 builder가 무시됨.
     private Long viewCount = 0L;
 
