@@ -36,7 +36,7 @@ public class Post {
     private String nickname;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private PostCategory postCategory;
 
     @Column(name = "title", nullable = false)
@@ -45,11 +45,9 @@ public class Post {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-
     @Column(name = "view_count")
     @Builder.Default // viewcount의 default값을 0으로 설정할 시, 넣어야 할 어노테이션. 없으면 builder가 무시됨.
     private Long viewCount = 0L;
-
 
     @Column(name = "created_at")
     @CreatedDate //자동으로 생성일자로 설정
