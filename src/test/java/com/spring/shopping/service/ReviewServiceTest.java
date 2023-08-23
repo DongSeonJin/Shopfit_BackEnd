@@ -5,6 +5,7 @@ import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.Review;
 import com.spring.user.entity.User;
 import com.spring.shopping.repository.ReviewRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -83,11 +84,12 @@ public class ReviewServiceTest {
     }
 
 //    @Test
+//    @Transactional
 //    void testCreateReview() {
 //        User user = User.createUser(); // 가상의 사용자 객체 생성
-//        user.setUserId(123L); // 사용자 ID 설정
+//        user.setUserId(1L); // 사용자 ID 설정
 //        Product product = new Product(); // 가상의 상품 객체 생성
-//        product.setProductId(456L); // 상품 ID 설정
+//        product.setProductId(4L); // 상품 ID 설정
 //        Double rating = 4.5; // 리뷰 평점 설정
 //        String comment = "Good product"; // 리뷰 코멘트 설정
 //

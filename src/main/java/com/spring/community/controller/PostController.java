@@ -1,9 +1,6 @@
 package com.spring.community.controller;
 
-import com.spring.community.DTO.LikeSaveDTO;
-import com.spring.community.DTO.PostListResponseDTO;
-import com.spring.community.DTO.PostSaveDTO;
-import com.spring.community.DTO.PostUpdateDTO;
+import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +40,16 @@ public class PostController {
     }
 
 
-
     @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long postId) {
+    public ResponseEntity<IndividualPostResponseDTO> getPostById (@PathVariable Long postId) {
+        postService.increaseViewCount(postId); // 조회 할 때마다 조회수 +1
         Post post = postService.getPostById(postId);
-        return ResponseEntity.ok(post);
+
+        IndividualPostResponseDTO responseDTO = new IndividualPostResponseDTO(post);
+
+        return ResponseEntity.ok(responseDTO);
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
@@ -59,19 +60,16 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePostById(@PathVariable Long postId) {
+    public ResponseEntity<String > deletePostById(@PathVariable Long postId) {
         postService.deletePostById(postId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
 
     @RequestMapping(value = "/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
-        System.out.println(postUpdateDTO);
+    public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
         postUpdateDTO.setPostId(postId);
         postService.update(postUpdateDTO);
-        return ResponseEntity.noContent() // 204 No Content -> 리소스 업데이트 시 자주 사용됨.
-                .build();
-
+        return ResponseEntity.ok("게시글이 수정되었습니다.");
     }
 
     @PostMapping("/like")
@@ -79,8 +77,6 @@ public class PostController {
         postService.saveLike(likeSaveDTO); //받아야 할 정보 : 글주인 nickname과 postId, 좋아요 누른사람 userId
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
-
-
 
 
 }

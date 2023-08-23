@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    Review save(Review review);
-
     List<Review> findByProduct(Product product);
 
     List<Review> findByUser(User user);

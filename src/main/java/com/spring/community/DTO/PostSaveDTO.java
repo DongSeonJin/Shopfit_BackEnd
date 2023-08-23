@@ -21,6 +21,10 @@ public class PostSaveDTO {
     private String imageUrl2;
     private String imageUrl3;
 
+    @Builder.Default
+    private Long viewCount = 0L;
+
+
     public PostSaveDTO(Post post){
         this.userId = post.getUser().getUserId();
         this.nickname = post.getUser().getNickname();
@@ -30,6 +34,7 @@ public class PostSaveDTO {
         this.imageUrl1 = post.getImageUrl1();
         this.imageUrl2 = post.getImageUrl2();
         this.imageUrl3 = post.getImageUrl3();
+        this.viewCount = post.getViewCount() == null? 0:post.getViewCount();
     }
 
 

@@ -13,8 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    // 주문 생성
-    Order save(Order order);
 
     // 주문 목록 조회
     List<Order> findByUser(User user);
