@@ -15,6 +15,4 @@ public interface WishlistService {
     List<WishlistDTO> getUserWishlist(Long userId);
 
     Map<Long, Long> getProductRowCountMap();
-
-    List<Product> getTopProducts(int limit);
 }

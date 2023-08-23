@@ -82,21 +82,6 @@ public class WishlistServiceImpl implements WishlistService {
 
     }
 
-    @Override
-    public List<Product> getTopProducts(int limit) {
-        // 위시리스트에서 가장 많이 등장한 상위 상품을 가져옵니다.
-        List<Wishlist> topProducts = wishlistRepository.findTopProducts(limit);
-
-        // 이미지 URL을 포함하여 상품 데이터를 생성합니다.
-        List<Product> topProductsWithImageUrls = new ArrayList<>();
-        for (Wishlist wishlistItem : topProducts) {
-            Product product = wishlistItem.getProduct();
-            product.setThumbnailUrl(product.getThumbnailUrl()); // 이미지 URL 설정
-            topProductsWithImageUrls.add(product);
-        }
-
-        return topProductsWithImageUrls;
-    }
 
     private WishlistDTO convertToDTO(Wishlist wishlist) {
         return new WishlistDTO(wishlist.getWishlistId(), wishlist.getUser().getUserId(),

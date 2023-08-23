@@ -1,9 +1,6 @@
 package com.spring.community.controller;
 
-import com.spring.community.DTO.LikeSaveDTO;
-import com.spring.community.DTO.PostListResponseDTO;
-import com.spring.community.DTO.PostSaveDTO;
-import com.spring.community.DTO.PostUpdateDTO;
+import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +77,9 @@ public class PostController {
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
 
+    @GetMapping("/recent-top4")
+    public List<PostTop4DTO> getRecentTop4Posts() {
+        return postService.getRecentTop4Posts();
+    }
 
 }

@@ -62,22 +62,21 @@ public class ShoppingCrawler {
                 existingProductIds.add(existingProductIdResultSet.getInt("product_id"));
             }
 
-
-            for (int productId = 19938; productId >= 1; productId--) {
-                String productUrl = "https://www.rankingdak.com/product/view?productCd=" + productId;
-                System.out.println(productId + " 진행 중");
+            int productId=1;
+            for (int i = 20000; i >= 1; i--) {
+                String productUrl = "https://www.rankingdak.com/product/view?productCd=" + i;
+                System.out.println(i + " 진행 중");
 
                 if (existingProductIds.contains(productId)) {
-                    System.out.println("Skipping duplicate productId: " + productId);
+                    System.out.println("Skipping duplicate productId: " + i);
                     continue;
                 }
 
-                String categoryId = getCategoryId(productUrl);
-                if (categoryId == "") {
+                int categoryId = getCategoryId(productUrl);
+                if (categoryId == 0) {
                     System.out.println("categoryId null:");
                     continue;
                 }
-
 
                 String productName = getProductName(productUrl);
                 if (productName == "") {
@@ -94,13 +93,15 @@ public class ShoppingCrawler {
                 int price = Integer.parseInt(getPrice(productUrl));
                 int stockQuantity = 500;
 
+
                 // product table 데이터 입력
                 preparedStatement.setInt(1, productId);
+                productId += 1;
                 preparedStatement.setInt(2, price);
                 preparedStatement.setString(3, productName);
                 preparedStatement.setInt(4, stockQuantity);
                 preparedStatement.setString(5, thumbnailUrl);
-                preparedStatement.setString(6, categoryId);
+                preparedStatement.setInt(6, categoryId);
 
                 preparedStatement.executeUpdate();
             }
@@ -114,13 +115,19 @@ public class ShoppingCrawler {
     }
 
     // getNews...
-    private static String getCategoryId(String productUrl) throws IOException {
+    private static int getCategoryId(String productUrl) throws IOException {
         Document document = Jsoup.connect(productUrl).get();
         Element categoryId = document.selectFirst("input[type=hidden][name=categoryCd]");
         if (categoryId != null) {
-            return categoryId.attr("value");
+            String category = categoryId.attr("value");
+            return switch (category) {
+                case "R019", "R038" -> 1;
+                case "R032" -> 2;
+                case "R024", "R028" -> 3;
+                default -> 0;
+            };
         }
-        return "";
+        return 0;
     }
 
     private static String getProductThumbnailUrl(String productUrl) throws IOException {

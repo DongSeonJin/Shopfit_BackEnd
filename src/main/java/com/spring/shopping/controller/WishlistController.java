@@ -1,6 +1,9 @@
 package com.spring.shopping.controller;
 
+import com.spring.shopping.DTO.ProductTop3DTO;
 import com.spring.shopping.DTO.WishlistDTO;
+import com.spring.shopping.entity.Product;
+import com.spring.shopping.service.ProductService;
 import com.spring.shopping.service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +19,12 @@ import java.util.stream.Collectors;
 public class WishlistController {
 
     private final WishlistService wishlistService;
+    private final ProductService productService;
 
     @Autowired
-    public WishlistController(WishlistService wishlistService) {
+    public WishlistController(WishlistService wishlistService, ProductService productService) {
         this.wishlistService = wishlistService;
+        this.productService = productService;
     }
 
     @PostMapping("/add")
@@ -45,16 +50,25 @@ public class WishlistController {
     }
 
     @GetMapping("/top3")
-    public ResponseEntity<List<Long>> getTop3Products() {
+    public ResponseEntity<List<ProductTop3DTO>> getTop3Products() {
         Map<Long, Long> productRowCountMap = wishlistService.getProductRowCountMap();
 
-        // 등장 횟수가 가장 많은 상위 3개 상품을 가져옵니다
-        List<Long> top3Products = productRowCountMap.entrySet().stream()
+        List<ProductTop3DTO> top3Products = productRowCountMap.entrySet().stream()
                 .sorted(Map.Entry.<Long, Long>comparingByValue().reversed())
                 .limit(3)
-                .map(Map.Entry::getKey)
+                .map(entry -> {
+                    Long productId = entry.getKey();
+                    Product product = productService.getProductInfo(productId);
+                    return new ProductTop3DTO(
+                            product.getProductId(),
+                            product.getProductName(),
+                            product.getThumbnailUrl(),
+                            product.getPrice()
+                    );
+                })
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(top3Products);
     }
+
 }

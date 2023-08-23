@@ -35,10 +35,5 @@ public interface ProductService {
     boolean updateProduct(ProductUpdateRequestDTO requestDTO);
 
 
-  
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     Product getProductInfo(Long productId);
-
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 }
