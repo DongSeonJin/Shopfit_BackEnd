@@ -10,10 +10,12 @@ import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,18 +70,38 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void update(PostUpdateDTO postUpdateDTO) {
-        //Post post = postRepository.findById(postUpdateDTO.getPostId()).get();
 
+        //        Post post = postJPARepository.findById(postUpdateDTO.getPostId()).get();
+//
+//
+//        // entity에 setter를 넣는것은 불변성을 위반하기 때문에 builder로 구현.
+//        Post modifiedPost = Post.builder()
+//                .postId(postUpdateDTO.getPostId())
+//                .nickname(postUpdateDTO.getNickname())
+//                .title(postUpdateDTO.getTitle())
+//                .content(postUpdateDTO.getContent())
+//                .updatedAt(LocalDateTime.now())
+//                .build(); // 추후 DTO에 메서드 추가하고, builder붙여서 DTO로 모두 교체하는 리펙토링 시도.
+//
+//        postJPARepository.save(modifiedPost); // JPA의 save메서드는 DB에 존재하는 id일경우 update, 없을경우 insert
 
-        // entity에 setter를 넣는것은 불변성을 위반하기 때문에 builder로 구현.
-        Post modifiedPost = Post.builder()
-                .postId(postUpdateDTO.getPostId())
-                .title(postUpdateDTO.getTitle())
-                .content(postUpdateDTO.getContent())
-                .updatedAt(LocalDateTime.now())
-                .build(); // 추후 DTO에 메서드 추가하고, builder붙여서 DTO로 모두 교체하는 리펙토링 시도.
+        // 수정 전 게시글 찾기
+        Optional<Post> optionalPost = postJPARepository.findById(postUpdateDTO.getPostId());
 
-        postJPARepository.save(modifiedPost); // JPA의 save메서드는 DB에 존재하는 id일경우 update, 없을경우 insert
+        // 해당 postId 게시글 없으면 예외처리
+        if (!optionalPost.isPresent()) {
+            throw  new PostIdNotFoundException(postUpdateDTO.getPostId() + "번 게시글을 찾을 수 없습니다.");
+        }
+        // 수정 전 게시글 가져오기
+        Post existingPost = optionalPost.get();
+
+        // 게시글 수정
+        existingPost.setTitle(postUpdateDTO.getTitle());
+        existingPost.setContent(postUpdateDTO.getContent());
+        existingPost.setUpdatedAt(LocalDateTime.now());
+
+        // 수정된 게시글 저장
+        postJPARepository.save(existingPost);
     }
 
     @Override

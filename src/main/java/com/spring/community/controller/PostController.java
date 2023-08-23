@@ -66,11 +66,10 @@ public class PostController {
     }
 
     @RequestMapping(value = "/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
+    public ResponseEntity<String > updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
         postUpdateDTO.setPostId(postId);
         postService.update(postUpdateDTO);
-        return ResponseEntity.noContent()
-                .build();
+        return ResponseEntity.ok("게시글이 수정되었습니다.");
     }
 
     @GetMapping("/like/{postId}")
