@@ -5,6 +5,8 @@ import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.repository.OrderProductRepository;
+import com.spring.shopping.repository.OrderRepository;
+import com.spring.shopping.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +18,14 @@ import java.util.stream.Collectors;
 public class OrderProductServiceImpl implements OrderProductService {
 
     private final OrderProductRepository orderProductRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public OrderProductServiceImpl(OrderProductRepository orderProductRepository) {
+    public OrderProductServiceImpl(OrderProductRepository orderProductRepository, OrderRepository orderRepository, ProductRepository productRepository) {
         this.orderProductRepository = orderProductRepository;
+        this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -56,6 +62,22 @@ public class OrderProductServiceImpl implements OrderProductService {
             orderProductRepository.delete(orderProduct);
         }
     }
+
+    @Override
+    public OrderProductDTO createOrderProduct(OrderProductDTO orderProductDTO) {
+        Order order = orderRepository.findById(orderProductDTO.getOrderId()).orElse(null);
+        Product product = productRepository.findById(orderProductDTO.getProductId()).orElse(null);
+        if (order == null || product == null) {
+            // Handle error appropriately (order or product not found)
+            return null;
+        }
+        OrderProduct orderProduct = new OrderProduct(order, product, orderProductDTO.getQuantity());
+        orderProduct = orderProductRepository.save(orderProduct);
+
+        orderProductDTO.setOrderProductId(orderProduct.getOrderProductId());
+        return orderProductDTO;
+    }
+
 
     private OrderProductDTO convertToDTO(OrderProduct orderProduct) {
         OrderProductDTO dto = new OrderProductDTO();

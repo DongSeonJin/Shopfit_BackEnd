@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,4 +20,6 @@ public class OrderDTO {
     private String phoneNumber;
     private LocalDateTime orderDate;
     private String orderStatus;
+
+    private List<OrderProductDTO> orderProducts; // 리스트로 주문 상품들을 관리
 }

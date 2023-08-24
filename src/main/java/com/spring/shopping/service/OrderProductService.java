@@ -14,4 +14,6 @@ public interface OrderProductService {
     OrderProductDTO addOrderProduct(Order order, Product product, Long quantity);
 
     void removeOrderProduct(Order order, Long productId);
+    OrderProductDTO createOrderProduct(OrderProductDTO orderProductDTO);
+
 }

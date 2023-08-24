@@ -1,8 +1,13 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.OrderDTO;
+import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
+import com.spring.shopping.entity.OrderProduct;
+import com.spring.shopping.entity.Product;
+import com.spring.shopping.repository.OrderProductRepository;
 import com.spring.shopping.repository.OrderRepository;
+import com.spring.shopping.repository.ProductRepository;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,11 +24,15 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final OrderProductRepository orderProductRepository;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
     @Override
@@ -83,6 +92,20 @@ public class OrderServiceImpl implements OrderService {
 
         return orderDTO;
     }
+
+    @Override
+    public void createOrderProduct(OrderProductDTO orderProductDTO) {
+        Order order = orderRepository.findById(orderProductDTO.getOrderId()).orElse(null);
+        Product product = productRepository.findById(orderProductDTO.getProductId()).orElse(null);
+
+        if (order != null && product != null) {
+            OrderProduct orderProduct = new OrderProduct(order, product, orderProductDTO.getQuantity());
+            orderProductRepository.save(orderProduct);
+        } else {
+            throw new IllegalArgumentException("Invalid order or product information");
+        }
+    }
+
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();

@@ -5,6 +5,8 @@ import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.service.OrderProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,4 +43,16 @@ public class OrderProductController {
     ) {
         orderProductService.removeOrderProduct(orderId, productId);
     }
+
+    @PostMapping
+    public ResponseEntity<OrderProductDTO> createOrderProduct(@RequestBody OrderProductDTO orderProductDTO) {
+        OrderProductDTO createdOrderProduct = orderProductService.createOrderProduct(orderProductDTO);
+
+        if (createdOrderProduct != null) {
+            return new ResponseEntity<>(createdOrderProduct, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
