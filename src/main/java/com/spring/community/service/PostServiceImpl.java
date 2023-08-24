@@ -1,16 +1,17 @@
 package com.spring.community.service;
 
-import com.spring.community.DTO.LikeSaveDTO;
-import com.spring.community.DTO.PostListResponseDTO;
-import com.spring.community.DTO.PostSaveDTO;
-import com.spring.community.DTO.PostUpdateDTO;
+import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
 import org.springframework.security.core.parameters.P;
+=======
+import org.springframework.data.domain.PageRequest;
+>>>>>>> origin/feature52
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -113,5 +114,18 @@ public class PostServiceImpl implements PostService{
     @Override
     public void increaseViewCount (Long postId) {
         postJPARepository.increaseViewCount(postId);
+    }
+
+    @Override
+    public List<PostTop4DTO> getRecentTop4Posts() {
+        List<PostTop4DTO> top4DTOs = postJPARepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, 4))
+                .stream()
+                .map(post -> PostTop4DTO.builder()
+                        .title(post.getTitle())
+                        .imageUrl(post.getImageUrl1())
+                        .build())
+                .collect(Collectors.toList());
+
+        return top4DTOs;
     }
 }

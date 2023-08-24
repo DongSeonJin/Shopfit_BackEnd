@@ -2,17 +2,19 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.WishlistDTO;
 import com.spring.shopping.entity.Product;
-import com.spring.user.entity.User;
 import com.spring.shopping.entity.Wishlist;
 import com.spring.shopping.repository.ProductRepository;
-import com.spring.user.repository.UserRepository;
 import com.spring.shopping.repository.WishlistRepository;
+import com.spring.user.entity.User;
+import com.spring.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WishlistServiceImpl implements WishlistService {
@@ -69,6 +71,17 @@ public class WishlistServiceImpl implements WishlistService {
 
         return new ArrayList<>();
     }
+
+    @Override
+    public Map<Long, Long> getProductRowCountMap() {
+        List<Wishlist> wishlistItems = wishlistRepository.findAll();
+
+        // 위시리스트에서 각 productId의 등장 횟수를 계산합니다
+        return wishlistItems.stream()
+                .collect(Collectors.groupingBy(Wishlist::getProductId, Collectors.counting()));
+
+    }
+
 
     private WishlistDTO convertToDTO(Wishlist wishlist) {
         return new WishlistDTO(wishlist.getWishlistId(), wishlist.getUser().getUserId(),
