@@ -7,11 +7,8 @@ import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
-import org.springframework.security.core.parameters.P;
-=======
 import org.springframework.data.domain.PageRequest;
->>>>>>> origin/feature52
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

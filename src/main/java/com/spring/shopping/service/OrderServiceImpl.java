@@ -5,6 +5,7 @@ import com.spring.shopping.entity.Order;
 import com.spring.shopping.repository.OrderRepository;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,12 +48,40 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public User getUserInfo(Long userId) {
-        return userRepository.findById(userId).orElse(null);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
     }
+
 
     @Override
     public Order getOrderInfo(Long orderId) {
         return orderRepository.findById(orderId).orElse(null);
+    }
+
+    @Override
+    public OrderDTO createOrder(OrderDTO orderDTO) {
+        // Fetch the user from the database using the provided userId
+        User user = userRepository.findById(orderDTO.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Create an Order entity from the OrderDTO
+        Order order = Order.builder()
+                .user(user)
+                .totalPrice(orderDTO.getTotalPrice())
+                .deliveryDate(orderDTO.getDeliveryDate())
+                .address(orderDTO.getAddress())
+                .phoneNumber(orderDTO.getPhoneNumber())
+                .orderDate(orderDTO.getOrderDate())
+                .orderStatus(orderDTO.getOrderStatus())
+                .build();
+
+        // Save the order using the repository
+        Order savedOrder = orderRepository.save(order);
+
+        // Update the orderId in the OrderDTO
+        orderDTO.setOrderId(savedOrder.getOrderId());
+
+        return orderDTO;
     }
 
     private OrderDTO convertToDTO(Order order) {
