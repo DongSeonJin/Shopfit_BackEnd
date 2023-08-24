@@ -4,10 +4,7 @@ import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 
 public interface ProductService {
@@ -24,6 +21,10 @@ public interface ProductService {
     // 검색
     Page<Product> searchProductsByKeyword(String keyword, int pageNum);
 
+    // 카테고리 검색
+
+    Page<Product> searchProductsByCategoryByKeyword(Long categoryId, String keyword, int pageNum);
+
 
     //저장
     boolean saveProductAndImage(ProductSaveRequestDTO requestDTO);
@@ -35,10 +36,5 @@ public interface ProductService {
     boolean updateProduct(ProductUpdateRequestDTO requestDTO);
 
 
-  
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     Product getProductInfo(Long productId);
-
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 }

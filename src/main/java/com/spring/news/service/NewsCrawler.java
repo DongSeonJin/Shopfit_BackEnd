@@ -37,7 +37,7 @@ public class NewsCrawler {
 
 
             // MySQL 연결 정보
-            String jdbcUrl = "jdbc:mysql://localhost:3306/nc_project_test";                   // 스키마 : nc_project
+            String jdbcUrl = "jdbc:mysql://localhost:3306/nc_project";                   // 스키마 : nc_project
             String username = "root";
             String password = "mysql";
 
@@ -147,7 +147,7 @@ public class NewsCrawler {
         String inputData = Objects.requireNonNull(contentElement).text();
 
         // 기사 내용 길이 제한
-        int maxLength = 50;                                      // 웹 페이지 설계 후 필요한 길이 만큼 설정 예정
+        int maxLength = 255;                                      // 웹 페이지 설계 후 필요한 길이 만큼 설정 예정
         if (inputData.length() > maxLength) {
             inputData = inputData.substring(0, maxLength);
         }

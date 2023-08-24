@@ -69,6 +69,19 @@ public class ProductController {
         return ResponseEntity.ok(searchResultsDTOPage);
     }
 
+    // 카테고리 내 검색
+    @GetMapping({"/category/{categoryId}/search/{keyword}/{pageNum}","/category/{categoryId}/search/{keyword}"})
+    public ResponseEntity<Page<ProductListResponseDTO>> searchProductsByCategory(@PathVariable Long categoryId,
+                                                                                 @PathVariable String keyword,
+                                                                                 @PathVariable(required = false) Integer pageNum){
+        int currentPageNum = pageNum != null ? pageNum : 1;
+        Page<Product> searchResultPage = productService.searchProductsByCategoryByKeyword(categoryId, keyword, currentPageNum);
+
+        Page<ProductListResponseDTO> searchResultDTOPage = searchResultPage
+                .map(ProductListResponseDTO::new);
+        return ResponseEntity.ok(searchResultDTOPage);
+    }
+
     // 등록
     @PostMapping("/save")
     public ResponseEntity<String> saveProductAndImage(@RequestBody ProductSaveRequestDTO requestDTO) {
@@ -140,8 +153,6 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 삭제 실패");
         }
 
-
     }
-
 
 }
