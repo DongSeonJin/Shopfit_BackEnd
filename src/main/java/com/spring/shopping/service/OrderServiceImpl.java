@@ -67,13 +67,12 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(orderId).orElse(null);
     }
 
+
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        // Fetch the user from the database using the provided userId
         User user = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Create an Order entity from the OrderDTO
         Order order = Order.builder()
                 .user(user)
                 .totalPrice(orderDTO.getTotalPrice())
@@ -84,14 +83,32 @@ public class OrderServiceImpl implements OrderService {
                 .orderStatus(orderDTO.getOrderStatus())
                 .build();
 
-        // Save the order using the repository
         Order savedOrder = orderRepository.save(order);
 
-        // Update the orderId in the OrderDTO
-        orderDTO.setOrderId(savedOrder.getOrderId());
+        // orderProductDTO 데이터 매핑
+        List<OrderProductDTO> orderProductDTOs = orderDTO.getOrderProducts().stream()
+                .map(orderProduct -> {
+                    Product product = productRepository.findById(orderProduct.getProductId())
+                            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+
+                    return OrderProductDTO.builder()
+                            .orderId(savedOrder.getOrderId())
+                            .productId(product.getProductId())
+                            .quantity(orderProduct.getQuantity())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        // saveAll() 쓰기 위해 orderProductDTO -> orderProduct 형태 변환
+        List<OrderProduct> orderProducts = orderProductDTOs.stream()
+                .map(this::convertToEntity)
+                .collect(Collectors.toList());
+
+        orderProductRepository.saveAll(orderProducts);
 
         return orderDTO;
     }
+
 
     @Override
     public void createOrderProduct(OrderProductDTO orderProductDTO) {
@@ -119,4 +136,13 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setOrderStatus(order.getOrderStatus());
         return orderDTO;
     }
+
+    public OrderProduct convertToEntity(OrderProductDTO orderProductDTO) {
+        OrderProduct orderProduct = new OrderProduct();
+        orderProduct.setOrderId(orderProductDTO.getOrderId());
+        orderProduct.setProductId(orderProductDTO.getProductId());
+        orderProduct.setQuantity(orderProductDTO.getQuantity());
+        return orderProduct;
+    }
+
 }

@@ -29,20 +29,11 @@ public class OrderController {
     }
 
     // 오더 생성
-//    @PostMapping("/create")
-//    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO, @RequestBody List<OrderProductDTO> orderProductDTOs) {
-//        OrderDTO createdOrder = orderService.createOrder(orderDTO);
-//
-//        // 생성된 주문의 ID를 활용하여 주문 상품 생성
-//        List<OrderProductDTO> createdOrderProducts = new ArrayList<>();
-//        for (OrderProductDTO orderProductDTO : orderProductDTOs) {
-//            orderProductDTO.setOrderId(createdOrder.getOrderId());
-//            OrderProductDTO createdOrderProduct = orderProductService.createOrderProduct(orderProductDTO);
-//            createdOrderProducts.add(createdOrderProduct);
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+        OrderDTO createdOrder = orderService.createOrder(orderDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
+    }
 
     @GetMapping("/user/{userId}")
     public List<OrderDTO> getOrdersByUser(@PathVariable Long userId) {
