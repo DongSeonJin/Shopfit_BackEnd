@@ -67,6 +67,4 @@ public class Post {
     @Column(name = "image_url3", nullable = true)
     private String imageUrl3;
 
-
-
 }

@@ -2,10 +2,12 @@ package com.spring.community.controller;
 
 import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
+import com.spring.community.repository.PostJPARepository;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,18 +45,16 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<IndividualPostResponseDTO> getPostById (@PathVariable Long postId) {
         postService.increaseViewCount(postId); // 조회 할 때마다 조회수 +1
-        Post post = postService.getPostById(postId);
-
-        IndividualPostResponseDTO responseDTO = new IndividualPostResponseDTO(post);
+        IndividualPostResponseDTO responseDTO = postService.getPostById(postId);
 
         return ResponseEntity.ok(responseDTO);
     }
 
 
     @PostMapping("/create")
-    public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
+    public ResponseEntity<String> createPost(@ModelAttribute PostSaveDTO postSaveDTO,
+                                             @RequestParam("file") MultipartFile file) {
         System.out.println(postSaveDTO);
-        postService.savePost(postSaveDTO);
 
         return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
