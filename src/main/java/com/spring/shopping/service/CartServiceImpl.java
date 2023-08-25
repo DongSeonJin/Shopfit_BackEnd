@@ -1,6 +1,7 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.CartDTO;
+import com.spring.shopping.DTO.CartListResponseDTO;
 import com.spring.shopping.entity.Cart;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.repository.CartRepository;
@@ -35,7 +36,11 @@ public class CartServiceImpl implements CartService{
     // 장바구니에 추가하기
     @Override
     @Transactional
-    public CartDTO addToCart(Long userId, Long productId, Long quantity) {
+    public CartDTO addToCart(CartDTO cartDTO) {
+        Long userId = cartDTO.getUserId(); // cartDTO에서 userId 가져오기
+        Long productId = cartDTO.getProductId(); // cartDTO에서 productId 가져오기
+        Long quantity = cartDTO.getQuantity(); // cartDTO에서 quantity 가져오기
+
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Product> productOptional = productRepository.findById(productId);
 
@@ -45,9 +50,7 @@ public class CartServiceImpl implements CartService{
 
             Cart cartItem = new Cart(user, product, quantity);
             cartRepository.save(cartItem);
-
             return convertToDTO(cartItem);
-
         }
         return null; // 사용자나 상품이 없는 경우
     }
@@ -60,17 +63,17 @@ public class CartServiceImpl implements CartService{
 
     // userId로 장바구니 목록 가져오기
     @Override
-    public List<CartDTO> getUserCart(Long userId) {
+    public List<CartListResponseDTO> getUserCart(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
 
         if(userOptional.isPresent()) { // user가 존재하면
             User user = userOptional.get(); // 가져오기
-            List<CartDTO> cartDTOList = new ArrayList<>(); // CartDTO 리스트를 생성
+            List<CartListResponseDTO> cartDTOList = new ArrayList<>(); // CartListResponseDTO 리스트를 생성
 
             List<Cart> cartItems = cartRepository.findByUser(user);  // 사용자의 장바구니에 있는 상품들을 가져오기
 
             for (Cart cartItem : cartItems) { // // 장바구니에 있는 각 상품을 순회하면서
-                cartDTOList.add(convertToDTO(cartItem)); // Cart 엔티티를 CartDTO로 변환하여 리스트에 추가
+                cartDTOList.add(CartListResponseDTO.from(cartItem)); // Cart 엔티티를 CartListResponseDTO로 변환하여 리스트에 추가
             }
             return cartDTOList; // 변환된 CartDTO 리스트를 반환
         }
@@ -84,5 +87,14 @@ public class CartServiceImpl implements CartService{
                 cart.getQuantity(), cart.getCreatedAt(), cart.getUpdatedAt());
     }
 
+
+    // 어떤 유저의 장바구니에 이미 해당 상품이 있는지 확인하기
+    public boolean isProductInUserCart(Long userId, Long productId) {
+        Optional<Cart> cartOptional = cartRepository.findByUserUserIdAndProductProductId(userId, productId);
+
+        // 장바구니가 존재하고 해당 상품이 포함되어 있는지 여부를 반환합니다.
+        return cartOptional.isPresent();
+    }
+    
 
 }
