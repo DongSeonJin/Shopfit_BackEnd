@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class ProductDetailResponseDTO {
     private Long productId;
     private Long categoryId;
+    private String categoryName;
     private String productName;
     private String thumbnailUrl;
     private Long price;
@@ -33,6 +34,7 @@ public class ProductDetailResponseDTO {
         ProductDetailResponseDTO dto = new ProductDetailResponseDTO();
         dto.setProductId(product.getProductId());
         dto.setCategoryId(product.getShopCategory().getCategoryId());
+        dto.setCategoryName(product.getShopCategory().getCategoryName());
         dto.setProductName(product.getProductName());
         dto.setThumbnailUrl(product.getThumbnailUrl());
         dto.setPrice(product.getPrice());

@@ -17,4 +17,7 @@ public interface OrderService {
     User getUserInfo(Long userId);
 
     Order getOrderInfo(Long orderId);
+
+    // 주문 생성
+    OrderDTO createOrder(OrderDTO orderDTO);
 }

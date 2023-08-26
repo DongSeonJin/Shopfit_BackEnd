@@ -1,6 +1,5 @@
 package com.spring.shopping.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,6 +34,7 @@ public class Product {
     private String productName;
 
 
+    @Getter
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
   
@@ -64,11 +64,12 @@ public class Product {
     private List<Review> reviews = new ArrayList<>();
 
 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
 }
 
