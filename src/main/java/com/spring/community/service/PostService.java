@@ -1,9 +1,6 @@
 package com.spring.community.service;
 
-import com.spring.community.DTO.LikeSaveDTO;
-import com.spring.community.DTO.PostListResponseDTO;
-import com.spring.community.DTO.PostSaveDTO;
-import com.spring.community.DTO.PostUpdateDTO;
+import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,5 +17,7 @@ public interface PostService {
     void update(PostUpdateDTO postUpdateDTO);
     void saveLike(LikeSaveDTO likeSaveDTO);
     void increaseViewCount (Long postId);
+
+    List<PostTop4DTO> getRecentTop4Posts();
 
 }

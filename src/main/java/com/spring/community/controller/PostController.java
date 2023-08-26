@@ -85,5 +85,9 @@ public class PostController {
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
 
+    @GetMapping("/recent-top4")
+    public List<PostTop4DTO> getRecentTop4Posts() {
+        return postService.getRecentTop4Posts();
+    }
 
 }
