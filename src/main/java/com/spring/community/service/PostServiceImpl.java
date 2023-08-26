@@ -8,10 +8,6 @@ import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import com.spring.shopping.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,9 +36,11 @@ public class PostServiceImpl implements PostService{
     // 생성자 주입으로 변경
 
     @Override
-    public Post getPostById(Long id) {
-        return postJPARepository.findById(id)
-                .orElseThrow(() -> new PostIdNotFoundException("Post with id " + id + " not found."));
+    public IndividualPostResponseDTO getPostById(Long postId) {
+        Post post = postJPARepository.findById(postId)
+                .orElseThrow(() -> new PostIdNotFoundException("해당 게시글을 찾을 수 없습니다."));
+
+        return new IndividualPostResponseDTO(post);
     }
 
     @Override

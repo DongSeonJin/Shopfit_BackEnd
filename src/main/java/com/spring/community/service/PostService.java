@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PostService {
 
-    Post getPostById(Long id);
+    IndividualPostResponseDTO getPostById(Long id);
     List<Post> getAllPosts();
     Page<Post> getPostsByCategoryId(Long categoryId, int pageNumber);
     void savePost(PostSaveDTO postSaveDTO);

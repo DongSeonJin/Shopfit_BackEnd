@@ -31,6 +31,9 @@ public class IndividualPostResponseDTO {
         this.viewCount = post.getViewCount();
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
+        this.imageUrl1 = post.getImageUrl1();
+        this.imageUrl2 = post.getImageUrl2();
+        this.imageUrl3 = post.getImageUrl3();
 
     }
 
