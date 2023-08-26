@@ -3,6 +3,8 @@ package com.spring.community.repository;
 import com.spring.community.DTO.PostListResponseDTO;
 import com.spring.community.entity.Post;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +17,7 @@ import java.util.List;
 @Repository
 public interface PostJPARepository extends JpaRepository<Post, Long> {
 
-    List<Post> findByPostCategory_CategoryId(Integer categoryId);
+    Page<Post> findByPostCategory_CategoryId(Long categoryId, Pageable pageable);
 
     @Modifying
     @Transactional
