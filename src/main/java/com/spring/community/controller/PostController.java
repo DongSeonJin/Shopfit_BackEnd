@@ -62,17 +62,17 @@ public class PostController {
     public ResponseEntity<String> createPost(@ModelAttribute PostSaveDTO postSaveDTO,
                                              @RequestParam("file") MultipartFile file) {
         System.out.println(postSaveDTO);
-
+        postService.savePost(postSaveDTO);
         return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/delete/{postId}")
     public ResponseEntity<String > deletePostById(@PathVariable Long postId) {
         postService.deletePostById(postId);
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
 
-    @RequestMapping(value = "/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
+    @RequestMapping(value = "/update/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
     public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
         postUpdateDTO.setPostId(postId);
         postService.update(postUpdateDTO);
