@@ -6,11 +6,13 @@ import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
+import com.spring.shopping.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,8 @@ public class PostServiceImpl implements PostService{
 
     @Autowired
     DynamicLikeRepository dynamicLikeRepository;
+
+    final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 게시글을 조회할지
 
     @Autowired
     public PostServiceImpl(PostJPARepository postRepository){
@@ -48,10 +52,17 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostListResponseDTO> getPostsByCategoryId(Integer categoryId){
-        List<PostListResponseDTO> Postlist = postJPARepository.findByPostCategory_CategoryId(categoryId)
-                .stream().map(PostListResponseDTO::new).collect(Collectors.toList()); // entity를 DTO로 변환해주는 메서드
-        return  Postlist;
+    public Page<Post> getPostsByCategoryId(Long categoryId, int pageNumb){
+        Page<Post> postlist = postJPARepository.findByPostCategory_CategoryId(
+                categoryId, PageRequest.of(pageNumb - 1, PAGE_SIZE, Sort.Direction.DESC, "postId"));
+
+        if (postlist.getTotalPages() < pageNumb) {  // 만약 페이지 번호가 범위를 벗어나는 경우에는 가장 마지막 페이지로 자동으로 이동
+            return postJPARepository.findAll(
+                    PageRequest.of(postlist.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC, "postId"));
+        } else {
+            return postlist;
+        }
+
     }
 
     @Override

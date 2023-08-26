@@ -4,10 +4,12 @@ import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post")
@@ -31,9 +33,14 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-    @GetMapping("/list/{categoryId}")
-    public ResponseEntity<List<PostListResponseDTO>> getPostsByCategoryId(@PathVariable Integer categoryId){
-        List<PostListResponseDTO> posts = postService.getPostsByCategoryId(categoryId);
+    @GetMapping({"/list/{categoryId}/{pageNumb}", "/list/{categoryId}"})
+    public ResponseEntity<Page<PostListResponseDTO>> getPostsByCategoryId(
+                                                    @PathVariable Long categoryId,
+                                                    @PathVariable(required = false) Integer pageNumb){
+        int currentPageNum = pageNumb != null ? pageNumb : 1;
+        Page<PostListResponseDTO> posts = postService.getPostsByCategoryId(categoryId, currentPageNum)
+                .map(PostListResponseDTO:: new);
+
         return ResponseEntity
                 .ok()
                 .body(posts);
