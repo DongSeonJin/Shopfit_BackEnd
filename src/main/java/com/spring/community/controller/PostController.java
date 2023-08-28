@@ -6,6 +6,7 @@ import com.spring.community.repository.PostJPARepository;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,10 +74,20 @@ public class PostController {
     }
 
     @RequestMapping(value = "/update/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
-    public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
-        postUpdateDTO.setPostId(postId);
-        postService.update(postUpdateDTO);
-        return ResponseEntity.ok("게시글이 수정되었습니다.");
+    public ResponseEntity<String> updatePost(@PathVariable Long postId,
+                                             @RequestBody PostUpdateDTO postUpdateDTO) {
+        System.out.println("서버 요청 도착");
+        try {
+            postUpdateDTO.setPostId(postId);
+            postService.update(postUpdateDTO);
+            System.out.println("게시글 업데이트 성공");
+            return ResponseEntity.ok("게시글이 수정되었습니다.");
+        } catch (Exception e) {
+            System.out.println("게시글 업데이트 실패 : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 수정 실패");
+        }
+
+
     }
 
     @PostMapping("/like")
