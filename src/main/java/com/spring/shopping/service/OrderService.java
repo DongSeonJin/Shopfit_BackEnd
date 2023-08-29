@@ -1,6 +1,7 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.OrderDTO;
+import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.user.entity.User;
 
@@ -20,4 +21,7 @@ public interface OrderService {
 
     // 주문 생성
     OrderDTO createOrder(OrderDTO orderDTO);
+
+    // 주문 상품 생성
+    void createOrderProduct(OrderProductDTO orderProductDTO);
 }

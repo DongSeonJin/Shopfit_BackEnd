@@ -1,7 +1,9 @@
 package com.spring.shopping.controller;
 
 import com.spring.shopping.DTO.OrderDTO;
+import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
+import com.spring.shopping.service.OrderProductService;
 import com.spring.shopping.service.OrderService;
 import com.spring.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +20,12 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderProductService orderProductService;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, OrderProductService orderProductService) {
         this.orderService = orderService;
+        this.orderProductService = orderProductService;
     }
 
     // 오더 생성
