@@ -24,7 +24,7 @@ public class ProductImage {
     @OnDelete(action = OnDeleteAction.CASCADE) // 상품 삭제 시 이미지도 같이 삭제
     private Product product;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
 
