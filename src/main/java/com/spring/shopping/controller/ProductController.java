@@ -83,7 +83,7 @@ public class ProductController {
     }
 
     // 등록
-    @PostMapping("/save")
+    @PostMapping(value ="/save")
     public ResponseEntity<String> saveProductAndImage(@RequestBody ProductSaveRequestDTO requestDTO) {
         boolean success = productService.saveProductAndImage(requestDTO);
 
@@ -93,6 +93,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("상품 및 이미지 저장에 실패했습니다.");
         }
     }
+
 
     // ID로 삭제
     @DeleteMapping("delete/{productId}")

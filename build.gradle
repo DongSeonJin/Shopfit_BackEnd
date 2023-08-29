@@ -36,6 +36,7 @@ dependencies {
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	testImplementation 'com.h2database:h2:1.4.200'
 	implementation 'org.jsoup:jsoup:1.14.3'			// jsoup 추가
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 
