@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/shopping")
 public class ProductController {
@@ -96,7 +97,7 @@ public class ProductController {
 
 
     // ID로 삭제
-    @DeleteMapping("delete/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<String> deleteProductById(@PathVariable long productId){
         productService.deleteProductById(productId);
 
@@ -139,7 +140,7 @@ public class ProductController {
     
     // 상품 수정과 관련하여 프론트에서 기존에 DB에 저장된 사진을 삭제할 때 사용하는 메서드 => 리액트에서 수정 페이지에 버튼으로 만들어야 함
     // productImageId로 해당 이미지를 삭제하기
-    @DeleteMapping("/delete/img/{productImageId}")
+    @DeleteMapping("/img/{productImageId}")
     public ResponseEntity<String> deleteImage(@PathVariable Long productImageId) {
 
         try {

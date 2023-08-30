@@ -87,7 +87,12 @@ public class S3Uploader {
         return Optional.empty();
     }
 
-
+    public void deleteFile(String objectKey) {
+        // Amazon S3에서 객체를 삭제합니다.
+        // objectKey = 파일 이름
+        amazonS3Client.deleteObject(bucket, objectKey);
+        System.out.println("File deleted from S3: " + objectKey);
+    }
 
 
 }
