@@ -10,4 +10,5 @@ import lombok.*;
 public class PostTop4DTO {
     private String title;
     private String imageUrl;
+    private Long postId;
 }
