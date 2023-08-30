@@ -37,6 +37,7 @@ dependencies {
 	testImplementation 'com.h2database:h2:1.4.200'
 	implementation 'org.jsoup:jsoup:1.14.3'			// jsoup 추가
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
 }
 
 

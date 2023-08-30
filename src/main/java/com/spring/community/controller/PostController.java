@@ -60,8 +60,7 @@ public class PostController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<String> createPost(@ModelAttribute PostSaveDTO postSaveDTO,
-                                             @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
         System.out.println(postSaveDTO);
         postService.savePost(postSaveDTO);
         return ResponseEntity.ok("게시글이 저장되었습니다.");
@@ -91,7 +90,7 @@ public class PostController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<String> pushlike(@RequestBody LikeSaveDTO likeSaveDTO){
+    public ResponseEntity<String> pushLike(@RequestBody LikeSaveDTO likeSaveDTO){
         postService.saveLike(likeSaveDTO); //받아야 할 정보 : 글주인 nickname과 postId, 좋아요 누른사람 userId
         return ResponseEntity.ok("좋아요 누르기 성공");
     }
