@@ -2,6 +2,7 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.ProductStockUpdateRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.ProductImage;
@@ -227,5 +228,24 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product getProductInfo(Long productId) {
         return productRepository.findById(productId).orElse(null);
+    }
+
+    @Override
+    public boolean updateProductStock(ProductStockUpdateRequestDTO requestDTO) {
+        try {
+            // 요청으로 받은 상품 ID로 해당 상품을 조회합니다.
+            Product product = productRepository.findById(requestDTO.getProductId())
+                    .orElseThrow(() -> new ProductIdNotFoundException("없는 상품 번호입니다 : " + requestDTO.getProductId()));
+
+            // 상품의 재고(stock) 수량을 업데이트합니다.
+            product.setStockQuantity(requestDTO.getStockQuantity());
+
+            // 업데이트된 상품 정보를 저장합니다.
+            productRepository.save(product);
+
+            return true; // 업데이트 성공
+        } catch (Exception e) {
+            return false; // 업데이트 실패
+        }
     }
 }

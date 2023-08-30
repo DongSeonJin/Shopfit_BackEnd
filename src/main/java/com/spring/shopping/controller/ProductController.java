@@ -155,4 +155,23 @@ public class ProductController {
 
     }
 
+    // 상품의 재고(stock) 수정
+    @PostMapping("/update/stock/{productId}")
+    public ResponseEntity<String> updateProductStock(@PathVariable Long productId,
+                                                     @RequestBody ProductStockUpdateRequestDTO requestDTO) {
+        // json 데이터에 productId를 포함하는 대신 url에 포함시켰으므로 requestBody에 추가해줘야 함
+        requestDTO.setProductId(productId);
+        try {
+            boolean success = productService.updateProductStock(requestDTO);
+            if (success) {
+                return ResponseEntity.ok("상품 재고 정보 수정에 성공했습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("상품 재고 정보 수정에 실패했습니다.");
+            }
+        } catch (ProductIdNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 상품을 찾을 수 없음");
+        }
+    }
+
+
 }
