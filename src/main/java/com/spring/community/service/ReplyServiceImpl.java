@@ -4,7 +4,6 @@ import com.spring.community.entity.Reply;
 import com.spring.community.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.spring.community.service.ReplyService;
 
 import java.util.List;
 
@@ -46,8 +45,6 @@ public class ReplyServiceImpl implements ReplyService {
         existingReply.setContent(reply.getContent());
         existingReply.setUpdatedAt(reply.getUpdatedAt());
         replyRepository.save(existingReply);
-
-
 
     }
 }

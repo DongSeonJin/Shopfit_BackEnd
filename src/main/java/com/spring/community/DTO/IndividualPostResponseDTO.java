@@ -1,6 +1,7 @@
 package com.spring.community.DTO;
 
 import com.spring.community.entity.Post;
+import com.spring.community.entity.Reply;
 import lombok.*;
 import org.springframework.cglib.core.Local;
 
@@ -21,6 +22,7 @@ public class IndividualPostResponseDTO {
     private String imageUrl1;
     private String imageUrl2;
     private String imageUrl3;
+    private String reply;
 
     public IndividualPostResponseDTO (Post post) {
         this.postId = post.getPostId();
