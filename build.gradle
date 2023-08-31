@@ -36,6 +36,8 @@ dependencies {
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	testImplementation 'com.h2database:h2:1.4.200'
 	implementation 'org.jsoup:jsoup:1.14.3'			// jsoup 추가
+	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.11.0' // selenium 추가
+	implementation 'io.github.bonigarcia:webdrivermanager:5.5.2' // 현재 최신 버전인 4.4.3으로 설정하였으나, 실제 사용 시점에서 최신 버전으로 업데이트 해주세요
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
 }

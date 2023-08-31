@@ -58,13 +58,16 @@ public class Post {
     @LastModifiedDate // 자동으로 업데이트일자로 설정
     private LocalDateTime updatedAt;
 
-    @Column(name = "image_url1", nullable = true)
+    @Column(name = "image_url1", nullable = true, columnDefinition = "TEXT")
+    @Lob
     private String imageUrl1;
 
-    @Column(name = "image_url2", nullable = true)
+    @Column(name = "image_url2", nullable = true, columnDefinition = "TEXT")
+    @Lob
     private String imageUrl2;
 
-    @Column(name = "image_url3", nullable = true)
+    @Column(name = "image_url3", nullable = true, columnDefinition = "TEXT")
+    @Lob
     private String imageUrl3;
 
 }

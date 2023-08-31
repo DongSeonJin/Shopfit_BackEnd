@@ -15,9 +15,9 @@
         view_count BIGINT DEFAULT 0,
         created_at DATETIME,
         updated_at DATETIME,
-        image_url1 VARCHAR(255),
-        image_url2 VARCHAR(255),
-        image_url3 VARCHAR(255),
+        image_url1 TEXT,
+        image_url2 TEXT,
+        image_url3 TEXT,
         FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
         );
 
