@@ -10,15 +10,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor @Builder @ToString
 public class ReplyCreateRequestDTO {
 
-    // 글번호, 댓글쓴이, 댓글 내용, 생성일자
-    private long postId;
+    // 글번호, 댓글쓴이, 댓글 내용
+    private Long userId;
+    private Long postId;
     private String content;
     private String nickname;
 
     public ReplyCreateRequestDTO(Reply reply) {
+        this.userId = reply.getUser().getUserId();
         this.postId = reply.getPost().getPostId();
         this.content = reply.getContent();
         this.nickname = reply.getUser().getNickname();
+
     }
 
 }

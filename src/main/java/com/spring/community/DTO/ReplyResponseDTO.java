@@ -14,13 +14,11 @@ public class ReplyResponseDTO {
     // 댓글 번호, 댓글내용, 생성일자, 업데이트일자
     private long replyId;
     private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String nickname;
 
     public ReplyResponseDTO(Reply reply) {
         this.replyId = reply.getReplyId();
         this.content = reply.getContent();
-        this.createdAt = reply.getCreatedAt();
-        this.updatedAt = reply.getUpdatedAt();
+        this.nickname = reply.getUser().getNickname();
     }
 }

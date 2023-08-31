@@ -1,22 +1,22 @@
 package com.spring.community.controller;
 
+import com.spring.community.DTO.ReplyCreateRequestDTO;
 import com.spring.community.DTO.ReplyResponseDTO;
 import com.spring.community.DTO.ReplyUpdateRequestDTO;
+import com.spring.community.entity.Post;
 import com.spring.community.entity.Reply;
 import com.spring.community.exception.NotFoundReplyByReplyIdException;
+import com.spring.community.service.PostService;
 import com.spring.community.service.ReplyService;
 import com.spring.user.entity.User;
-import lombok.Getter;
+import com.spring.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reply")
@@ -25,7 +25,7 @@ public class ReplyController {
     private final ReplyService replyService;
 
     @Autowired
-    public ReplyController(ReplyService replyService) {
+    public ReplyController(ReplyService replyService, PostService postService, UserService userService) {
         this.replyService = replyService;
     }
 
@@ -64,10 +64,31 @@ public class ReplyController {
     // 댓글 작성하기
     @PostMapping
     public ResponseEntity<String> createReply(@RequestBody Reply reply) {
+
         replyService.save(reply);
 
-        return ResponseEntity.ok("댓글이 등록되었습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글 등록 성공");
+//        try {
+//            Reply reply = Reply.builder()
+//                    .content(replyCreateRequestDTO.getContent())
+//                    .build();
+//
+//            User user = User.builder()
+//                    .nickname(replyCreateRequestDTO.getNickname())
+//                    .build();
+//
+//            reply.setUser(user);
+//
+//            replyService.save(reply);
+//
+//            return ResponseEntity.status(HttpStatus.CREATED).body("댓글 등록 성공");
+//
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 등록 실패");
+//        }
+
     }
+
 
     // 댓글 삭제하기
     @DeleteMapping("/{replyId}")
