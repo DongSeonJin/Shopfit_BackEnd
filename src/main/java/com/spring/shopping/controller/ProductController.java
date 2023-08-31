@@ -20,6 +20,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductImageService productImageService;
 
+
     @Autowired
     public ProductController(ProductService productService, ProductImageService productImageService){
         this.productService = productService;
@@ -38,7 +39,22 @@ public class ProductController {
     }
 
 
-    // 카테고리별 조회
+    // 상품 정렬 관련 기능 구현
+    // 낮은 가격순 | 높은 가격순 | 신상품순 | 오래된순 | 리뷰 많은순 |
+    // 신상품순 - 디폴트정렬이기 때문에 구현할 필요 X
+
+    // 정렬 전체조회 -낮은 가격순(1), 높은 가격순(2), 신상품순(디폴트), 오래된순(3), 리뷰 많은순(4)
+    @GetMapping({"/sort/{sortType}/{pageNum}", "/sort/{sortType}"})
+    public ResponseEntity<Page<ProductListResponseDTO>> getAllProductsSorted(
+            @PathVariable Integer sortType,
+            @PathVariable(required = false) Integer pageNum) {
+        Page<Product> productPage = productService.getAllProductsBySorting(pageNum, sortType);
+        Page<ProductListResponseDTO> productListResponseDTOPage = productPage.map(ProductListResponseDTO::new);
+        return ResponseEntity.ok(productListResponseDTOPage);
+    }
+
+
+    // 카테고리별 전체 조회
     @GetMapping({"/category/{categoryId}/{pageNum}", "/category/{categoryId}"})
     public ResponseEntity<Page<ProductListResponseDTO>> getProductsByCategory(
             @PathVariable Long categoryId,
@@ -47,6 +63,17 @@ public class ProductController {
         Page<ProductListResponseDTO> productPage = productService.getProductsByCategory(categoryId, currentPageNum)
                 .map(ProductListResponseDTO::new);
         return ResponseEntity.ok(productPage);
+    }
+
+    // 카테고리별 조회 및 정렬 - 가격 낮은 순(1), 가격 높은 순(2), 오래된 순(3), 리뷰 많은 순(4)
+    @GetMapping({"/category/{categoryId}/sort/{sortType}/{pageNum}", "/category/{categoryId}/sort/{sortType}"})
+    public ResponseEntity<Page<ProductListResponseDTO>> getProductsByCategoryAndSorted(
+            @PathVariable Long categoryId,
+            @PathVariable Integer sortType,
+            @PathVariable(required = false) Integer pageNum) {
+        Page<Product> productPage = productService.getProductsByCategoryAndSorting(categoryId, pageNum, sortType);
+        Page<ProductListResponseDTO> productListResponseDTOPage = productPage.map(ProductListResponseDTO::new);
+        return ResponseEntity.ok(productListResponseDTOPage);
     }
 
     // 개별 상품 상세 조회
@@ -157,6 +184,7 @@ public class ProductController {
 
     }
 
+
     // 상품의 재고(stock) 수정
     @PostMapping("/update/stock/{productId}")
     public ResponseEntity<String> updateProductStock(@PathVariable Long productId,
@@ -174,6 +202,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 상품을 찾을 수 없음");
         }
     }
+
 
 
 }
