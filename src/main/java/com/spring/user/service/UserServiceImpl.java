@@ -1,24 +1,31 @@
 package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.LoginRequestDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService{
 
 
-     UserRepository userRepository;
-     BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
 
     @Override
@@ -64,6 +71,18 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean authenticateUser(LoginRequestDTO loginRequest) {
+        Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
+
+        if (user.isPresent() && bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
+            // 인증 성공
+            return true;
+        }
+        // 인증 실패
+        return false;
     }
 
 }
