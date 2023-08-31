@@ -18,6 +18,8 @@ public class CartListResponseDTO {
     private Long userId;
     private Long productId;
     private String productName;
+    private String thumbnailUrl;
+    private Long stockQuantity;
     private Long price;
     private Long quantity;
     private LocalDateTime createdAt;
@@ -30,6 +32,8 @@ public class CartListResponseDTO {
         dto.setUserId(cart.getUser().getUserId());
         dto.setProductId(cart.getProduct().getProductId());
         dto.setProductName(cart.getProduct().getProductName());
+        dto.setThumbnailUrl(cart.getProduct().getThumbnailUrl());
+        dto.setStockQuantity(cart.getProduct().getStockQuantity());
         dto.setPrice(cart.getProduct().getPrice());
         dto.setQuantity(cart.getQuantity());
         dto.setCreatedAt(cart.getCreatedAt());

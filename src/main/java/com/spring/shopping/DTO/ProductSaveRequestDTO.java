@@ -17,6 +17,7 @@ public class ProductSaveRequestDTO {
     private String thumbnailUrl;
     private Long price;
     private Long stockQuantity;
+
     private List<String> productImageUrls;
 
 

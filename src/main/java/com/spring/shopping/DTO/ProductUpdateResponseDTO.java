@@ -20,6 +20,7 @@ public class ProductUpdateResponseDTO {
     private Long price;
     private Long stockQuantity;
     private List<String> productImageUrls;
+    private List<Long> productImageIds;
 
     public static ProductUpdateResponseDTO toProductUpdateResponseDTO(Product product) {
         return ProductUpdateResponseDTO.builder()
@@ -30,12 +31,19 @@ public class ProductUpdateResponseDTO {
                 .price(product.getPrice())
                 .stockQuantity(product.getStockQuantity())
                 .productImageUrls(getProductImageUrls(product.getProductImages())) // 아래 메서드 참고
+                .productImageIds(getProductImageIds(product.getProductImages()))
                 .build();
     }
 
     private static List<String> getProductImageUrls(List<ProductImage> productImages) {
         return productImages.stream()
                 .map(ProductImage::getImageUrl)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Long> getProductImageIds(List<ProductImage> productImages) {
+        return productImages.stream()
+                .map(ProductImage::getProductImageId)
                 .collect(Collectors.toList());
     }
 

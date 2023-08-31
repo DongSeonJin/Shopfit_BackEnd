@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/shopping")
 public class ProductController {
@@ -83,7 +84,7 @@ public class ProductController {
     }
 
     // 등록
-    @PostMapping("/save")
+    @PostMapping(value ="/save")
     public ResponseEntity<String> saveProductAndImage(@RequestBody ProductSaveRequestDTO requestDTO) {
         boolean success = productService.saveProductAndImage(requestDTO);
 
@@ -94,8 +95,9 @@ public class ProductController {
         }
     }
 
+
     // ID로 삭제
-    @DeleteMapping("delete/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<String> deleteProductById(@PathVariable long productId){
         productService.deleteProductById(productId);
 
@@ -138,7 +140,7 @@ public class ProductController {
     
     // 상품 수정과 관련하여 프론트에서 기존에 DB에 저장된 사진을 삭제할 때 사용하는 메서드 => 리액트에서 수정 페이지에 버튼으로 만들어야 함
     // productImageId로 해당 이미지를 삭제하기
-    @DeleteMapping("/delete/img/{productImageId}")
+    @DeleteMapping("/img/{productImageId}")
     public ResponseEntity<String> deleteImage(@PathVariable Long productImageId) {
 
         try {
@@ -154,5 +156,24 @@ public class ProductController {
         }
 
     }
+
+    // 상품의 재고(stock) 수정
+    @PostMapping("/update/stock/{productId}")
+    public ResponseEntity<String> updateProductStock(@PathVariable Long productId,
+                                                     @RequestBody ProductStockUpdateRequestDTO requestDTO) {
+        // json 데이터에 productId를 포함하는 대신 url에 포함시켰으므로 requestBody에 추가해줘야 함
+        requestDTO.setProductId(productId);
+        try {
+            boolean success = productService.updateProductStock(requestDTO);
+            if (success) {
+                return ResponseEntity.ok("상품 재고 정보 수정에 성공했습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("상품 재고 정보 수정에 실패했습니다.");
+            }
+        } catch (ProductIdNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 상품을 찾을 수 없음");
+        }
+    }
+
 
 }

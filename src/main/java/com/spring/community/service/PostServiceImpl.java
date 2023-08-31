@@ -109,6 +109,9 @@ public class PostServiceImpl implements PostService{
         existingPost.setTitle(postUpdateDTO.getTitle());
         existingPost.setContent(postUpdateDTO.getContent());
         existingPost.setUpdatedAt(LocalDateTime.now());
+        existingPost.setImageUrl1(postUpdateDTO.getImageUrl1());
+        existingPost.setImageUrl2(postUpdateDTO.getImageUrl2());
+        existingPost.setImageUrl3(postUpdateDTO.getImageUrl3());
 
         // 수정된 게시글 저장
         postJPARepository.save(existingPost);
@@ -132,6 +135,7 @@ public class PostServiceImpl implements PostService{
                 .map(post -> PostTop4DTO.builder()
                         .title(post.getTitle())
                         .imageUrl(post.getImageUrl1())
+                        .postId(post.getPostId())
                         .build())
                 .collect(Collectors.toList());
 

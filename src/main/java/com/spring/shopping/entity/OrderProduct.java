@@ -63,4 +63,18 @@ public class OrderProduct {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public void setOrderId(Long orderId) {
+        if (this.order == null) {
+            this.order = new Order(); // 또는 orderRepository.findById(orderId) 등을 사용하여 실제 Order 객체를 가져와도 됩니다.
+        }
+        this.order.setOrderId(orderId);
+    }
+
+    public void setProductId(Long productId) {
+        if (this.product == null) {
+            this.product = new Product(); // 또는 productRepository.findById(productId) 등을 사용하여 실제 Product 객체를 가져와도 됩니다.
+        }
+        this.product.setProductId(productId);
+    }
 }

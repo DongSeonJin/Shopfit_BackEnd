@@ -2,6 +2,7 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.ProductStockUpdateRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.ProductImage;
@@ -207,15 +208,23 @@ public class ProductServiceImpl implements ProductService{
             Product updatedProduct = productRepository.save(updatingProduct);
 
             // 이미지 정보 추출 및 업데이트
-            List<ProductImage> productImages =
+
+            // 이미지 중복 저장 방지
+            List<ProductImage> existingProductImages = productImageRepository.findByProduct(updatedProduct);
+            List<String> existingImageUrls = existingProductImages.stream()
+                    .map(ProductImage::getImageUrl)
+                    .collect(Collectors.toList());
+
+            List<ProductImage> productImagesToSave =
                     requestDTO.getProductImageUrls().stream() // requestDTO 객체에서 이미지 URL들을 가져와서 리스트 요소들을 순차적으로 처리하기 위해 스트림 생성
+                            .filter(imageUrl -> !existingImageUrls.contains(imageUrl)) // 이미지 URL이 이미 존재하는지 확인
                             .map(imageUrl -> ProductImage.builder()  // 각 이미지 URL들을 사용하여 새로운 ProductImage 객체를 생성하는 매핑과정. 빌더를 생성하고
                                     .product(updatedProduct) // product 정보에 updatedProduct를 넣고
                                     .imageUrl(imageUrl) // imageUrl에 imgUrl을 넣어서
                                     .build()) // ProductImage 객체 생성하기
                             .collect(Collectors.toList()); // 스트림의 결과로 생성된 ProductImage 객체들을 리스트로 수집하여 반환
 
-            productImageRepository.saveAll(productImages);
+            productImageRepository.saveAll(productImagesToSave);
 
             return true;
         } catch (Exception e) {
@@ -227,5 +236,24 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product getProductInfo(Long productId) {
         return productRepository.findById(productId).orElse(null);
+    }
+
+    @Override
+    public boolean updateProductStock(ProductStockUpdateRequestDTO requestDTO) {
+        try {
+            // 요청으로 받은 상품 ID로 해당 상품을 조회합니다.
+            Product product = productRepository.findById(requestDTO.getProductId())
+                    .orElseThrow(() -> new ProductIdNotFoundException("없는 상품 번호입니다 : " + requestDTO.getProductId()));
+
+            // 상품의 재고(stock) 수량을 업데이트합니다.
+            product.setStockQuantity(requestDTO.getStockQuantity());
+
+            // 업데이트된 상품 정보를 저장합니다.
+            productRepository.save(product);
+
+            return true; // 업데이트 성공
+        } catch (Exception e) {
+            return false; // 업데이트 실패
+        }
     }
 }
