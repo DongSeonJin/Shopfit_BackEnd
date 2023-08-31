@@ -1,6 +1,7 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
+import com.spring.shopping.DTO.ProductListResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
@@ -13,10 +14,7 @@ import com.spring.shopping.repository.ProductRepository;
 import com.spring.shopping.repository.ShopCategoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +28,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductImageRepository productImageRepository;
     private final ShopCategoryRepository shopCategoryRepository;
 
+
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 상품을 조회할지
 
     @Autowired
@@ -39,6 +38,7 @@ public class ProductServiceImpl implements ProductService{
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
         this.shopCategoryRepository = shopCategoryRepository;
+
     }
 
 
@@ -56,6 +56,66 @@ public class ProductServiceImpl implements ProductService{
             return allProducts;
         }
     }
+
+    // 정렬 전체 조회 - 가격 낮은 순(1), 가격 높은 순(2), 오래된 순(3), 리뷰 많은 순(4)
+    @Override
+    public Page<Product> getAllProductsBySorting(int pageNum, int sortType) {
+        Sort sort = getSortByType(sortType);
+
+        Page<Product> allProductsBySorting = productRepository.findAll(PageRequest.of(
+                pageNum - 1, PAGE_SIZE, sort)
+        );
+
+        if (allProductsBySorting.getTotalPages() < pageNum) {
+            return productRepository.findAll( // 만약 페이지 번호가 범위를 벗어나는 경우 디폴트 정렬의 가장 마지막 페이지로 이동
+                    PageRequest.of(allProductsBySorting.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC, "productId"));
+        } else {
+            return allProductsBySorting;
+        }
+    }
+
+    // 카테고리 및 정렬 전체 조회
+    @Override
+    public Page<Product> getProductsByCategoryAndSorting(Long categoryId, int pageNum, int sortType) {
+        Sort sort = getSortByType(sortType);
+
+        Page<Product> productsByCategoryAndSorting = productRepository.findByShopCategoryCategoryId(
+                categoryId,
+                PageRequest.of(pageNum - 1, PAGE_SIZE, sort)
+        );
+
+        if (productsByCategoryAndSorting.isEmpty()) {
+            throw new CategoryIdNotFoundException("잘못된 요청입니다");
+        }
+
+        if (productsByCategoryAndSorting.getTotalPages() < pageNum) {
+            return productRepository.findByShopCategoryCategoryId(
+                    categoryId,
+                    PageRequest.of(productsByCategoryAndSorting.getTotalPages() - 1, PAGE_SIZE, sort)
+            );
+        } else {
+            return productsByCategoryAndSorting;
+        }
+    }
+
+
+
+    // 정렬을 위한 메서드
+    private Sort getSortByType(int sortType) {
+        if (sortType == 1) { // 가격 기준 오름차순(가격 낮은 순)
+            return Sort.by(Sort.Direction.ASC, "price");
+        } else if (sortType == 2) { // 가격 기준 내림차순(가격 높은 순)
+            return Sort.by(Sort.Direction.DESC, "price");
+        } else if (sortType == 3) { // productId 기준 오름차순(오래된 순)
+            return Sort.by(Sort.Direction.ASC, "productId");
+        } else if (sortType == 4) { // 리뷰 기준 내림차순 (리뷰 많은 순)
+            return Sort.by(Sort.Direction.DESC, "reviewCount");
+        } else {
+            throw new IllegalArgumentException("잘못된 정렬 타입입니다");
+        }
+    }
+
+
 
     // 카테고리별 조회 - 디폴트 정렬 : productId 기준 내림차순
     @Override
@@ -231,6 +291,8 @@ public class ProductServiceImpl implements ProductService{
         return false;
          }
     }
+
+
 
     @Override
     public Product getProductInfo(Long productId) {
