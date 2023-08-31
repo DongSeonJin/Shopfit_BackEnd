@@ -12,9 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -95,6 +93,6 @@ public class CartServiceImpl implements CartService{
         // 장바구니가 존재하고 해당 상품이 포함되어 있는지 여부를 반환합니다.
         return cartOptional.isPresent();
     }
-    
+
 
 }

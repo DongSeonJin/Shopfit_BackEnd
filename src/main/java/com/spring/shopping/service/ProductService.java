@@ -2,6 +2,7 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.ProductStockUpdateRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
 import org.springframework.data.domain.Page;
@@ -42,4 +43,6 @@ public interface ProductService {
 
 
     Product getProductInfo(Long productId);
+
+    public boolean updateProductStock(ProductStockUpdateRequestDTO requestDTO);
 }

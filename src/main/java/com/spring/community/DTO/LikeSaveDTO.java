@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Data
 public class LikeSaveDTO {
 
     private Long likeId;

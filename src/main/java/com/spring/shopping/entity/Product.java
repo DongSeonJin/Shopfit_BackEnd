@@ -78,5 +78,9 @@ public class Product {
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
+
+    public void setStockQuantity(Long stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
 }
 
