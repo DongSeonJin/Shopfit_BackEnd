@@ -122,8 +122,8 @@ public class ShoppingCrawler {
             String category = categoryId.attr("value");
             return switch (category) {
                 case "R019", "R038" -> 1;
-                case "R032" -> 2;
-                case "R024", "R028" -> 3;
+                case "R024", "R028" -> 2;
+                case "R032" -> 3;
                 default -> 0;
             };
         }

@@ -54,6 +54,27 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    public WishlistDTO removeFromWishlist(Long userId, Long productId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Product> productOptional = productRepository.findById(productId);
+
+        if (userOptional.isPresent() && productOptional.isPresent()) {
+            User user = userOptional.get();
+            Product product = productOptional.get();
+
+            Optional<Wishlist> wishlistItemOptional = wishlistRepository.findByUserAndProduct(user, product);
+
+            if (wishlistItemOptional.isPresent()) {
+                Wishlist wishlistItem = wishlistItemOptional.get();
+                wishlistRepository.delete(wishlistItem);
+                return convertToDTO(wishlistItem);
+            }
+        }
+        return null; // 사용자나 상품이 없거나 위시리스트 아이템이 없을 경우 처리
+    }
+
+
+    @Override
     public List<WishlistDTO> getUserWishlist(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
 
