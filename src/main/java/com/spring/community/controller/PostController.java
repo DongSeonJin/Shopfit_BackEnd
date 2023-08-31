@@ -59,8 +59,7 @@ public class PostController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<String> createPost(@ModelAttribute PostSaveDTO postSaveDTO,
-                                             @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
         System.out.println(postSaveDTO);
         postService.savePost(postSaveDTO);
         return ResponseEntity.ok("게시글이 저장되었습니다.");
