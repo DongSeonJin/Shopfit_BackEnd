@@ -37,6 +37,17 @@ public class WishlistController {
         }
     }
 
+    @DeleteMapping("/remove")
+    public ResponseEntity<?> removeFromWishlist(@RequestParam Long userId, @RequestParam Long productId) {
+        WishlistDTO wishlistItem = wishlistService.removeFromWishlist(userId, productId);
+        if (wishlistItem != null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    // wishlist 선택 삭제
     @DeleteMapping("/remove/{wishlistId}")
     public ResponseEntity<Void> removeFromWishlist(@PathVariable Long wishlistId) {
         wishlistService.removeFromWishlist(wishlistId);

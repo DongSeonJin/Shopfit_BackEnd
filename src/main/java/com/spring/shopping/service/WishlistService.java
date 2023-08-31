@@ -12,6 +12,8 @@ public interface WishlistService {
 
     void removeFromWishlist(Long wishlistId);
 
+    WishlistDTO removeFromWishlist(Long userId, Long productId);
+
     List<WishlistDTO> getUserWishlist(Long userId);
 
     Map<Long, Long> getProductRowCountMap();
