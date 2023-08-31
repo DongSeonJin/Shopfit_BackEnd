@@ -29,6 +29,7 @@ public class ReplyController {
         this.replyService = replyService;
     }
 
+    // postId 에 해당하는 댓글 전부 가져오기
     @GetMapping("/{postId}/all")
     public ResponseEntity<List<ReplyResponseDTO>> getAllRepliesByPostId (@PathVariable long postId) {
         List<Reply> replies = replyService.findAllByPostId(postId);
@@ -44,6 +45,7 @@ public class ReplyController {
                 .body(replyResponseDTOS);
     }
 
+    // replyId 에 해당하는 댓글 가져오기
     @GetMapping("/{replyId}")
     public ResponseEntity<?> getReplyByReplyId (@PathVariable long replyId) {
         Reply reply = replyService.findByReplyId(replyId);
@@ -59,6 +61,7 @@ public class ReplyController {
         return ResponseEntity.ok(replyResponseDTO);
     }
 
+    // 댓글 작성하기
     @PostMapping
     public ResponseEntity<String> createReply(@RequestBody Reply reply) {
         replyService.save(reply);
@@ -66,6 +69,7 @@ public class ReplyController {
         return ResponseEntity.ok("댓글이 등록되었습니다.");
     }
 
+    // 댓글 삭제하기
     @DeleteMapping("/{replyId}")
     public ResponseEntity<String> deleteReply(@PathVariable long replyId) {
         try {
@@ -77,6 +81,7 @@ public class ReplyController {
         }
     }
 
+    // 댓글 수정하기
     @RequestMapping(value = "/{replyId}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public ResponseEntity<String> updateReply(@PathVariable long replyId, @RequestBody ReplyUpdateRequestDTO replyUpdateRequestDTO) {
         try {

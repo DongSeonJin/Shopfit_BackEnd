@@ -14,13 +14,11 @@ public class ReplyCreateRequestDTO {
     private long postId;
     private String content;
     private String nickname;
-    private LocalDateTime createdAt;
 
     public ReplyCreateRequestDTO(Reply reply) {
         this.postId = reply.getPost().getPostId();
         this.content = reply.getContent();
         this.nickname = reply.getUser().getNickname();
-        this.createdAt = reply.getCreatedAt();
     }
 
 }
