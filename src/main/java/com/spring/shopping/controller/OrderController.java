@@ -29,7 +29,7 @@ public class OrderController {
     }
 
     // 오더 생성
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);

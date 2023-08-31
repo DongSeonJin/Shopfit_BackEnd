@@ -20,7 +20,7 @@ public class S3Controller {
     }
 
     // 파일 1개 업로드
-    @PostMapping("/upload")
+    @PostMapping
     public String uploadImage(@RequestParam("file") MultipartFile multipartFile) throws IOException {
 
         // 업로드된 파일을 AmazonS3에 업로드하고
@@ -32,7 +32,7 @@ public class S3Controller {
 
 
     // 파일 1개 삭제
-    @DeleteMapping("/delete/{objectKey}")
+    @DeleteMapping("/{objectKey}")
     public String deleteObject(@PathVariable String objectKey) {
 
         // 경로 직접 설정
