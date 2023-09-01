@@ -111,7 +111,7 @@ public class ProductController {
     }
 
     // 등록
-    @PostMapping(value ="/save")
+    @PostMapping
     public ResponseEntity<String> saveProductAndImage(@RequestBody ProductSaveRequestDTO requestDTO) {
         boolean success = productService.saveProductAndImage(requestDTO);
 
@@ -124,7 +124,7 @@ public class ProductController {
 
 
     // ID로 삭제
-    @DeleteMapping("/delete/{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteProductById(@PathVariable long productId){
         productService.deleteProductById(productId);
 
@@ -146,7 +146,7 @@ public class ProductController {
 
 
     // 수정 로직
-    @RequestMapping(value="/update/{productId}", method = {RequestMethod.PUT, RequestMethod.PATCH})
+    @RequestMapping(value="/{productId}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public ResponseEntity<String> updateProduct(@PathVariable Long productId,
                                                 @RequestBody ProductUpdateRequestDTO requestDTO) {
 
@@ -186,7 +186,8 @@ public class ProductController {
 
 
     // 상품의 재고(stock) 수정
-    @PostMapping("/update/stock/{productId}")
+    @PostMapping("/stock/{productId}")
+    // shopping/stock/{productId}로 수정
     public ResponseEntity<String> updateProductStock(@PathVariable Long productId,
                                                      @RequestBody ProductStockUpdateRequestDTO requestDTO) {
         // json 데이터에 productId를 포함하는 대신 url에 포함시켰으므로 requestBody에 추가해줘야 함

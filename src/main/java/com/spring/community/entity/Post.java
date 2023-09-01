@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter @ToString @Builder
@@ -69,5 +70,10 @@ public class Post {
     @Column(name = "image_url3", nullable = true, columnDefinition = "TEXT")
     @Lob
     private String imageUrl3;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Reply> replies = new ArrayList<>();
+
+
 
 }

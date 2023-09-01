@@ -36,7 +36,6 @@ public class PostServiceImpl implements PostService{
         this.postJPARepository = postRepository;
     }
 
-    // 생성자 주입으로 변경
 
     @Override
     public IndividualPostResponseDTO getPostById(Long postId) {
@@ -80,20 +79,6 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void update(PostUpdateDTO postUpdateDTO) {
-
-        //        Post post = postJPARepository.findById(postUpdateDTO.getPostId()).get();
-//
-//
-//        // entity에 setter를 넣는것은 불변성을 위반하기 때문에 builder로 구현.
-//        Post modifiedPost = Post.builder()
-//                .postId(postUpdateDTO.getPostId())
-//                .nickname(postUpdateDTO.getNickname())
-//                .title(postUpdateDTO.getTitle())
-//                .content(postUpdateDTO.getContent())
-//                .updatedAt(LocalDateTime.now())
-//                .build(); // 추후 DTO에 메서드 추가하고, builder붙여서 DTO로 모두 교체하는 리펙토링 시도.
-//
-//        postJPARepository.save(modifiedPost); // JPA의 save메서드는 DB에 존재하는 id일경우 update, 없을경우 insert
 
         // 수정 전 게시글 찾기
         Optional<Post> optionalPost = postJPARepository.findById(postUpdateDTO.getPostId());

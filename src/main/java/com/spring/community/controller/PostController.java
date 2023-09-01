@@ -59,20 +59,20 @@ public class PostController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
         System.out.println(postSaveDTO);
         postService.savePost(postSaveDTO);
         return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
 
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<String > deletePostById(@PathVariable Long postId) {
         postService.deletePostById(postId);
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
 
-    @RequestMapping(value = "/update/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
+    @RequestMapping(value = "/{postId}", method = {RequestMethod.PUT, RequestMethod.PATCH} )
     public ResponseEntity<String> updatePost(@PathVariable Long postId,
                                              @RequestBody PostUpdateDTO postUpdateDTO) {
         System.out.println("서버 요청 도착");
