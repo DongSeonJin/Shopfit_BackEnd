@@ -22,7 +22,7 @@ public class CartController {
     }
 
     // 장바구니에 추가
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<CartDTO> addToCart(@RequestBody CartDTO cartDTO) {
         CartDTO cartItem = cartService.addToCart(cartDTO);
         if(cartItem != null) {
@@ -33,7 +33,7 @@ public class CartController {
     }
 
     // 장바구니에서 삭제
-    @DeleteMapping("/remove/{cartId}")
+    @DeleteMapping("/{cartId}")
     public ResponseEntity<Void> removeFromCart(@PathVariable Long cartId) {
         cartService.removeFromCart(cartId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

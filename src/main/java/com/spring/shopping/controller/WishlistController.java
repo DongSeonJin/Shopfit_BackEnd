@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/wishlist")
+@RequestMapping("/wishlist")
 public class WishlistController {
 
     private final WishlistService wishlistService;
@@ -48,7 +48,7 @@ public class WishlistController {
     }
 
     // wishlist 선택 삭제
-    @DeleteMapping("/remove/{wishlistId}")
+    @DeleteMapping("/{wishlistId}")
     public ResponseEntity<Void> removeFromWishlist(@PathVariable Long wishlistId) {
         wishlistService.removeFromWishlist(wishlistId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
