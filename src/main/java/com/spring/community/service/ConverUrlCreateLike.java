@@ -73,7 +73,7 @@ public class ConverUrlCreateLike {
 //                        url1.add(rt.getString(1));
 //                    }
 
-                    PreparedStatement stmt4 = conn.prepareStatement("CREATE TABLE likes_" + nicknames.get(i) + "(like_id BIGINT PRIMARY KEY AUTO_INCREMENT, userId BIGINT, postId BIGINT, dynamic_post_id BIGINT," +
+                    PreparedStatement stmt4 = conn.prepareStatement("CREATE TABLE likes_" + nicknames.get(i) + "(like_id BIGINT PRIMARY KEY AUTO_INCREMENT, user_id BIGINT, post_id BIGINT, dynamic_post_id BIGINT," +
                             " createdAt DATETIME, FOREIGN KEY (user_id) REFERENCES users(user_id) " +
                             "ON DELETE CASCADE, FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE)");
 
