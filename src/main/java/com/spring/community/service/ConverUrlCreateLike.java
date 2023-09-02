@@ -60,7 +60,7 @@ public class ConverUrlCreateLike {
                     System.out.println("imageUrl1 변환성공, imageUrl1 :" + url);
                     System.out.println("imageUrl2 변환성공, imageUrl2 :" + imgurl2);
                     System.out.println("테이블 이름 :" + tableNames.get(i));
-                    System.out.println(i + "반째 변환성공======================================================");
+                    System.out.println(i + "번째 변환성공======================================================");
 
 
                     PreparedStatement stmt3 = conn.prepareStatement("UPDATE " + tableNames.get(i) + " SET image_url1=?, image_url2=?");
@@ -73,9 +73,9 @@ public class ConverUrlCreateLike {
 //                        url1.add(rt.getString(1));
 //                    }
 
-                    PreparedStatement stmt4 = conn.prepareStatement("CREATE TABLE likes_" + nicknames.get(i) + "(userId BIGINT, postId BIGINT, createdAt DATETIME, FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE)");
-                    stmt4.setString(1,);
-                    stmt4.setString(2,);
+                    PreparedStatement stmt4 = conn.prepareStatement("CREATE TABLE likes_" + nicknames.get(i) + "(userId BIGINT, postId BIGINT, dynamic_post_id BIGINT," +
+                            " createdAt DATETIME, FOREIGN KEY (user_id) REFERENCES users(user_id) " +
+                            "ON DELETE CASCADE, FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE)");
 
                     int createTables = stmt4.executeUpdate();
                 }
