@@ -8,9 +8,9 @@ public class ConverUrlCreateLike {
     public static void main(String[] args) {
 
 
-        String URL = "jdbc:mysql://db-ibfto-kr.vpc-pub-cdb.ntruss.com:3306/nc06-final-project?serverTimezone=Asia/Seoul&characterEncoding=UTF-8";
-        String USER = "master";
-        String PASSWORD = "naverclouddb123!@#";
+        String URL = "";
+        String USER = "";
+        String PASSWORD = "";
 
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {

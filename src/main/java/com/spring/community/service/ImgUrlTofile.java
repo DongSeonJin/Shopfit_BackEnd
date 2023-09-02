@@ -23,12 +23,12 @@ public class ImgUrlTofile {// imgUrl을 이미지 파일로 변환해주는 코�
 
 
     public static void main(String[] args){
-        String accessKey = "9PrFrXx4EwNpKkoKLF3x";
-        String secretKey = "dMp0ZtIUTx9uhJcHksLBu4n315nsoxHgEN1qexAZ";
-        String region = "ap-northeast-2";
-        String bucketName = "bitcamp-bucket-57";
-        String filePath = "C:\\workspace\\instagram_img2";
-        String endPoint = "https://kr.object.ncloudstorage.com";
+        String accessKey = "";
+        String secretKey = "";
+        String region = "";
+        String bucketName = "";
+        String filePath = "";
+        String endPoint = "";
 
 
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
