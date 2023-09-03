@@ -3,20 +3,23 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.community.repository.DynamicLikeRepository">
-    <insert id="createDynamicLike" parameterType="com.spring.community.DTO.LikeSaveDTO">
-        CREATE TABLE IF NOT EXISTS like_${nickname} (
+    <insert id="createDynamicLike" parameterType="com.spring.community.DTO.LikeRequestDTO">
+        CREATE TABLE IF NOT EXISTS like_${postId} (
         like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
         user_id BIGINT NOT NULL,
-        post_id BIGINT NOT NULL,
-        dynamic_post_id BIGINT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-        FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
         );
     </insert>
 
-    <insert id="insertDynamicLike" parameterType="com.spring.community.DTO.LikeSaveDTO">
-        INSERT INTO like_${nickname} (user_id, post_id)
-        VALUES (#{userId}, #{postId});
+    <insert id="insertDynamicLike" parameterType="com.spring.community.DTO.LikeRequestDTO">
+        INSERT INTO like_${postId} (user_id)
+        VALUES (#{userId});
     </insert>
+
+    <delete id="deleteDynamicLike" parameterType="com.spring.community.DTO.LikeRequestDTO">
+        DELETE FROM like_${postId}
+        WHERE user_id = #{userId};
+
+    </delete>
 
 </mapper>

@@ -1,17 +1,14 @@
 package com.spring.community.DTO;
 
 import com.spring.community.entity.Post;
-import com.spring.community.entity.PostCategory;
-import com.spring.user.entity.User;
 import lombok.*;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class PostSaveDTO {
+public class PostCreateRequestDTO {
 
     private Long userId;
     private String nickname;
@@ -26,7 +23,7 @@ public class PostSaveDTO {
     private Long viewCount = 0L;
 
 
-    public PostSaveDTO(Post post){
+    public PostCreateRequestDTO(Post post){
         this.userId = post.getUser().getUserId();
         this.nickname = post.getUser().getNickname();
         this.categoryId = post.getPostCategory().getCategoryId();

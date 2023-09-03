@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.community.repository.DynamicPostRepository">
-    <insert id="createDynamicTable" parameterType="com.spring.community.DTO.PostSaveDTO">
+    <insert id="createDynamicTable" parameterType="com.spring.community.DTO.PostCreateRequestDTO">
 
         CREATE TABLE IF NOT EXISTS post_${nickname} (
         post_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -23,7 +23,7 @@
 
     </insert>
 
-    <insert id="insertDynamicTable" parameterType="com.spring.community.DTO.PostSaveDTO">
+    <insert id="insertDynamicTable" parameterType="com.spring.community.DTO.PostCreateRequestDTO">
         INSERT INTO post_${nickname}
         (user_id, nickname, category_id, title, content, image_url1, image_url2, image_url3, created_at, updated_at)
         VALUES
@@ -31,7 +31,7 @@
 
     </insert>
 
-    <insert id="insertPostTable" parameterType="com.spring.community.DTO.PostSaveDTO">
+    <insert id="insertPostTable" parameterType="com.spring.community.DTO.PostCreateRequestDTO">
         INSERT INTO post
         (user_id, nickname, category_id, title, content, view_count, image_url1, image_url2, image_url3, created_at, updated_at)
         VALUES
@@ -39,7 +39,7 @@
 
     </insert>
 
-    <insert id="createDynamicLike" parameterType="com.spring.community.DTO.PostSaveDTO">
+    <insert id="createDynamicLike" parameterType="com.spring.community.DTO.PostCreateRequestDTO">
         CREATE TABLE IF NOT EXISTS like_${nickname} (
         like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
         user_id BIGINT NOT NULL,

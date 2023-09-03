@@ -2,17 +2,14 @@ package com.spring.community.controller;
 
 import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
-import com.spring.community.repository.PostJPARepository;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post")
@@ -60,9 +57,9 @@ public class PostController {
 
 
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
-        System.out.println(postSaveDTO);
-        postService.savePost(postSaveDTO);
+    public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO postCreateRequestDTO) {
+        System.out.println(postCreateRequestDTO);
+        postService.savePost(postCreateRequestDTO);
         return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
 
@@ -89,11 +86,10 @@ public class PostController {
 
     }
 
-    @PostMapping("/like")
-    public ResponseEntity<String> pushLike(@RequestBody LikeSaveDTO likeSaveDTO){
-        postService.saveLike(likeSaveDTO); //받아야 할 정보 : 글주인 nickname과 postId, 좋아요 누른사람 userId
-        return ResponseEntity.ok("좋아요 누르기 성공");
-    }
+
+
+
+
 
     @GetMapping("/recent-top4")
     public List<PostTop4DTO> getRecentTop4Posts() {

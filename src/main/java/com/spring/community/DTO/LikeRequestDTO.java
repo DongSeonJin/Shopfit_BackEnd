@@ -8,11 +8,10 @@ import lombok.*;
 @Setter
 @Builder
 @Data
-public class LikeSaveDTO {
+public class LikeRequestDTO {
 
-    private Long likeId;
-    private String nickname;
     private Long userId;
     private Long postId;
+
 
 }

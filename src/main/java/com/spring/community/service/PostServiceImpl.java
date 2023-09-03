@@ -3,10 +3,8 @@ package com.spring.community.service;
 import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
-import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
-import com.spring.shopping.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,8 +24,7 @@ public class PostServiceImpl implements PostService{
     @Autowired
     DynamicPostRepository dynamicPostRepository;
 
-    @Autowired
-    DynamicLikeRepository dynamicLikeRepository;
+
 
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 게시글을 조회할지
 
@@ -66,11 +63,11 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void savePost(PostSaveDTO postSaveDTO) {
-        dynamicPostRepository.createDynamicTable(postSaveDTO);// 없는 테이블명(nickname)일 시, 테이블 생성
-        dynamicPostRepository.insertDynamicTable(postSaveDTO); // 데이터 삽입
-        dynamicPostRepository.insertPostTable(postSaveDTO);// 검색용 통합 테이블에 삽입.
-        dynamicPostRepository.createDynamicLike(postSaveDTO); // 동적 좋아요 테이블 생성
+    public void savePost(PostCreateRequestDTO postCreateRequestDTO) {
+        dynamicPostRepository.createDynamicTable(postCreateRequestDTO);// 없는 테이블명(nickname)일 시, 테이블 생성
+        dynamicPostRepository.insertDynamicTable(postCreateRequestDTO); // 데이터 삽입
+        dynamicPostRepository.insertPostTable(postCreateRequestDTO);// 검색용 통합 테이블에 삽입.
+        dynamicPostRepository.createDynamicLike(postCreateRequestDTO); // 동적 좋아요 테이블 생성
     }
 
     @Override
@@ -103,11 +100,6 @@ public class PostServiceImpl implements PostService{
         postJPARepository.save(existingPost);
     }
 
-    @Override
-    public void saveLike(LikeSaveDTO likeSaveDTO){
-        dynamicLikeRepository.createDynamicLike(likeSaveDTO);
-        dynamicLikeRepository.insertDynamicLike(likeSaveDTO);
-    }
 
     @Override
     public void increaseViewCount (Long postId) {

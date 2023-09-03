@@ -1,17 +1,17 @@
 package com.spring.community.repository;
 
-import com.spring.community.DTO.LikeSaveDTO;
-import com.spring.community.DTO.PostSaveDTO;
-import com.spring.community.entity.Post;
+import com.spring.community.DTO.PostCreateRequestDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface DynamicPostRepository {
 
 
-    void createDynamicTable(PostSaveDTO postSaveDTO);
-    void insertDynamicTable(PostSaveDTO postSaveDTO);
-    void insertPostTable(PostSaveDTO postSaveDTO);
+    void createDynamicTable(PostCreateRequestDTO postCreateRequestDTO);
+    void insertDynamicTable(PostCreateRequestDTO postCreateRequestDTO);
+    void insertPostTable(PostCreateRequestDTO postCreateRequestDTO);
 
-    void createDynamicLike(PostSaveDTO postSaveDTO);
+    void createDynamicLike(PostCreateRequestDTO postCreateRequestDTO);
+
+
 }
