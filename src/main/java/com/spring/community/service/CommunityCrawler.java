@@ -22,10 +22,9 @@ import java.util.concurrent.*;
 
 
 public class CommunityCrawler {
-    private static final String URL = "jdbc:mysql://db-ibfto-kr.vpc-pub-cdb.ntruss.com:3306/nc06-final-project?serverTimezone=UTC&characterEncoding=UTF-8";
-    private static final String USER = "master";
-    //naverclouddb123!@#
-    private static final String PASSWORD = "naverclouddb123!@#";
+    private static final String URL = "";
+    private static final String USER = "";
+    private static final String PASSWORD = "";
 
 
 
