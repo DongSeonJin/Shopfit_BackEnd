@@ -13,6 +13,12 @@ public interface ProductService {
     // 전체 조회
     Page<Product> getAllProducts(int pageNum);
 
+    // 정렬 전체 조회 - 가격 낮은 순(1), 가격 높은 순(2), 오래된 순(3), 리뷰 많은 순(4)
+    Page<Product> getAllProductsBySorting(int pageNum, int sortType);
+
+    // 카테고리 및 정렬 전체 조회
+    Page<Product> getProductsByCategoryAndSorting(Long categoryId, int pageNum, int sortType);
+
     // 카테고리별 조회
     Page<Product> getProductsByCategory(Long categoryId, int pageNum);
 
@@ -23,7 +29,6 @@ public interface ProductService {
     Page<Product> searchProductsByKeyword(String keyword, int pageNum);
 
     // 카테고리 검색
-
     Page<Product> searchProductsByCategoryByKeyword(Long categoryId, String keyword, int pageNum);
 
 

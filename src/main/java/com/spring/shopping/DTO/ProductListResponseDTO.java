@@ -21,6 +21,7 @@ public class ProductListResponseDTO { // 상품 목록 조회 시 사용하는 D
     private Long stockQuantity;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long reviewCount; // 정렬을 위한 리뷰 개수 변수
 
     public ProductListResponseDTO(Product product) { // 엔티티를 DTO로 바꾸는 생성자
         this.productId = product.getProductId();
@@ -31,5 +32,10 @@ public class ProductListResponseDTO { // 상품 목록 조회 시 사용하는 D
         this.stockQuantity = product.getStockQuantity();
         this.createdAt = product.getCreatedAt();
         this.updatedAt = product.getUpdatedAt();
+
+        // 리뷰 개수를 설정
+        this.reviewCount = (long) product.getReviews().size();
+
+
     }
 }
