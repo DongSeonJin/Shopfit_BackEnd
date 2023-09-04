@@ -17,7 +17,7 @@ public interface PostService {
     void update(PostUpdateDTO postUpdateDTO);
     void saveLike(LikeSaveDTO likeSaveDTO);
     void increaseViewCount (Long postId);
-
     List<PostTop4DTO> getRecentTop4Posts();
+    List<PostListByUserIdDTO> findPostsByUserId (Long userId);
 
 }

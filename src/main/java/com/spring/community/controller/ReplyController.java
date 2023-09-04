@@ -60,6 +60,7 @@ public class ReplyController {
         ReplyResponseDTO replyResponseDTO = new ReplyResponseDTO(reply);
         return ResponseEntity.ok(replyResponseDTO);
     }
+  
 
     // 댓글 작성하기
     @PostMapping
