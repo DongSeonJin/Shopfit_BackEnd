@@ -94,8 +94,6 @@ public class User implements UserDetails {
     // builder패턴은 JPA에서 변경을 감지하지 못하기때문에 문제의 여지가 있음.
 
 
-
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // 테스트코드 우회 접근
     public static User createUser() {
         return new User();
@@ -103,5 +101,4 @@ public class User implements UserDetails {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }
