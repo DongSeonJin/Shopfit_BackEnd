@@ -7,4 +7,6 @@ public interface LikeService {
     void saveLike(LikeRequestDTO likeRequestDTO);
 
     void deleteLike(LikeRequestDTO likeRequestDTO);
+
+    Long getLikeCount(Long postId);
 }

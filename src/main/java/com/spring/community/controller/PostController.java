@@ -2,6 +2,7 @@ package com.spring.community.controller;
 
 import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
+import com.spring.community.service.LikeService;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +21,12 @@ public class PostController {
 
     private final PostService postService;
 
+    private final LikeService likeService;
+
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, LikeService likeService) {
         this.postService = postService;
+        this.likeService = likeService;
     }
 
 
@@ -41,6 +45,12 @@ public class PostController {
         Page<PostListResponseDTO> posts = postService.getPostsByCategoryId(categoryId, currentPageNum)
                 .map(PostListResponseDTO:: new);
 
+        // 각 게시글의 좋아요 수를 조회하여 DTO에 설정
+        posts.getContent().forEach(post -> {
+            long likeCount = likeService.getLikeCount(post.getPostId());
+            post.setLikeCnt(likeCount);
+        });
+
         return ResponseEntity
                 .ok()
                 .body(posts);
@@ -51,6 +61,11 @@ public class PostController {
     public ResponseEntity<IndividualPostResponseDTO> getPostById (@PathVariable Long postId) {
         postService.increaseViewCount(postId); // 조회 할 때마다 조회수 +1
         IndividualPostResponseDTO responseDTO = postService.getPostById(postId);
+
+        //좋아요 갯수 responseDTD에 set
+        long likeCount = likeService.getLikeCount(postId);
+        responseDTO.setLikeCnt(likeCount);
+
 
         return ResponseEntity.ok(responseDTO);
     }

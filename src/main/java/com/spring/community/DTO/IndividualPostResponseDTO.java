@@ -23,6 +23,7 @@ public class IndividualPostResponseDTO {
     private String imageUrl2;
     private String imageUrl3;
     private String reply;
+    private Long LikeCnt; //좋아요 갯수 추가
 
     public IndividualPostResponseDTO (Post post) {
         this.postId = post.getPostId();
@@ -36,6 +37,7 @@ public class IndividualPostResponseDTO {
         this.imageUrl1 = post.getImageUrl1();
         this.imageUrl2 = post.getImageUrl2();
         this.imageUrl3 = post.getImageUrl3();
+        this.LikeCnt = getLikeCnt();
 
     }
 

@@ -23,4 +23,9 @@ public class LikeServiceImpl implements LikeService{
         dynamicLikeRepository.deleteDynamicLike(likeRequestDTO);
     }
 
+    @Override
+    public Long getLikeCount(Long postId) {
+        return dynamicLikeRepository.getLikeCount(postId);
+    }
+
 }
