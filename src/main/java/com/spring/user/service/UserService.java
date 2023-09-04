@@ -1,6 +1,7 @@
 package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.LoginRequestDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 
@@ -15,5 +16,7 @@ public interface UserService {
     User getUserById(Long id);
     void updateUser(UserUpdateDTO userUpdateDTO);
     void deleteUserById(Long id);
+
+    boolean authenticateUser(LoginRequestDTO loginRequest);
 
 }

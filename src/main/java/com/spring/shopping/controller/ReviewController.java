@@ -7,6 +7,7 @@ import com.spring.shopping.service.ProductService;
 import com.spring.user.entity.User;
 import com.spring.shopping.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,26 +63,23 @@ public class ReviewController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 새로운 리뷰 생성
-    @PostMapping
-    public ResponseEntity<ReviewDTO> createReview(@RequestParam Long userId,
-                                                  @RequestParam Long productId,
-                                                  @RequestParam Double rating,
-                                                  @RequestParam String comment) {
-        User user = orderService.getUserInfo(userId);
-        user.setUserId(userId);
-
-        Product product = productService.getProductInfo(productId);
-        product.setProductId(productId);
-
-        ReviewDTO createdReview = reviewService.createReview(user, product, rating, comment);
-        return ResponseEntity.ok(createdReview);
-    }
-
     // 특정 리뷰를 삭제
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.noContent().build();
+    }
+
+    // 리뷰 생성
+    @PostMapping("/create")
+    public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) {
+        try {
+            // ReviewDTO를 사용하여 리뷰를 생성하고 반환
+            ReviewDTO createdReview = reviewService.createReview(reviewDTO);
+            return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            // 사용자나 제품을 찾을 수 없는 경우 예외 처리
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

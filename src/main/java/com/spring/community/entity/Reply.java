@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @ToString @Getter @Builder @Setter
-@EntityListeners(AuditingEntityListener.class) //CreatedAt, updatedAt 자동으로 현제시간 설정하는 JPA
+@EntityListeners(AuditingEntityListener.class) //CreatedAt, updatedAt 자동으로 현재시간 설정하는 JPA
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "reply")

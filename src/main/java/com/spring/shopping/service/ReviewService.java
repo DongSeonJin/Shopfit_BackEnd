@@ -17,7 +17,7 @@ public interface ReviewService {
 
     Optional<ReviewDTO> getReviewById(Long reviewId);
 
-    ReviewDTO createReview(User user, Product product, Double rating, String comment);
+    ReviewDTO createReview(ReviewDTO reviewDTO);
 
     void deleteReview(Long reviewId);
 

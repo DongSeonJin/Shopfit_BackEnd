@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-@Entity @Getter @Builder
+@Entity @Getter @Builder @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED) @AllArgsConstructor
 @Table(name = "users")// mysql에서 USER를 테이블명으로 지정할 수 없으므로 users로 생성
 public class User implements UserDetails {
@@ -55,7 +55,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-
     @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -95,8 +94,6 @@ public class User implements UserDetails {
     // builder패턴은 JPA에서 변경을 감지하지 못하기때문에 문제의 여지가 있음.
 
 
-
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // 테스트코드 우회 접근
     public static User createUser() {
         return new User();
@@ -104,5 +101,4 @@ public class User implements UserDetails {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }
