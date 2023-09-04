@@ -19,7 +19,6 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService{
 
-
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -30,12 +29,15 @@ public class UserServiceImpl implements UserService{
     }
 
 
+
     @Override
     public void save(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
 
          userRepository.save(User.builder()
                 .email(dto.getEmail())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
+                 .nickname(dto.getNickname())
+                 .imageUrl(dto.getImageUrl())
                 .build()
          );
     }
