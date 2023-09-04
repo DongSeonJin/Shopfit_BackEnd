@@ -76,12 +76,12 @@ public class ProductController {
         return ResponseEntity.ok(productListResponseDTOPage);
     }
 
-    // 개별 상품 상세 조회
-    @GetMapping("/products/{productId}")
-    public ResponseEntity<ProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
-        ProductDetailResponseDTO productDetail = productService.getProductDetailById(productId);
-        return ResponseEntity.ok(productDetail);
-    }
+        // 개별 상품 상세 조회
+        @GetMapping("/products/{productId}")
+        public ResponseEntity<ProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
+            ProductDetailResponseDTO productDetail = productService.getProductDetailById(productId);
+            return ResponseEntity.ok(productDetail);
+        }
 
 
     // 검색
