@@ -17,8 +17,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
 
 
-     UserRepository userRepository;
-     BCryptPasswordEncoder bCryptPasswordEncoder;
+     private final UserRepository userRepository;
+     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Override
@@ -27,6 +27,8 @@ public class UserServiceImpl implements UserService{
          userRepository.save(User.builder()
                 .email(dto.getEmail())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
+                 .nickname(dto.getNickname())
+                 .imageUrl(dto.getImageUrl())
                 .build()
          );
     }
