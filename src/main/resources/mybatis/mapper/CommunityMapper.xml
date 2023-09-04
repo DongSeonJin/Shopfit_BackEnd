@@ -39,6 +39,11 @@
 
     </insert>
 
+
+    <select id="findPostsByUser" resultType="com.spring.community.entity.Post">
+        select * from post_${nickname}
+    </select>
+
     <insert id="createDynamicLike" parameterType="com.spring.community.DTO.PostSaveDTO">
         CREATE TABLE IF NOT EXISTS like_${nickname} (
         like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -49,6 +54,7 @@
         FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE
         );
     </insert>
+
 
 
 </mapper>

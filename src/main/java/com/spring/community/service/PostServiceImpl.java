@@ -6,7 +6,6 @@ import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
-import com.spring.shopping.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,19 +20,18 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService{
 
 
-    @Autowired
-    PostJPARepository postJPARepository;
-    @Autowired
-    DynamicPostRepository dynamicPostRepository;
 
-    @Autowired
-    DynamicLikeRepository dynamicLikeRepository;
+    private final PostJPARepository postJPARepository;
+    private final DynamicPostRepository dynamicPostRepository;
+    private final DynamicLikeRepository dynamicLikeRepository;
 
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 게시글을 조회할지
 
     @Autowired
-    public PostServiceImpl(PostJPARepository postRepository){
+    public PostServiceImpl(PostJPARepository postRepository, DynamicPostRepository dynamicPostRepository, DynamicLikeRepository dynamicLikeRepository){
         this.postJPARepository = postRepository;
+        this.dynamicPostRepository = dynamicPostRepository;
+        this.dynamicLikeRepository = dynamicLikeRepository;
     }
 
 
@@ -126,5 +124,13 @@ public class PostServiceImpl implements PostService{
                 .collect(Collectors.toList());
 
         return top4DTOs;
+    }
+
+    @Override
+    public List<PostListByUserIdDTO> findPostsByUserId(Long userId) {
+        List<Post> posts = postJPARepository.findByUser_UserId(userId);
+        return posts.stream()
+                .map(PostListByUserIdDTO::new)
+                .collect(Collectors.toList());
     }
 }
