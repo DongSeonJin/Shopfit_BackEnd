@@ -7,9 +7,10 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 public class UserUpdateDTO {
 
-    private Long UserId;
+    private Long userId;
     private String nickname;
     private String password;
     private String imageUrl;

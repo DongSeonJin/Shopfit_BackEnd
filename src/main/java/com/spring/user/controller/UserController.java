@@ -1,11 +1,15 @@
 package com.spring.user.controller;
 
 import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.UserUpdateDTO;
+import com.spring.user.entity.User;
+import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.service.UserDetailService;
 import com.spring.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -41,6 +45,34 @@ public class UserController {
         new SecurityContextLogoutHandler().logout(request, response,
                 SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/login";
+    }
+
+    // 회원 정보 조회
+    @GetMapping("/mypage/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 회원 정보 수정
+    @PatchMapping("/mypage")
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        userUpdateDTO.toString();
+
+        try {
+            userUpdateDTO.toString();
+            userService.updateUser(userUpdateDTO);
+            return new ResponseEntity<>("유저 정보가 성공적으로 업데이트되었습니다.", HttpStatus.OK);
+        } catch (UserIdNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("유저 정보 업데이트 중에 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
