@@ -39,6 +39,10 @@
 
     </insert>
 
+    <select id="findPostsByUser" resultType="com.spring.community.entity.Post">
+        select * from post_${nickname}
+    </select>
+
 
 </mapper>
 

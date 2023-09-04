@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class ReplyServiceImpl implements ReplyService {
 
-    ReplyRepository replyRepository;
+    private final ReplyRepository replyRepository;
 
     @Autowired
     public ReplyServiceImpl (ReplyRepository replyRepository) {
