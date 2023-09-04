@@ -68,6 +68,7 @@ public class PostServiceImpl implements PostService{
         dynamicPostRepository.createDynamicTable(postSaveDTO);// 없는 테이블명(nickname)일 시, 테이블 생성
         dynamicPostRepository.insertDynamicTable(postSaveDTO); // 데이터 삽입
         dynamicPostRepository.insertPostTable(postSaveDTO);// 검색용 통합 테이블에 삽입.
+        dynamicPostRepository.createDynamicLike(postSaveDTO); // 동적 좋아요 테이블 생성
     }
 
     @Override
