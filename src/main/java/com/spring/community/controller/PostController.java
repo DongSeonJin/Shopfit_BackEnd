@@ -72,9 +72,8 @@ public class PostController {
 
 
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestBody PostCreateRequestDTO postCreateRequestDTO) {
-        System.out.println(postCreateRequestDTO);
-        postService.savePost(postCreateRequestDTO);
+    public ResponseEntity<String> createPost(@RequestBody Post post) {
+        postService.createPost(post);
         return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
 

@@ -5,7 +5,6 @@ import com.spring.community.DTO.PostCreateRequestDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
-import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;

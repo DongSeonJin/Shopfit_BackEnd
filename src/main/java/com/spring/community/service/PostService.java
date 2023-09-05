@@ -11,7 +11,7 @@ public interface PostService {
     IndividualPostResponseDTO getPostById(Long id);
     List<Post> getAllPosts();
     Page<Post> getPostsByCategoryId(Long categoryId, int pageNumber);
-    void savePost(PostCreateRequestDTO postCreateRequestDTO);
+    void createPost(Post post);
     void deletePostById(Long id);
     void update(PostUpdateDTO postUpdateDTO);
     void increaseViewCount (Long postId);

@@ -9,4 +9,6 @@ public interface LikeService {
     void deleteLike(LikeRequestDTO likeRequestDTO);
 
     Long getLikeCount(Long postId);
+
+    int isLiked(LikeRequestDTO likeRequestDTO);
 }

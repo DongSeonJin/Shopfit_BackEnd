@@ -28,4 +28,11 @@ public class LikeServiceImpl implements LikeService{
         return dynamicLikeRepository.getLikeCount(postId);
     }
 
+    @Override
+    public int isLiked(LikeRequestDTO likeRequestDTO) {
+        int isLikeCliked = dynamicLikeRepository.isLiked(likeRequestDTO); //좋아요가 눌렸다면 1, 아니면 0 반환.
+
+        return isLikeCliked;
+    }
+
 }

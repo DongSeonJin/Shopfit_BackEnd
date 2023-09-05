@@ -13,4 +13,6 @@ public interface DynamicLikeRepository {
     void deleteDynamicLike(LikeRequestDTO likeRequestDTO);
 
     Long getLikeCount(Long postId);
+
+    int isLiked(LikeRequestDTO likeRequestDTO);
 }

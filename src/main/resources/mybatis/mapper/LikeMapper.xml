@@ -25,5 +25,9 @@
     <select id="getLikeCount" parameterType="Long" resultType="Long">
         SELECT COUNT(*) FROM likes_${value}
     </select>
+    
+    <select id="isLiked" parameterType="com.spring.community.DTO.LikeRequestDTO" resultType="int">
+        select count(*) from likes_${postId} where user_id = #{userId};
+    </select>
 
 </mapper>
