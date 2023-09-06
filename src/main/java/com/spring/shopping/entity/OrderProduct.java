@@ -25,12 +25,12 @@ public class OrderProduct {
     @Column(name = "order_product_id")
     private Long orderProductId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     @OnDelete(action = OnDeleteAction.CASCADE) // 주문이 삭제되면 주문 물품도 삭제
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @OnDelete(action = OnDeleteAction.CASCADE) // 상품이 삭제되면 주문 물품도 삭제
     private Product product;

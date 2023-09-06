@@ -19,7 +19,7 @@ public class ProductImage {
     @Column(name = "product_image_id")
     private Long productImageId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @OnDelete(action = OnDeleteAction.CASCADE) // 상품 삭제 시 이미지도 같이 삭제
     private Product product;

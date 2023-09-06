@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,24 +58,28 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(id).get();
     }
 
+    // 유저 정보 수정
     @Override
     @Transactional
     public void updateUser(UserUpdateDTO userUpdateDTO) {
 
-        userUpdateDTO.toString();
-
         User user = userRepository.findById(userUpdateDTO.getUserId())
-                .orElseThrow(() -> new UserIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + userUpdateDTO.getUserId()));
+                .orElseThrow(() -> new UserIdNotFoundException("해당되는 사용자를 찾을 수 없습니다 : " + userUpdateDTO.getUserId()));
 
         User updatingUser = User.builder()
                 .userId(userUpdateDTO.getUserId())
+                .email(user.getEmail())
                 .nickname(userUpdateDTO.getNickname())
-                .password(userUpdateDTO.getPassword())
+                .password(user.getPassword())
                 .imageUrl(userUpdateDTO.getImageUrl())
+                .point(user.getPoint())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
                 .build();
 
         userRepository.save(updatingUser);
     }
+
 
     @Override
     public void deleteUserById(Long id) {
@@ -92,5 +97,18 @@ public class UserServiceImpl implements UserService{
         // 인증 실패
         return false;
     }
+
+    // 중복 닉네임 검증
+    @Override
+    public boolean isNicknameAvailable(String nickname) {
+        // 닉네임으로 회원 조회
+        User existingUser = userRepository.findByNickname(nickname);
+        // 중복되지 않으면 true, 중복되면 false를 반환합니다.
+        return existingUser == null;
+    }
+
+
+
+
 
 }
