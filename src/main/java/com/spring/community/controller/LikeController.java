@@ -33,10 +33,11 @@ public class LikeController {
     @PostMapping("/like")
     public ResponseEntity<LikeResponseDTO> findLike(@RequestBody LikeRequestDTO likeRequestDTO){
         int isLiked = likeService.isLiked(likeRequestDTO);
+        Long likeCount = likeService.getLikeCount(likeRequestDTO.getPostId());
 
         LikeResponseDTO likeInfo = new LikeResponseDTO();
 
-        likeInfo.setLikeCnt(likeRequestDTO.getPostId());
+        likeInfo.setLikeCnt(likeCount);
         likeInfo.setIsLiked(isLiked);
 
         return ResponseEntity.ok(likeInfo);

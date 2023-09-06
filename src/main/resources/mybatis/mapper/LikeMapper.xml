@@ -23,7 +23,7 @@
     </delete>
 
     <select id="getLikeCount" parameterType="Long" resultType="Long">
-        SELECT COUNT(*) FROM likes_${postId}
+        SELECT COUNT(*) FROM likes_${value}
     </select>
     
     <select id="isLiked" parameterType="com.spring.community.DTO.LikeRequestDTO" resultType="int">
