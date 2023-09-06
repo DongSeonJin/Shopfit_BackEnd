@@ -12,6 +12,5 @@ public class UserUpdateDTO {
 
     private Long userId;
     private String nickname;
-    private String password;
     private String imageUrl;
 }

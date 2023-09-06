@@ -2,6 +2,7 @@ package com.spring.user.controller;
 
 import com.spring.user.DTO.AddUserRequestDTO;
 import com.spring.user.DTO.LoginRequestDTO;
+import com.spring.user.DTO.NicknameDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/mypage")
 public class UserController {
 
     private final UserServiceImpl userService;
@@ -75,12 +75,11 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PatchMapping("/mypage")
-    public ResponseEntity<String> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
-        userUpdateDTO.toString();
+    @PatchMapping("/mypage/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO) {
 
+        userUpdateDTO.setUserId(id);
         try {
-            userUpdateDTO.toString();
             userService.updateUser(userUpdateDTO);
             return new ResponseEntity<>("유저 정보가 성공적으로 업데이트되었습니다.", HttpStatus.OK);
         } catch (UserIdNotFoundException e) {
@@ -89,5 +88,15 @@ public class UserController {
             return new ResponseEntity<>("유저 정보 업데이트 중에 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/checkNickname")
+    public ResponseEntity<Boolean> checkNickname(@RequestBody NicknameDTO nicknameDTO) {
+        String nickname = nicknameDTO.getNickname();
+        boolean isNicknameAvailable = userService.isNicknameAvailable(nickname);
+        return ResponseEntity.ok(isNicknameAvailable);
+    }
+
+
+
 
 }

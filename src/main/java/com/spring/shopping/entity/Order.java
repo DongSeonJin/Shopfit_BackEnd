@@ -26,7 +26,7 @@ public class Order {
     @Column(name = "order_id")
     private Long orderId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE) // 유저 삭제 시 주문도 삭제
     private User user;
