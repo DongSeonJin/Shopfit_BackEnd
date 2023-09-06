@@ -17,7 +17,8 @@ import java.util.List;
 @Repository
 public interface PostJPARepository extends JpaRepository<Post, Long> {
 
-    Page<Post> findByPostCategory_CategoryId(Long categoryId, Pageable pageable);
+    Page<Post> findByPostCategory_CategoryId(Long categoryId, Pageable pageable); // queryDSL 혹은 JPQL로
+                                                                                  // 좋아요 갯수 카운트 조회 작성 해볼 예정
 
 
     @Modifying
