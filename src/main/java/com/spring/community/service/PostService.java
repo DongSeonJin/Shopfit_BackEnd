@@ -15,7 +15,7 @@ public interface PostService {
     void deletePostById(Long id);
     void update(PostUpdateDTO postUpdateDTO);
     void increaseViewCount (Long postId);
-
     List<PostTop4DTO> getRecentTop4Posts();
+    List<PostListByUserIdDTO> findPostsByUserId (Long userId);
 
 }

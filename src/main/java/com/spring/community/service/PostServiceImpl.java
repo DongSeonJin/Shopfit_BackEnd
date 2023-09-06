@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService{
 
 
-    @Autowired
-    PostJPARepository postJPARepository;
-    @Autowired
-    DynamicLikeRepository dynamicLikeRepository;
+
+    private final PostJPARepository postJPARepository;
+
+    private final DynamicLikeRepository dynamicLikeRepository;
 
 
 
@@ -31,8 +31,10 @@ public class PostServiceImpl implements PostService{
     @Autowired
     public PostServiceImpl(PostJPARepository postRepository,
                            DynamicLikeRepository dynamicLikeRepository){
+
         this.dynamicLikeRepository = dynamicLikeRepository;
         this.postJPARepository = postRepository;
+
     }
 
 
@@ -130,5 +132,13 @@ public class PostServiceImpl implements PostService{
                 .collect(Collectors.toList());
 
         return top4DTOs;
+    }
+
+    @Override
+    public List<PostListByUserIdDTO> findPostsByUserId(Long userId) {
+        List<Post> posts = postJPARepository.findByUser_UserId(userId);
+        return posts.stream()
+                .map(PostListByUserIdDTO::new)
+                .collect(Collectors.toList());
     }
 }

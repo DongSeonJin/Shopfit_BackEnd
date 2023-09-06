@@ -1,6 +1,7 @@
 package com.spring.community.repository;
 
 import com.spring.community.entity.Post;
+import com.spring.user.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,4 +34,9 @@ public interface PostJPARepository extends JpaRepository<Post, Long> {
     List<Post> findTop4RecentPosts(Pageable pageable);
 
     List<Post> findAllByOrderByCreatedAtDesc(PageRequest of); // 정의 추가
+
+    // 해당 userId가 작성한 글 전체 조회
+    List<Post> findByUser_UserId (Long userId);
+
+
 }

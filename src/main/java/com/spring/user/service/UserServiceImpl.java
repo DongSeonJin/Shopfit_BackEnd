@@ -1,24 +1,33 @@
 package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.LoginRequestDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService{
 
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-     UserRepository userRepository;
-     BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
 
 
     @Override
@@ -27,6 +36,8 @@ public class UserServiceImpl implements UserService{
          userRepository.save(User.builder()
                 .email(dto.getEmail())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
+                 .nickname(dto.getNickname())
+                 .imageUrl(dto.getImageUrl())
                 .build()
          );
     }
@@ -47,23 +58,39 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void updateUser(UserUpdateDTO userUpdateDTO) {
 
-        User updateUser = userRepository.findById(userUpdateDTO.getUserId())
+        userUpdateDTO.toString();
+
+        User user = userRepository.findById(userUpdateDTO.getUserId())
                 .orElseThrow(() -> new UserIdNotFoundException("해당되는 글을 찾을 수 없습니다 : " + userUpdateDTO.getUserId()));
 
-        updateUser.builder()
+        User updatingUser = User.builder()
+                .userId(userUpdateDTO.getUserId())
                 .nickname(userUpdateDTO.getNickname())
                 .password(userUpdateDTO.getPassword())
                 .imageUrl(userUpdateDTO.getImageUrl())
                 .build();
 
-        userRepository.save(updateUser);
+        userRepository.save(updatingUser);
     }
 
     @Override
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean authenticateUser(LoginRequestDTO loginRequest) {
+        Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
+
+        if (user.isPresent() && bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
+            // 인증 성공
+            return true;
+        }
+        // 인증 실패
+        return false;
     }
 
 }

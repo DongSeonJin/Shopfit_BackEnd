@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewDTO {
-    private Long reviewId;
     private Long userId;
     private Long productId;
     private Double rating;
