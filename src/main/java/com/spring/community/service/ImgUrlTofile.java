@@ -41,9 +41,9 @@ public class ImgUrlTofile {// imgUrl을 이미지 파일로 변환해주는 코�
 
 
 
-        String URL = "jdbc:mysql://db-ibfto-kr.vpc-pub-cdb.ntruss.com:3306/nc06-final-project?serverTimezone=UTC&characterEncoding=UTF-8";
-        String USER = "master";
-        String PASSWORD = "naverclouddb123!@#";
+        String URL = "";
+        String USER = "";
+        String PASSWORD = "";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             Statement stmt = conn.createStatement();

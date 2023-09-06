@@ -2,17 +2,15 @@ package com.spring.community.controller;
 
 import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
-import com.spring.community.repository.PostJPARepository;
+import com.spring.community.service.LikeService;
 import com.spring.community.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post")
@@ -22,9 +20,12 @@ public class PostController {
 
     private final PostService postService;
 
+    private final LikeService likeService;
+
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, LikeService likeService) {
         this.postService = postService;
+        this.likeService = likeService;
     }
 
     // 게시글 전체 조회
@@ -44,6 +45,12 @@ public class PostController {
         Page<PostListResponseDTO> posts = postService.getPostsByCategoryId(categoryId, currentPageNum)
                 .map(PostListResponseDTO:: new);
 
+        // 각 게시글의 좋아요 수를 조회하여 DTO에 설정
+        posts.getContent().forEach(post -> {
+            long likeCount = likeService.getLikeCount(post.getPostId());
+            post.setLikeCnt(likeCount);
+        });
+
         return ResponseEntity
                 .ok()
                 .body(posts);
@@ -55,14 +62,18 @@ public class PostController {
         postService.increaseViewCount(postId); // 조회 할 때마다 조회수 +1
         IndividualPostResponseDTO responseDTO = postService.getPostById(postId);
 
+        //좋아요 갯수 responseDTD에 set
+        long likeCount = likeService.getLikeCount(postId);
+        responseDTO.setLikeCnt(likeCount);
+
+
         return ResponseEntity.ok(responseDTO);
     }
 
     // 게시글 작성
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestBody PostSaveDTO postSaveDTO) {
-        System.out.println(postSaveDTO);
-        postService.savePost(postSaveDTO);
+    public ResponseEntity<String> createPost(@RequestBody Post post) {
+        postService.createPost(post);
         return ResponseEntity.ok("게시글이 저장되었습니다.");
     }
 
@@ -90,11 +101,10 @@ public class PostController {
 
     }
 
-    @PostMapping("/like")
-    public ResponseEntity<String> pushLike(@RequestBody LikeSaveDTO likeSaveDTO){
-        postService.saveLike(likeSaveDTO); //받아야 할 정보 : 글주인 nickname과 postId, 좋아요 누른사람 userId
-        return ResponseEntity.ok("좋아요 누르기 성공");
-    }
+
+
+
+
 
     @GetMapping("/recent-top4")
     public List<PostTop4DTO> getRecentTop4Posts() {

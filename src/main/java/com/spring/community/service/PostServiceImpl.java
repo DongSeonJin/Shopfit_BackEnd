@@ -4,7 +4,6 @@ import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
-import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,16 +21,20 @@ public class PostServiceImpl implements PostService{
 
 
     private final PostJPARepository postJPARepository;
-    private final DynamicPostRepository dynamicPostRepository;
+
     private final DynamicLikeRepository dynamicLikeRepository;
+
+
 
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 게시글을 조회할지
 
     @Autowired
-    public PostServiceImpl(PostJPARepository postRepository, DynamicPostRepository dynamicPostRepository, DynamicLikeRepository dynamicLikeRepository){
-        this.postJPARepository = postRepository;
-        this.dynamicPostRepository = dynamicPostRepository;
+    public PostServiceImpl(PostJPARepository postRepository,
+                           DynamicLikeRepository dynamicLikeRepository){
+
         this.dynamicLikeRepository = dynamicLikeRepository;
+        this.postJPARepository = postRepository;
+
     }
 
 
@@ -64,11 +67,21 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void savePost(PostSaveDTO postSaveDTO) {
-        dynamicPostRepository.createDynamicTable(postSaveDTO);// 없는 테이블명(nickname)일 시, 테이블 생성
-        dynamicPostRepository.insertDynamicTable(postSaveDTO); // 데이터 삽입
-        dynamicPostRepository.insertPostTable(postSaveDTO);// 검색용 통합 테이블에 삽입.
-        dynamicPostRepository.createDynamicLike(postSaveDTO); // 동적 좋아요 테이블 생성
+    public void createPost(Post post) {
+
+        Post savedPost = postJPARepository.save(post);
+        Long postId = savedPost.getPostId();
+        Long userId = savedPost.getUser().getUserId();
+
+        LikeRequestDTO likeSave = LikeRequestDTO.builder()
+                .postId(postId)
+                .userId(userId)
+                .build();
+
+        dynamicLikeRepository.createDynamicLike(likeSave); // 동적 좋아요 테이블 생성
+        postJPARepository.save(post); // post 생성
+
+
     }
 
     @Override
@@ -101,11 +114,6 @@ public class PostServiceImpl implements PostService{
         postJPARepository.save(existingPost);
     }
 
-    @Override
-    public void saveLike(LikeSaveDTO likeSaveDTO){
-        dynamicLikeRepository.createDynamicLike(likeSaveDTO);
-        dynamicLikeRepository.insertDynamicLike(likeSaveDTO);
-    }
 
     @Override
     public void increaseViewCount (Long postId) {

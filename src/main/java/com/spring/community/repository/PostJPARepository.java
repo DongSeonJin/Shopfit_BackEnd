@@ -18,13 +18,17 @@ import java.util.List;
 @Repository
 public interface PostJPARepository extends JpaRepository<Post, Long> {
 
-    Page<Post> findByPostCategory_CategoryId(Long categoryId, Pageable pageable);
+    Page<Post> findByPostCategory_CategoryId(Long categoryId, Pageable pageable); // queryDSL 혹은 JPQL로
+                                                                                  // 좋아요 갯수 카운트 조회 작성 해볼 예정
+
 
     @Modifying
     @Transactional
     @Query ("UPDATE Post p SET p.viewCount = p.viewCount +1 WHERE p.postId = :postId")
     // 조건에 맞는 postId가 postId 랑 일치할 때 Post 테이블의 조회수 +1.
     void increaseViewCount(@Param("postId") Long postId);
+
+
 
     @Query("SELECT p FROM Post p ORDER BY p.createdAt DESC")
     List<Post> findTop4RecentPosts(Pageable pageable);

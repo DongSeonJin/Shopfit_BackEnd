@@ -71,7 +71,7 @@ public class Post {
     @Lob
     private String imageUrl3;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL) // reply에 Lazy 속성 추가 예정
     private List<Reply> replies = new ArrayList<>();
 
 

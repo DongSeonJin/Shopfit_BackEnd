@@ -1,7 +1,7 @@
 package com.spring.community.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.community.DTO.PostSaveDTO;
+import com.spring.community.DTO.PostCreateRequestDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import com.spring.community.repository.PostJPARepository;
@@ -110,7 +110,7 @@ public class PostControllerTest {
         String title = "제목테스트";
         String content = "컨텐츠테스트";
 
-        PostSaveDTO postSaveDTO = PostSaveDTO.builder()
+        PostCreateRequestDTO postCreateRequestDTO = PostCreateRequestDTO.builder()
                 .userId(userId)
                 .categoryId(categoryId)
                 .nickname(nickname)
@@ -119,7 +119,7 @@ public class PostControllerTest {
                 .build();
 
         // 데이터 역직렬화(JSON)
-        String postSaveDTOJson = objectMapper.writeValueAsString(postSaveDTO);
+        String postSaveDTOJson = objectMapper.writeValueAsString(postCreateRequestDTO);
 
         // when
         ResultActions resultActions = mockMvc.perform(post(url)

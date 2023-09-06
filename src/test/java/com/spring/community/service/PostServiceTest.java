@@ -1,26 +1,21 @@
 package com.spring.community.service;
 
 import com.spring.community.DTO.PostListResponseDTO;
-import com.spring.community.DTO.PostSaveDTO;
+import com.spring.community.DTO.PostCreateRequestDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
-import com.spring.community.repository.DynamicPostRepository;
 import com.spring.community.repository.PostJPARepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import static net.bytebuddy.matcher.ElementMatchers.is;
-import static net.bytebuddy.matcher.ElementMatchers.isEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -89,14 +84,14 @@ public class PostServiceTest {
         String nickname = "testNickname";
         String title = "testTitle";
         String content = "testContent";
-        PostSaveDTO postSaveDTO = PostSaveDTO.builder()
+        PostCreateRequestDTO postCreateRequestDTO = PostCreateRequestDTO.builder()
                 .nickname(nickname)
                 .title(title)
                 .content(content)
                 .build();
 
 
-        postService.savePost(postSaveDTO);
+        postService.savePost(postCreateRequestDTO);
 
 
         assertEquals(5, postService.getAllPosts().size());
