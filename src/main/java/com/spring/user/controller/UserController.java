@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/mypage")
 public class UserController {
 
     private final UserServiceImpl userService;
