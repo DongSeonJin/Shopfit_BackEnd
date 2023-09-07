@@ -19,11 +19,12 @@ public class WebSecurityConfig {
     private final UserDetailService userService;
 
 
-    @Bean  // 스프링 시큐리티 기능 비활성화
-    public WebSecurityCustomizer configure() {
-        return (web -> web.ignoring()
-                .requestMatchers("/static/**"));
-    }
+    //jsp가 아닌, react 이므로 정적리소스에 대해 시큐리티를 비활성화 할 필요X
+//    @Bean  // 스프링 시큐리티 기능 비활성화
+//    public WebSecurityCustomizer configure() {
+//        return (web -> web.ignoring()
+//                .requestMatchers("/static/**"));
+//    }
 
     // 특정 HTTP 요청에 대한 웹 기반 보안 구성
     @Bean
@@ -39,8 +40,8 @@ public class WebSecurityConfig {
 
                 .formLogin(formLoginConfig -> {formLoginConfig // 폼 기반 로그인 설정
                         .loginPage("/login") // 폼에서 날려준 정보를 토대로 로그인 처리를 해주는 주소(post)
-                        .defaultSuccessUrl("/main");
-                         //           .disable(); // 세션 X 토큰기반 이므로 폼로그인 막아야함
+                        .defaultSuccessUrl("/main")
+                                    .disable(); // 세션 X 토큰기반 이므로 폼로그인 막아야함
                         })
 
                 .logout(LogoutConfig -> {LogoutConfig  // 디폴트로 "logout"으로 잡아주기 때문에 굳이 설정할필요없음

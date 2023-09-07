@@ -50,16 +50,16 @@ public class UserController {
     }
 
 
-//     @PostMapping("/login")
-//     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
-//         boolean isAuthenticated = userService.authenticateUser(loginRequest);
+     @PostMapping("/login")
+     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
+         boolean isAuthenticated = userService.authenticateUser(loginRequest);
 
-//         if (isAuthenticated) {
-//             return ResponseEntity.ok("Login successful");
-//         } else {
-//             return ResponseEntity.status(401).body("Login failed");
-//         }
-//     }
+         if (isAuthenticated) {
+             return ResponseEntity.ok("Login successful");
+         } else {
+             return ResponseEntity.status(401).body("Login failed");
+         }
+     }
 
 
     // 회원 정보 조회

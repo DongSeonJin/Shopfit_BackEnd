@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Entity @Getter @Builder @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED) @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "users")// mysql에서 USER를 테이블명으로 지정할 수 없으므로 users로 생성
 public class User implements UserDetails {
 
@@ -38,7 +39,6 @@ public class User implements UserDetails {
 
     @Column(name = "created_at")
     @CreatedDate // 자동으로 생성일자로 설정
-
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
