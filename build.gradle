@@ -24,6 +24,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.mastfrog.builder:builder-builder-parent:1.0.9'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -40,6 +41,8 @@ dependencies {
 	implementation 'io.github.bonigarcia:webdrivermanager:5.5.2' // 현재 최신 버전인 4.4.3으로 설정하였으나, 실제 사용 시점에서 최신 버전으로 업데이트 해주세요
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1' // chatbot
+	compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1' // Servlet API (chatbot)
 }
 
 
