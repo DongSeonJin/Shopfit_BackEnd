@@ -20,11 +20,11 @@ public class WebSecurityConfig {
 
 
     //jsp가 아닌, react 이므로 정적리소스에 대해 시큐리티를 비활성화 할 필요X
-//    @Bean  // 스프링 시큐리티 기능 비활성화
-//    public WebSecurityCustomizer configure() {
-//        return (web -> web.ignoring()
-//                .requestMatchers("/static/**"));
-//    }
+    @Bean  // 스프링 시큐리티 기능 비활성화
+    public WebSecurityCustomizer configure() {
+        return (web -> web.ignoring()
+                .requestMatchers("/static/**"));
+    }
 
     // 특정 HTTP 요청에 대한 웹 기반 보안 구성
     @Bean

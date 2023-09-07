@@ -26,8 +26,7 @@ public class PostServiceTest {
 
     @Mock
     private PostJPARepository postRepository;
-    @Mock
-    private DynamicPostRepository dynamicPostRepository;
+
 
 //    @InjectMocks
 //    private PostServiceImpl postService;
