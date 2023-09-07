@@ -5,6 +5,7 @@ import com.spring.community.entity.Post;
 import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.PostJPARepository;
+import com.spring.community.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +22,8 @@ public class PostServiceImpl implements PostService{
 
 
     private final PostJPARepository postJPARepository;
-
     private final DynamicLikeRepository dynamicLikeRepository;
+    private final ReplyRepository replyRepository;
 
 
 
@@ -30,11 +31,11 @@ public class PostServiceImpl implements PostService{
 
     @Autowired
     public PostServiceImpl(PostJPARepository postRepository,
-                           DynamicLikeRepository dynamicLikeRepository){
+                           DynamicLikeRepository dynamicLikeRepository, ReplyRepository replyRepository){
 
         this.dynamicLikeRepository = dynamicLikeRepository;
         this.postJPARepository = postRepository;
-
+        this.replyRepository = replyRepository;
     }
 
 
@@ -140,5 +141,10 @@ public class PostServiceImpl implements PostService{
         return posts.stream()
                 .map(PostListByUserIdDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public long getReplyCount(Long postId) {
+        return replyRepository.countByPost_PostId(postId);
     }
 }
