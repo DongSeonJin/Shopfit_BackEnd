@@ -124,6 +124,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    @Override
+    public boolean deleteOrder(Long orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            orderRepository.delete(order);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setOrderId(order.getOrderId());
@@ -136,6 +149,7 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setOrderStatus(order.getOrderStatus());
         return orderDTO;
     }
+
 
     public OrderProduct convertToEntity(OrderProductDTO orderProductDTO) {
         OrderProduct orderProduct = new OrderProduct();

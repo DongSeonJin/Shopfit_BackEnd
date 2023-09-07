@@ -62,4 +62,22 @@
             }
         }
 
+        // 주문 삭제
+        @DeleteMapping("/{orderId}")
+        public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
+            try {
+                // 주문 삭제 로직을 호출하고 성공 여부를 확인합니다.
+                boolean deleted = orderService.deleteOrder(orderId);
+
+                if (deleted) {
+                    return ResponseEntity.ok("주문이 삭제되었습니다.");
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("주문을 찾을 수 없거나 삭제에 실패했습니다.");
+                }
+            } catch (Exception e) {
+                // 예외 처리
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("주문 삭제 중에 오류가 발생했습니다.");
+            }
+        }
+
     }

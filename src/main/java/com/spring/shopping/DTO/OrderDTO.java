@@ -15,7 +15,6 @@ import java.util.List;
 public class OrderDTO {
     private Long orderId;
     private Long userId; // User ID
-    private Long productId;
     private Long totalPrice;
     private LocalDateTime deliveryDate;
     private String address;

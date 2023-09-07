@@ -24,4 +24,6 @@ public interface OrderService {
 
     // 주문 상품 생성
     void createOrderProduct(OrderProductDTO orderProductDTO);
+
+    boolean deleteOrder(Long orderId);
 }
