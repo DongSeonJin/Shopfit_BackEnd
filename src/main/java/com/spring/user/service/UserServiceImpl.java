@@ -2,6 +2,7 @@ package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
 import com.spring.user.DTO.LoginRequestDTO;
+import com.spring.user.DTO.UserPointResponseDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
@@ -107,7 +108,43 @@ public class UserServiceImpl implements UserService{
         return existingUser == null;
     }
 
+    // 유저 포인트 조회
+    public UserPointResponseDTO getUserPointById(Long userId) {
+        // 유저 ID로 유저 정보를 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserIdNotFoundException("해당되는 사용자를 찾을 수 없습니다 : " + userId));
 
+
+        // 조회한 유저 정보에서 포인트를 가져와서 DTO에 담아 반환
+        return new UserPointResponseDTO(user.getUserId(), user.getPoint());
+
+    }
+
+    // 유저 포인트 사용 시 포인트 수정
+    public boolean usePoints(User user, int usedPoints) {
+        int currentPoints = user.getPoint();
+
+        if (currentPoints >= usedPoints) {
+            int updatedPoints = currentPoints - usedPoints;
+
+            // 엔티티 객체 복제
+            User updatingUser = User.builder()
+                    .userId(user.getUserId())
+                    .email(user.getEmail())
+                    .nickname(user.getNickname())
+                    .password(user.getPassword())
+                    .imageUrl(user.getImageUrl())
+                    .point(updatedPoints) // 포인트만 업데이트
+                    .createdAt(user.getCreatedAt())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+
+            userRepository.save(updatingUser); // 수정된 유저 정보 저장
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
 
