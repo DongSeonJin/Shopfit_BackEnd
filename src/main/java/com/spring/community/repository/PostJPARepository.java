@@ -33,7 +33,7 @@ public interface PostJPARepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p ORDER BY p.createdAt DESC")
     List<Post> findTop4RecentPosts(Pageable pageable);
 
-    List<Post> findAllByOrderByCreatedAtDesc(PageRequest of); // 정의 추가
+    List<Post> findAllByOrderByViewCountDesc(PageRequest of); // 정의 추가
 
     // 해당 userId가 작성한 글 전체 조회
     List<Post> findByUser_UserId (Long userId);
