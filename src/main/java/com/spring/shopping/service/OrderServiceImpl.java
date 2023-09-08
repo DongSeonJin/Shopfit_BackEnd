@@ -97,16 +97,25 @@ public class OrderServiceImpl implements OrderService {
                             .quantity(orderProduct.getQuantity())
                             .build();
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         // saveAll() 쓰기 위해 orderProductDTO -> orderProduct 형태 변환
         List<OrderProduct> orderProducts = orderProductDTOs.stream()
                 .map(this::convertToEntity)
                 .collect(Collectors.toList());
-
         orderProductRepository.saveAll(orderProducts);
 
-        return orderDTO;
+        System.out.println(orderProducts.toString());
+
+        // OrderProduct를 OrderProductDTO로 변환
+        List<OrderProductDTO> orderProductDTOList = orderProducts.stream()
+                .map(this::convertToDTO) // convertToDTO는 OrderProduct를 OrderProductDTO로 변환하는 메서드라고 가정
+                .collect(Collectors.toList());
+
+        OrderDTO savedOrderDTO = convertToDTO(savedOrder);
+        savedOrderDTO.setOrderProducts(orderProductDTOList);
+
+        return savedOrderDTO;
     }
 
 
@@ -121,6 +130,34 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new IllegalArgumentException("Invalid order or product information");
         }
+    }
+
+    // 결제금액 계산 - 포인트/쿠폰 추가 후 수정 예정
+    @Override
+    public Long calculateActualOrderAmount(Order order) {
+        List<OrderProduct> orderProducts = order.getOrderProducts();
+        Long totalAmount = 0L;
+
+        for (OrderProduct orderProduct : orderProducts) {
+            Long productPrice = orderProduct.getProduct().getPrice();
+            Long quantity = orderProduct.getQuantity();
+            totalAmount += productPrice * quantity;
+        }
+        // 배송비 추가
+        Long shippingCost = calculateShippingCost(order.getAddress()); // 배송비 계산 메서드
+        totalAmount += shippingCost;
+
+        // 포인트 사용
+        // Long pointsUsed = order.getPointsUsed(); // 주문에서 사용한 포인트
+        // totalAmount -= pointsUsed;
+
+        return totalAmount;
+    }
+
+    // 배송비 계산, 고정
+    @Override
+    public Long calculateShippingCost(String address) {
+        return 3000L;                                           // 고정 배송비 3000원
     }
 
 
@@ -148,6 +185,15 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setOrderDate(order.getOrderDate());
         orderDTO.setOrderStatus(order.getOrderStatus());
         return orderDTO;
+    }
+
+    public OrderProductDTO convertToDTO(OrderProduct orderProduct) {
+        OrderProductDTO orderProductDTO = new OrderProductDTO();
+        orderProductDTO.setProductId(orderProduct.getProduct().getProductId());
+        orderProductDTO.setQuantity(orderProduct.getQuantity());
+        orderProductDTO.setOrderId(orderProduct.getOrder().getOrderId());
+        orderProductDTO.setOrderProductId(orderProduct.getOrderProductId());
+        return orderProductDTO;
     }
 
 
