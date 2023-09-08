@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +27,9 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final OrderProductRepository orderProductRepository;
+
+    // 상품 구매 시 적립되는 포인트 계산을 위한 상수(10%)
+    private static final double POINT_PERCENTAGE = 0.10;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository) {
@@ -49,11 +53,49 @@ public class OrderServiceImpl implements OrderService {
         return order.map(this::convertToDTO);
     }
 
+    // 주문 상태 업데이트
+    // 주문 상태가 5(구매확정)일 때 사용자의 포인트 업데이트 로직 추가
     @Override
     @Transactional
     public int updateOrderStatus(Long orderId, String orderStatus) {
-        return orderRepository.updateOrderStatus(orderId, orderStatus);
+        int updatedRows = orderRepository.updateOrderStatus(orderId, orderStatus);
+        // 주문상태가 5(구매확정)일 때 포인트 업데이트
+        if("5".equals(orderStatus)) {
+            updateUserPoint(orderId);
+        }
+        return updatedRows;
     }
+
+    // 사용자의 포인트를 업데이트하기
+    private void updateUserPoint(Long orderId) {
+        //orderId를 이용하여 해당 주문을 가져오기
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if(order != null) {
+            User user = order.getUser();
+            if (user != null) {
+                int currentPoint = user.getPoint();
+                long additionalPoint =(long) (order.getTotalPrice() * POINT_PERCENTAGE);
+                int newPoint = currentPoint + (int) additionalPoint;
+
+                // 빌더 패턴을 사용하여 포인트를 설정한 새로운 User 객체 생성
+                User updatedUser = User.builder()
+                        .userId(user.getUserId())
+                        .email(user.getEmail())
+                        .password(user.getPassword())
+                        .nickname(user.getNickname())
+                        .point(newPoint)
+                        .imageUrl(user.getImageUrl())
+                        .createdAt(user.getCreatedAt())
+                        .updatedAt(LocalDateTime.now())
+                        .isAdmin(user.isAdmin())
+                        .build();
+
+                userRepository.save(updatedUser);
+            }
+        }
+    }
+
+
 
     @Override
     public User getUserInfo(Long userId) {
