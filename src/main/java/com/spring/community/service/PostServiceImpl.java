@@ -123,7 +123,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<PostTop4DTO> getRecentTop4Posts() {
-        List<PostTop4DTO> top4DTOs = postJPARepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, 4))
+        List<PostTop4DTO> top4DTOs = postJPARepository.findAllByOrderByViewCountDesc(PageRequest.of(0, 4))
                 .stream()
                 .map(post -> PostTop4DTO.builder()
                         .title(post.getTitle())
