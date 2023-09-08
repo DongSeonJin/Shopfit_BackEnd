@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/shopping")
@@ -205,5 +207,31 @@ public class ProductController {
     }
 
 
-
+    // 결제 금액 검증
+//        @PostMapping("/verify-payment")
+//        public ResponseEntity<String> verifyPaymentAmount(@RequestBody OrderDTO orderDTO) {
+//            Long orderId = orderDTO.getOrderId();
+//            Long paymentAmount = orderDTO.getTotalPrice();    // 클라이언트에서 제공한 결제 금액
+//            System.out.println(paymentAmount);
+//
+//            // 주문 정보를 DB에서 가져옴
+//            Order order = orderService.getOrderInfo(orderId);
+//
+//            if (order == null) {
+//                // 주문을 찾을 수 없음
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("주문을 찾을 수 없습니다.");
+//            }
+//
+//            // 주문에 저장된 금액
+//            Long actualOrderAmount = orderService.calculateActualOrderAmount(order);
+//
+//            if (paymentAmount.equals(actualOrderAmount)) {
+//                // 결제 금액이 실제 주문 금액과 일치하면 주문 생성
+//                OrderDTO createdOrder = orderService.createOrder(orderDTO);
+//                return ResponseEntity.status(HttpStatus.CREATED).body("주문이 생성되었습니다.");
+//            } else {
+//                // 결제 금액이 일치하지 않음
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("결제 금액이 일치하지 않습니다.");
+//            }
+//        }
 }
