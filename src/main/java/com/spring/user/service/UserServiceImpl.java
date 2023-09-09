@@ -8,7 +8,6 @@ import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,7 +32,24 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public void save(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
+    public String signup(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
+
+        boolean existEmail = userRepository.existsByEmail(dto.getEmail()); // 존재하는 이메일인지 확인
+
+
+        String password = dto.getPassword();
+        String passwordCheck = dto.getConfirmPassword();
+
+        if(!password.equals(passwordCheck)){
+            return "비밀번호를 확인해주세요.";
+        }
+
+
+        if(existEmail){
+            return "이미 존재하는 이메일 입니다.";
+        }
+
+
 
          userRepository.save(User.builder()
                 .email(dto.getEmail())
@@ -42,6 +58,7 @@ public class UserServiceImpl implements UserService{
                  .imageUrl(dto.getImageUrl())
                 .build()
          );
+        return null;
     }
 
     @Override
@@ -54,9 +71,16 @@ public class UserServiceImpl implements UserService{
         return userRepository.findAll();
     }
 
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("없는 유저입니다."));
+    }
+
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("없는 유저입니다."));
+        return user;
     }
 
     // 유저 정보 수정
