@@ -1,5 +1,6 @@
 package com.spring.user.entity;
 
+import com.spring.shopping.entity.Coupon;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Entity @Getter @Builder @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -48,6 +50,9 @@ public class User implements UserDetails {
     @ColumnDefault("false")
     @Column(name = "is_admin")
     private boolean isAdmin;
+
+    @OneToMany(mappedBy = "user")
+    private List<Coupon> coupons;
 
     @Builder
     public User(String email, String password){

@@ -49,6 +49,9 @@ public class PostController {
         posts.getContent().forEach(post -> {
             long likeCount = likeService.getLikeCount(post.getPostId());
             post.setLikeCnt(likeCount);
+
+            long replyCount = postService.getReplyCount(post.getPostId());
+            post.setReplyCnt(replyCount);
         });
 
         return ResponseEntity
@@ -102,10 +105,6 @@ public class PostController {
     }
 
 
-
-
-
-
     @GetMapping("/recent-top4")
     public List<PostTop4DTO> getRecentTop4Posts() {
         return postService.getRecentTop4Posts();
@@ -117,6 +116,9 @@ public class PostController {
         List<PostListByUserIdDTO> postListByUserIdDTOS = postService.findPostsByUserId(userId);
         return ResponseEntity.ok(postListByUserIdDTOS);
     }
+
+
+
 
 
 

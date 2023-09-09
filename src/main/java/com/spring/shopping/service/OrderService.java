@@ -24,4 +24,12 @@ public interface OrderService {
 
     // 주문 상품 생성
     void createOrderProduct(OrderProductDTO orderProductDTO);
+
+    // 주문금액 결제금액 비교
+    Long calculateActualOrderAmount(Order order);
+
+    // 배송비; 고정
+    Long calculateShippingCost(String address);
+
+    boolean deleteOrder(Long orderId);
 }

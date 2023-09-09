@@ -5,6 +5,7 @@ import com.spring.community.entity.Reply;
 import lombok.*;
 import org.springframework.cglib.core.Local;
 
+import java.net.Inet4Address;
 import java.time.LocalDateTime;
 
 @Getter @Setter @NoArgsConstructor
@@ -14,6 +15,7 @@ public class IndividualPostResponseDTO {
     private Long postId;
     private String nickname;
     private String category;
+    private Integer categoryId;
     private String title;
     private String content;
     private Long viewCount;
@@ -29,6 +31,7 @@ public class IndividualPostResponseDTO {
         this.postId = post.getPostId();
         this.nickname = post.getNickname();
         this.category = post.getPostCategory().getCategoryName();
+        this.categoryId = post.getPostCategory().getCategoryId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.viewCount = post.getViewCount();

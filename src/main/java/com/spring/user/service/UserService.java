@@ -2,6 +2,7 @@ package com.spring.user.service;
 
 import com.spring.user.DTO.AddUserRequestDTO;
 import com.spring.user.DTO.LoginRequestDTO;
+import com.spring.user.DTO.UserPointResponseDTO;
 import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 
@@ -18,7 +19,7 @@ public interface UserService {
     User getUserById(Long id);
     void updateUser(UserUpdateDTO userUpdateDTO);
     void deleteUserById(Long id);
-
+    UserPointResponseDTO getUserPointById(Long userId);
     boolean authenticateUser(LoginRequestDTO loginRequest);
 
     boolean isNicknameAvailable(String nickname);

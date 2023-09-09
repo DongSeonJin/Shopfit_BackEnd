@@ -17,5 +17,6 @@ public interface PostService {
     void increaseViewCount (Long postId);
     List<PostTop4DTO> getRecentTop4Posts();
     List<PostListByUserIdDTO> findPostsByUserId (Long userId);
+    long getReplyCount (Long postId);
 
 }

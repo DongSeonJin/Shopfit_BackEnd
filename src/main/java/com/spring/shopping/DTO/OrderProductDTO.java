@@ -1,5 +1,6 @@
     package com.spring.shopping.DTO;
 
+    import com.spring.shopping.entity.OrderProduct;
     import lombok.*;
 
     import java.util.List;

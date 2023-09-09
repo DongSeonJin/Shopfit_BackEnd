@@ -40,3 +40,4 @@ out/
 application-db.properties
 application-jwt.properties
 application-file.properties
+application-chat.properties

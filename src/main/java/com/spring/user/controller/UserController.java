@@ -84,11 +84,12 @@ public class UserController {
 
     // 회원 정보 조회
     @GetMapping("/mypage/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
 
         if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            UserResponseDTO userResponseDTO = UserResponseDTO.from(user);
+            return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -109,11 +110,45 @@ public class UserController {
         }
     }
 
+    // 닉네임 중복 검증
     @PostMapping("/checkNickname")
     public ResponseEntity<Boolean> checkNickname(@RequestBody NicknameDTO nicknameDTO) {
         String nickname = nicknameDTO.getNickname();
         boolean isNicknameAvailable = userService.isNicknameAvailable(nickname);
         return ResponseEntity.ok(isNicknameAvailable);
+    }
+
+    //유저 포인트 조회
+    @GetMapping("/{userId}/point")
+    public UserPointResponseDTO getUserPoint(@PathVariable Long userId) {
+        // userId로 포인트 조회 서비스 호출
+        return userService.getUserPointById(userId);
+    }
+
+    // 유저 포인트 사용 시 포인트 수정
+    @PatchMapping("/{userId}/usePoints/{usedPoints}")
+    public ResponseEntity<String> usePoints(
+            @PathVariable Long userId,
+            @PathVariable int usedPoints
+    ) {
+        try {
+            // userId로 사용자 정보를 조회
+            User user = userService.getUserById(userId);
+
+            // 포인트 사용 로직 호출
+            boolean success = userService.usePoints(user, usedPoints);
+
+            if (success) {
+                // 성공적으로 처리된 경우
+                return ResponseEntity.ok("포인트가 성공적으로 사용되었습니다.");
+            } else {
+                // 포인트가 부족한 경우
+                return ResponseEntity.badRequest().body("포인트가 부족합니다.");
+            }
+        } catch (UserIdNotFoundException e) {
+            // 사용자를 찾을 수 없는 경우
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
