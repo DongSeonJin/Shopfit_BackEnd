@@ -18,6 +18,7 @@ public interface UserService {
     void updateUser(UserUpdateDTO userUpdateDTO);
     void deleteUserById(Long id);
     UserPointResponseDTO getUserPointById(Long userId);
+    boolean usePoints(User user, int usedPoints);
     boolean authenticateUser(LoginRequestDTO loginRequest);
 
     boolean isNicknameAvailable(String nickname);

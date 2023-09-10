@@ -301,11 +301,16 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional
     public boolean updateProductStock(ProductStockUpdateRequestDTO requestDTO) {
         try {
             // 요청으로 받은 상품 ID로 해당 상품을 조회합니다.
-            Product product = productRepository.findById(requestDTO.getProductId())
-                    .orElseThrow(() -> new ProductIdNotFoundException("없는 상품 번호입니다 : " + requestDTO.getProductId()));
+//            Product product = productRepository.findById(requestDTO.getProductId())
+//                    .orElseThrow(() -> new ProductIdNotFoundException("없는 상품 번호입니다 : " + requestDTO.getProductId()));
+
+            // 비관적 락(Pessimistic Lock) 적용하기
+            // Optional이 아니므로 orElseThrow는 삭제
+            Product product = productRepository.findByIdPessimistic(requestDTO.getProductId());
 
             // 상품의 재고(stock) 수량을 업데이트합니다.
             product.setStockQuantity(requestDTO.getStockQuantity());

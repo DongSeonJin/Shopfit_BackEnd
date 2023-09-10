@@ -97,9 +97,9 @@ public class UserController {
 
     //유저 포인트 조회
     @GetMapping("/{userId}/point")
-    public UserPointResponseDTO getUserPoint(@PathVariable Long userId) {
-        // userId로 포인트 조회 서비스 호출
-        return userService.getUserPointById(userId);
+    public ResponseEntity<UserPointResponseDTO> getUserPoint(@PathVariable Long userId) {
+        UserPointResponseDTO userPoint = userService.getUserPointById(userId);
+        return ResponseEntity.ok(userPoint); // HTTP 200 OK
     }
 
     // 유저 포인트 사용 시 포인트 수정

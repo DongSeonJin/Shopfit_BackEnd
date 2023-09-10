@@ -109,6 +109,7 @@ public class UserServiceImpl implements UserService{
     }
 
     // 유저 포인트 조회
+    @Override
     public UserPointResponseDTO getUserPointById(Long userId) {
         // 유저 ID로 유저 정보를 조회
         User user = userRepository.findById(userId)
@@ -121,6 +122,7 @@ public class UserServiceImpl implements UserService{
     }
 
     // 유저 포인트 사용 시 포인트 수정
+    @Override
     public boolean usePoints(User user, int usedPoints) {
         int currentPoints = user.getPoint();
 
