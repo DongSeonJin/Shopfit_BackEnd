@@ -50,7 +50,7 @@ public class ReplyController {
     // replyId 에 해당하는 댓글 가져오기
     @GetMapping("/{replyId}")
     public ResponseEntity<?> getReplyByReplyId (@PathVariable long replyId) {
-        Reply reply = replyService.findByReplyId(replyId);
+        Reply reply = replyService.findByReplyId(replyId).;
 //        if (reply == null) {
 //            try {
 //                throw new NotFoundReplyByReplyIdException("존재하지 않는 댓글입니다.");
