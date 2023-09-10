@@ -2,6 +2,8 @@ package com.spring.community.service;
 
 import com.spring.community.entity.Reply;
 import com.spring.community.repository.ReplyRepository;
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     public Reply findByReplyId(long replyId) {
         return replyRepository.findById(replyId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_FOUND)); // enum 활용 예시
     }
 
     @Override

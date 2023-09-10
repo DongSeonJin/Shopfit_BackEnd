@@ -1,12 +1,10 @@
 package com.spring.community.controller;
 
-import com.spring.community.DTO.ReplyCreateRequestDTO;
 import com.spring.community.DTO.ReplyResponseDTO;
 import com.spring.community.DTO.ReplyUpdateRequestDTO;
-import com.spring.community.entity.Post;
 import com.spring.community.entity.Reply;
-import com.spring.community.exception.CustomException;
-import com.spring.community.exception.ExceptionCode;
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.community.exception.NotFoundReplyByReplyIdException;
 import com.spring.community.service.PostService;
 import com.spring.community.service.ReplyService;
@@ -50,7 +48,10 @@ public class ReplyController {
     // replyId 에 해당하는 댓글 가져오기
     @GetMapping("/{replyId}")
     public ResponseEntity<?> getReplyByReplyId (@PathVariable long replyId) {
-        Reply reply = replyService.findByReplyId(replyId).;
+        Reply reply = replyService.findByReplyId(replyId);
+
+        // * 서비스 레이어에서 이미 예외처리를 해주므로 예외처리 할필요X *
+
 //        if (reply == null) {
 //            try {
 //                throw new NotFoundReplyByReplyIdException("존재하지 않는 댓글입니다.");
@@ -59,10 +60,6 @@ public class ReplyController {
 //                return new ResponseEntity<>("댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
 //            }
 //        }
-
-        if (reply == null) {
-            throw new CustomException(ExceptionCode.REPLY_NOT_FOUND);
-        }
 
         ReplyResponseDTO replyResponseDTO = new ReplyResponseDTO(reply);
 

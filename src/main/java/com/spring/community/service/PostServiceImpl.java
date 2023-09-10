@@ -6,6 +6,8 @@ import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.PostJPARepository;
 import com.spring.community.repository.ReplyRepository;
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,7 +44,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public IndividualPostResponseDTO getPostById(Long postId) {
         Post post = postJPARepository.findById(postId)
-                .orElseThrow(() -> new PostIdNotFoundException("해당 게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionCode.POST_NOT_FOUND)); // enum 활용 예시
 
         return new IndividualPostResponseDTO(post);
     }

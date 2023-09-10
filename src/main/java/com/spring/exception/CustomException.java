@@ -1,4 +1,4 @@
-package com.spring.community.exception;
+package com.spring.exception;
 
 
 public class CustomException extends RuntimeException{
@@ -14,6 +14,8 @@ public class CustomException extends RuntimeException{
     public ExceptionCode getExceptionCode() {
         return exceptionCode;
     }
+
+
 
 
 
