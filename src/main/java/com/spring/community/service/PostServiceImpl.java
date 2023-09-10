@@ -7,8 +7,7 @@ import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.PostJPARepository;
 import com.spring.community.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -146,5 +145,23 @@ public class PostServiceImpl implements PostService{
     @Override
     public long getReplyCount(Long postId) {
         return replyRepository.countByPost_PostId(postId);
+    }
+
+
+    // 검색 - title, postId 기준 내림차순
+    @Override
+    public Page<Post> searchPostByKeyword(String keyword, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, Sort.Direction.DESC, "postId");
+        Page<Post> searchResults = postJPARepository.findByTitleContainingIgnoreCase(keyword, pageable);
+
+        if (searchResults.getTotalElements() == 0) {
+            return Page.empty(pageable);
+        }
+
+        if (searchResults.getTotalPages() < pageNum) {
+            pageable = PageRequest.of(searchResults.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC, "postId");
+            searchResults = postJPARepository.findByTitleContainingIgnoreCase(keyword, pageable);
+        }
+        return searchResults;
     }
 }

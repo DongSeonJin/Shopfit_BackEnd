@@ -119,6 +119,20 @@ public class PostController {
 
 
 
+    // 검색
+    @GetMapping({"/search/{keyword}/{pageNum}", "/search/{keyword}"})
+    public ResponseEntity<Page<PostListResponseDTO>> searchPost(@PathVariable String keyword,
+                                                                @PathVariable(required = false) Integer pageNum){
+        int currentPageNum = pageNum != null ? pageNum : 1;
+        Page<Post> searchResultPage = postService.searchPostByKeyword(keyword, currentPageNum);
+
+        Page<PostListResponseDTO> searchResultDTOPage = searchResultPage
+                .map(PostListResponseDTO::new);
+
+        return ResponseEntity.ok(searchResultDTOPage);
+    }
+
+
 
 
 
