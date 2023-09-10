@@ -11,4 +11,5 @@ public class PostTop4DTO {
     private String title;
     private String imageUrl;
     private Long postId;
+    private Long viewCount;
 }

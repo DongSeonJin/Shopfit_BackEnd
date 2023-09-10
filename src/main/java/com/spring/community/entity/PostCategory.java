@@ -6,6 +6,7 @@ import lombok.*;
 @Entity @Getter @ToString @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class PostCategory {
 
     @Id

@@ -1,5 +1,6 @@
 package com.spring.community.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.spring.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

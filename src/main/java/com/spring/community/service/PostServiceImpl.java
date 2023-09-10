@@ -26,8 +26,8 @@ public class PostServiceImpl implements PostService{
     private final ReplyRepository replyRepository;
 
 
-
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 게시글을 조회할지
+
 
     @Autowired
     public PostServiceImpl(PostJPARepository postRepository,
@@ -81,7 +81,6 @@ public class PostServiceImpl implements PostService{
 
         dynamicLikeRepository.createDynamicLike(likeSave); // 동적 좋아요 테이블 생성
         postJPARepository.save(post); // post 생성
-
 
     }
 
