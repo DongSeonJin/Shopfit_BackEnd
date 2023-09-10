@@ -126,3 +126,32 @@ public class ReplyController {
         }
     }
 }
+
+
+//    @Test
+//    @Transactional
+//    public void createReplyTest() throws Exception {
+//        // given
+//        Long postId = 3L;
+//        String content = "create reply test";
+//
+//        String url = "/reply";
+//
+//        Post post = new Post();
+//        post.setPostId(postId);
+//
+//        Reply reply = new Reply();
+//        reply.setContent(content);
+//
+//        // 데이터 직렬화
+//        final String requestBody = objectMapper.writeValueAsString(reply);
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(post(url)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestBody));
+//
+//        // then
+//        resultActions
+//                .andExpect(jsonPath("$.size()").value(4));
+//    }
