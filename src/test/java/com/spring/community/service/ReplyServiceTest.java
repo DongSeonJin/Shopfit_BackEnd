@@ -24,21 +24,21 @@ public class ReplyServiceTest {
     @Transactional
     public void findAllByPostIdTest() {
         // given
-        long postId = 1;
+        long postId = 3L;
 
         // when
         List<Reply> replies = replyService.findAllByPostId(postId);
 
         // then
-        assertEquals(2, replies.size());
+        assertEquals(3, replies.size());
     }
 
     @Test
     @Transactional
     public void findByReplyIdTest() {
         // given
-        long replyId = 16;
-        String content = "첫 번째 댓글";
+        Long replyId = 94L;
+        String content = "asdf";
 
         // when
         Reply reply = replyService.findByReplyId(replyId);
@@ -52,23 +52,22 @@ public class ReplyServiceTest {
     @Transactional
     public void  deleteByReplyIdTest() {
         // given
-        long replyId = 17;
-        long postId = 1;
+        Long replyId = 96L;
+        Long postId = 3L;
 
         // when
         replyService.deleteByReplyId(replyId);
 
         // then
-        assertEquals(1, replyService.findAllByPostId(postId).size());
-//        assertNull(replyService.findByReplyId(replyId));
+        assertEquals(2, replyService.findAllByPostId(postId).size());
     }
 
     @Test
     @Transactional
     public void saveTest() {
         // given
-        long postId = 1;
-        String content = "test content";
+        long postId = 3L;
+        String content = "test reply content";
 
         // Post 객체 생성 및 저장
         Post post = new Post();
@@ -84,14 +83,14 @@ public class ReplyServiceTest {
 
         // then
         List<Reply> replyList = replyService.findAllByPostId(postId);
-        assertEquals(3, replyList.size());
+        assertEquals(4, replyList.size());
     }
 
     @Test
     @Transactional
     public void updateTest() {
         // given
-        long replyId = 16;
+        long replyId = 95L;
         String content = "update content";
 
         Reply reply = new Reply();
