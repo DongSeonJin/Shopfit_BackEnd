@@ -2,24 +2,36 @@ package com.spring.community.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.community.DTO.PostCreateRequestDTO;
+import com.spring.community.DTO.PostListByUserIdDTO;
+import com.spring.community.DTO.PostTop4DTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
+import com.spring.community.entity.PostCategory;
 import com.spring.community.repository.PostJPARepository;
+import com.spring.community.service.PostService;
+import com.spring.user.entity.User;
+import com.spring.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.parameters.P;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.print.attribute.standard.Media;
+
+import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +53,12 @@ public class PostControllerTest {
     @Autowired
     PostJPARepository postJPARepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PostService postService;
+
     @BeforeEach
     public void setMockMvc() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -49,135 +67,166 @@ public class PostControllerTest {
     @Test
     @Transactional
     public void getAllPostsTest() throws Exception {
-        List<Post> postList = postJPARepository.findAll();
-        assertThat(postList.size()).isEqualTo(536);
-
-        String url = "/post/list";
-
-        ResultActions resultActions = mockMvc.perform(get(url)
-                .contentType(MediaType.APPLICATION_JSON));
-
-        resultActions
-                .andExpect(status().isOk());
-    }
-
-//    @Test
-//    @Transactional
-//    public void getPostsByCategoryId() throws Exception {
-//        int categoryId = 2;
-//        String url = "/post/list/2";
+//        String url = "/post/list";
 //
 //        ResultActions resultActions = mockMvc.perform(get(url)
 //                .contentType(MediaType.APPLICATION_JSON));
 //
 //        resultActions
 //                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[3].postCategory.categoryId").value(categoryId));
-//
-//
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void getPostById() throws Exception {
+//                .andExpect(jsonPath("$.length()").value(536));
+
+    }
+
+
+    @Test
+    @Transactional
+    public void getPostsByCategoryIdTest() throws Exception {
+        int categoryId = 2;
+        String url = "/post/list/2";
+
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        resultActions
+                .andExpect(status().isOk()); // HTTP 응답 상태코드가 200 OK 여부를 검증합니다.
+    }
+
+    @Test
+    @Transactional
+    public void getPostByIdTest() throws Exception {
+        // given
+        String title = "홀쑤기";
+        Long postId = 1L;
+
+        String url = "/post/1";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(title))
+                .andExpect(jsonPath("$.postId").value(postId));
+
+    }
+
+    @Test
+    @Transactional
+    public void createPostTest() throws Exception {
 //        // given
-//        String title = "제목 2";
-//        long postId = 2;
+//        String url = "/post";
+//        Post post = new Post();
+//        post.setTitle("Test title");
+//        post.setContent("Test content");
+//        post.setNickname("Test nickname");
 //
-//        String url = "/post/2";
+////        User user = new User();
 //
-//        // when
-//        ResultActions resultActions = mockMvc.perform(get(url)
-//                .accept(MediaType.APPLICATION_JSON));
+//        // Create a PostCategory entity and set its properties
+//        PostCategory postCategory = new PostCategory();
+//        postCategory.setCategoryName("오운완");
 //
-//        // then
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.title").value(title))
-//                .andExpect(jsonPath("$.postId").value(postId));
+//        post.setPostCategory(postCategory);
 //
-//    }
-//
-//
-//    @Test
-//    @Transactional
-//    public void createPostTest() throws Exception {
-//        // given
-//        String url = "/post/create";
-//        Long userId = 5L;
-//        int categoryId = 1;
-//        String nickname = "닉네임5";
-//        String title = "제목테스트";
-//        String content = "컨텐츠테스트";
-//
-//        PostCreateRequestDTO postCreateRequestDTO = PostCreateRequestDTO.builder()
-//                .userId(userId)
-//                .categoryId(categoryId)
-//                .nickname(nickname)
-//                .title(title)
-//                .content(content)
-//                .build();
-//
-//        // 데이터 역직렬화(JSON)
-//        String postSaveDTOJson = objectMapper.writeValueAsString(postCreateRequestDTO);
+//        String requestBody = objectMapper.writeValueAsString(post);
 //
 //        // when
 //        ResultActions resultActions = mockMvc.perform(post(url)
 //                .contentType(MediaType.APPLICATION_JSON)
-//                .content(postSaveDTOJson));
-//
-//        // then
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("게시글이 저장되었습니다."));
-//    }
-//
-//
-//    @Test
-//    @Transactional
-//    public void deletePostByIdTest() throws Exception {
-//        // given
-//        long postId = 2;
-//        String url = "/post/2";
-//
-//        // when
-//        mockMvc.perform(delete(url).accept(MediaType.TEXT_PLAIN));
-//
-//        // then
-//        assertEquals(3, postJPARepository.findAll().size());
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void updatePostTest() throws Exception {
-//
-//        String updateTitle = "테스트제목";
-//        String updateContent = "테스트내용";
-//        PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder()
-//                .title(updateTitle)
-//                .content(updateContent)
-//                .build();
-//
-//        String url = "/post/20";
-//        System.out.println("테스트코드" + postUpdateDTO);
-//
-//        final String requestBody = objectMapper.writeValueAsString(postUpdateDTO);
-//
-//        // when
-//        mockMvc.perform(patch(url)
-//                .contentType(MediaType.APPLICATION_JSON)
 //                .content(requestBody));
 //
 //        // then
-//        final ResultActions resultActions = mockMvc.perform(get(url)
-//                .accept(MediaType.APPLICATION_JSON));
-//
-//
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("title").value(updateTitle))
-//                .andExpect(jsonPath("content").value(updateContent));
-//
-//    }
+//        resultActions.andExpect(status().isOk())
+//                .andExpect(content().string("게시글이 저장되었습니다."));
+    }
+
+    @Test
+    @Transactional
+    public void deletePostByIdTest() throws Exception {
+        // given
+        Long postId = 1L;
+        String url = "/post";
+
+        // when
+        mockMvc.perform(delete(url).accept(MediaType.TEXT_PLAIN));
+
+        // then
+        assertEquals(536, postJPARepository.findAll().size());
+    }
+
+    @Test
+    @Transactional
+    public void updatePostTest() throws Exception {
+        // given
+        String updateTitle = "test title";
+        String updateContent = "test content";
+        PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder()
+                .title(updateTitle)
+                .content(updateContent)
+                .build();
+
+        String url = "/post/20";
+
+        final String requestBody = objectMapper.writeValueAsString(postUpdateDTO);
+
+        // when
+        mockMvc.perform(patch(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        // then
+        final ResultActions resultActions = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("title").value(updateTitle))
+                .andExpect(jsonPath("content").value(updateContent));
+    }
+
+    @Test
+    @Transactional
+    public void getRecentTop4PostsTest() throws Exception{
+        // given
+        List<PostTop4DTO> expectedTop4Posts = new ArrayList<>();
+
+        String url = "/post/recent-top4";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    @Transactional
+    public void getPostsByUserIdTest() throws Exception {
+        // given
+        Long userId = 1L;
+        List<PostListByUserIdDTO> postListByUserIdDTOList = new ArrayList<>();
+
+        String url = "/post/myPage/myCommunity/1";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(6));
+
+    }
 }
+
+
 

@@ -17,10 +17,12 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 
 import java.sql.Struct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -28,8 +30,10 @@ import java.util.Optional;
 import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.notIn;
+import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 @SpringBootTest
 //@ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
@@ -42,6 +46,9 @@ public class PostServiceTest {
     private ReplyRepository replyRepository;
     @Mock
     private UserRepository userRepository;
+
+//    @Mock
+//    User user;
 
     @Autowired
     PostService postService;
@@ -87,29 +94,39 @@ public class PostServiceTest {
         assertEquals(20, posts.getSize());
     }
 
-    // savePostTest 추가
-
 //    @Test
 //    @Transactional
-//    public void savePostTest() {
+//    public void createPostTest(){
 //        // given
-//        String nickname = "testNickname";
-//        String title = "testTitle";
-//        String content = "testContent";
-//        PostCreateRequestDTO postCreateRequestDTO = PostCreateRequestDTO.builder()
-//                .nickname(nickname)
-//                .title(title)
+//        String content = "test content";
+//        String title = "test title";
+//        String nickname = "test nickname";
+//
+//        User user = User.createUser();
+//        user.setUserId(1L);
+//
+//        PostCategory postCategory = new PostCategory();
+//        postCategory.setCategoryId(1);
+//        postCategory.setCategoryName("오운완");
+//
+//        Post post = Post.builder()
 //                .content(content)
+//                .title(title)
+//                .nickname(nickname)
+//                .postCategory(postCategory)
 //                .build();
 //
+//        // when
+//        postService.createPost(post);
 //
-//        postService.savePost(postCreateRequestDTO);
+//        // then
+//        assertEquals(534, postService.getAllPosts().size());
 //
 //
-//        assertEquals(5, postService.getAllPosts().size());
-//        assertEquals(nickname, postService.getAllPosts().get(4).getNickname());
-//        assertEquals(title, postService.getAllPosts().get(4).getTitle());
-//        assertEquals(content, postService.getAllPosts().get(4).getContent());
+//
+//    }
+
+
 //    }
 
     @Test

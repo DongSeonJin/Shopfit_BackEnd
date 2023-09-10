@@ -147,3 +147,24 @@ public class PostServiceImpl implements PostService{
         return replyRepository.countByPost_PostId(postId);
     }
 }
+//    @Test
+//    @Transactional
+//    public void savePostTest() {
+//        // given
+//        String nickname = "testNickname";
+//        String title = "testTitle";
+//        String content = "testContent";
+//        PostCreateRequestDTO postCreateRequestDTO = PostCreateRequestDTO.builder()
+//                .nickname(nickname)
+//                .title(title)
+//                .content(content)
+//                .build();
+//
+//
+//        postService.savePost(postCreateRequestDTO);
+//
+//
+//        assertEquals(5, postService.getAllPosts().size());
+//        assertEquals(nickname, postService.getAllPosts().get(4).getNickname());
+//        assertEquals(title, postService.getAllPosts().get(4).getTitle());
+//        assertEquals(content, postService.getAllPosts().get(4).getContent());
