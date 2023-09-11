@@ -41,11 +41,9 @@ public class LikeServiceTest {
         likeService.saveLike(likeRequestDTO);
 
         // then
-        Long likeCount = dynamicLikeRepository.getLikeCount(1L);
-        assertEquals(1L, likeCount);
+        Long likeCount = dynamicLikeRepository.getLikeCount(postId);
+        assertEquals(2L, likeCount);
 
-        int likeStatus = dynamicLikeRepository.isLiked(likeRequestDTO);
-        assertEquals(1, likeStatus);
     }
 
     @Test

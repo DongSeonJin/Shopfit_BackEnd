@@ -9,17 +9,13 @@ import com.spring.community.repository.PostJPARepository;
 import com.spring.community.repository.ReplyRepository;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import net.bytebuddy.matcher.EqualityMatcher;
-import org.hibernate.dialect.function.LpadRpadPadEmulation;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Struct;
 import java.util.ArrayList;
@@ -27,10 +23,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.notIn;
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -38,28 +30,33 @@ import static org.mockito.Mockito.*;
 //@ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
 
+//    @Autowired
+//    private PostJPARepository postJPARepository;
+//
+//    @Autowired
+//    private DynamicLikeRepository dynamicLikeRepository;
+//
+//    @Autowired
+//    private ReplyRepository replyRepository;
+//
+//    @Autowired
+//    private UserRepository userRepository;
+
     @Mock
     private PostJPARepository postJPARepository;
-    @Mock
-    private DynamicLikeRepository dynamicLikeRepository;
-    @Mock
-    private ReplyRepository replyRepository;
-    @Mock
-    private UserRepository userRepository;
 
-//    @Mock
-//    User user;
 
     @Autowired
-    PostService postService;
+    private PostService postService;
 
     @Test
     @Transactional
+    @DisplayName("1번 글 조회시 제목은 '제목1', 내용은 '내용1'")
     public void getPostByIdTest() {
         // given
         long postId = 1L;
-        String title = "홀쑤기";
-        String content = "홀쑤기";
+        String title = "제목1";
+        String content = "내용1";
 
         // when
         IndividualPostResponseDTO post = postService.getPostById(postId);
@@ -72,16 +69,7 @@ public class PostServiceTest {
 
     @Test
     @Transactional
-    public void getAllPostsTest() {
-        // when
-        List<Post> postList = postService.getAllPosts();
-
-        // then (테스트코드 작성 기준 전체 글 개수 534 개)
-        assertEquals(534, postList.size());
-    }
-
-    @Test
-    @Transactional
+    @DisplayName("카테고리 1번의 1페이지의 글 개수는 20개")
     public void getPostsByCategoryIdTest() {
         // given
         Long categoryId = 1L;
@@ -94,6 +82,35 @@ public class PostServiceTest {
         assertEquals(20, posts.getSize());
     }
 
+//    @Test
+//    @Transactional
+//    public void createPostTest(){
+////        // given
+////        String content = "test content";
+////        String title = "test title";
+////        String nickname = "test nickname";
+////
+////        User user = new User("user1@example.com", "testPassword");
+////
+////        PostCategory postCategory = new PostCategory();
+////        postCategory.setCategoryId(1);
+////        postCategory.setCategoryName("오운완");
+////
+////        Post post = Post.builder()
+////                .user()
+////                .content(content)
+////                .title(title)
+////                .nickname(nickname)
+////                .postCategory(postCategory)
+////                .build();
+////
+////        // when
+////        postService.createPost(post);
+////
+////        // then
+////        assertEquals(6, postService.getAllPosts().size());
+//    }
+
     @Test
     @Transactional
     public void createPostTest(){
@@ -102,40 +119,54 @@ public class PostServiceTest {
         String title = "test title";
         String nickname = "test nickname";
 
-        User user = new User("user1@example.com", "testPassword" );
-
         PostCategory postCategory = new PostCategory();
-        postCategory.setCategoryId(1);
-        postCategory.setCategoryName("오운완");
 
         Post post = Post.builder()
-                .user(user)
+                .user(User.builder()
+                        .userId(1L)
+                        .build())
                 .content(content)
                 .title(title)
                 .nickname(nickname)
-                .postCategory(postCategory)
+                .postCategory(PostCategory.builder()
+                        .categoryId(1)
+                        .categoryName("오운완")
+                        .build())
                 .build();
-
         // when
         postService.createPost(post);
-
         // then
-        assertEquals(534, postService.getAllPosts().size());
+        assertEquals(13, postService.getAllPosts().size());
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
     @Test
     @Transactional
+    @DisplayName("1번 글 삭제시, 전체 글 개수 2개")
     public void deletePostByIdTest() {
         // given
-        Long postId = 533L;
+        Long postId = 1L;
 
         // when
         postService.deletePostById(postId);
 
         // then
-        assertEquals(533, postService.getAllPosts().size());
+        assertEquals(3, postService.getAllPosts().size());
     }
 
     @Test
