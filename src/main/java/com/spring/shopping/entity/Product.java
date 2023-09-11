@@ -68,7 +68,6 @@ public class Product {
     // 리뷰 엔터티(Review)에서 해당 제품(Product)의 리뷰를 찾아서 리뷰 개수를 계산
     private int reviewCount;
 
-
     
     
     public void setProductId(Long productId) {
