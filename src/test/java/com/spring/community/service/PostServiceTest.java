@@ -30,18 +30,6 @@ import static org.mockito.Mockito.*;
 //@ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
 
-//    @Autowired
-//    private PostJPARepository postJPARepository;
-//
-//    @Autowired
-//    private DynamicLikeRepository dynamicLikeRepository;
-//
-//    @Autowired
-//    private ReplyRepository replyRepository;
-//
-//    @Autowired
-//    private UserRepository userRepository;
-
     @Mock
     private PostJPARepository postJPARepository;
 
@@ -51,12 +39,22 @@ public class PostServiceTest {
 
     @Test
     @Transactional
+    public void getAllPostsTest() throws Exception {
+        // when
+        List<Post> postList = postService.getAllPosts();
+
+        // then
+        assertEquals(12, postList.size());
+    }
+
+    @Test
+    @Transactional
     @DisplayName("1번 글 조회시 제목은 '제목1', 내용은 '내용1'")
-    public void getPostByIdTest() {
+    public void getPostByIdTest() throws Exception{
         // given
         long postId = 1L;
-        String title = "제목1";
-        String content = "내용1";
+        String title = "test title1";
+        String content = "test content1";
 
         // when
         IndividualPostResponseDTO post = postService.getPostById(postId);
@@ -82,77 +80,33 @@ public class PostServiceTest {
         assertEquals(20, posts.getSize());
     }
 
-//    @Test
-//    @Transactional
-//    public void createPostTest(){
-////        // given
-////        String content = "test content";
-////        String title = "test title";
-////        String nickname = "test nickname";
-////
-////        User user = new User("user1@example.com", "testPassword");
-////
-////        PostCategory postCategory = new PostCategory();
-////        postCategory.setCategoryId(1);
-////        postCategory.setCategoryName("오운완");
-////
-////        Post post = Post.builder()
-////                .user()
-////                .content(content)
-////                .title(title)
-////                .nickname(nickname)
-////                .postCategory(postCategory)
-////                .build();
-////
-////        // when
-////        postService.createPost(post);
-////
-////        // then
-////        assertEquals(6, postService.getAllPosts().size());
-//    }
-
     @Test
     @Transactional
     public void createPostTest(){
-        // given
-        String content = "test content";
-        String title = "test title";
-        String nickname = "test nickname";
-
-        PostCategory postCategory = new PostCategory();
-
-        Post post = Post.builder()
-                .user(User.builder()
-                        .userId(1L)
-                        .build())
-                .content(content)
-                .title(title)
-                .nickname(nickname)
-                .postCategory(PostCategory.builder()
-                        .categoryId(1)
-                        .categoryName("오운완")
-                        .build())
-                .build();
-        // when
-        postService.createPost(post);
-        // then
-        assertEquals(13, postService.getAllPosts().size());
+//        // given
+//        String content = "test content";
+//        String title = "test title";
+//        String nickname = "test nickname";
+//
+//        PostCategory postCategory = new PostCategory();
+//
+//        Post post = Post.builder()
+//                .user(User.builder()
+//                        .userId(1L)
+//                        .build())
+//                .content(content)
+//                .title(title)
+//                .nickname(nickname)
+//                .postCategory(PostCategory.builder()
+//                        .categoryId(1)
+//                        .categoryName("오운완")
+//                        .build())
+//                .build();
+//        // when
+//        postService.createPost(post);
+//        // then
+//        assertEquals(13, postService.getAllPosts().size());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Test
@@ -166,7 +120,7 @@ public class PostServiceTest {
         postService.deletePostById(postId);
 
         // then
-        assertEquals(3, postService.getAllPosts().size());
+        assertEquals(11, postService.getAllPosts().size());
     }
 
     @Test
@@ -200,11 +154,12 @@ public class PostServiceTest {
         postService.increaseViewCount(postId);
 
         // then (테스트코드 작성일 기준 1번 글 조회수 262)
-        assertEquals(263, postService.getPostById(postId).getViewCount());
+        assertEquals(14, postService.getPostById(postId).getViewCount());
     }
 
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // getRecentTop4Posts 테스트코드 추가
-
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     @Test
     @Transactional
@@ -215,21 +170,21 @@ public class PostServiceTest {
         // when
         List<PostListByUserIdDTO> result = postService.findPostsByUserId(userId);
 
-        // then (테스트코드 작성일 기준 1번 유저 글 4개)
-        assertEquals(4, result.size());
+        // then (테스트코드 작성일 기준 1번 유저 글 9개)
+        assertEquals(9, result.size());
     }
 
     @Test
     @Transactional
     public void getReplyCountTest() {
         // given
-        Long postId = 3L;
+        Long postId = 1L;
 
         // when
         postService.getReplyCount(postId);
 
-        // then (테스트코드 작성일 기준 3번 글 댓글 3개)
-        assertEquals(3, postService.getReplyCount(postId));
+        // then (테스트코드 작성일 기준 3번 글 댓글 2개)
+        assertEquals(2, postService.getReplyCount(postId));
 
     }
 

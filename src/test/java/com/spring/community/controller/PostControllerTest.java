@@ -64,20 +64,6 @@ public class PostControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
-    @Test
-    @Transactional
-    public void getAllPostsTest() throws Exception {
-//        String url = "/post/list";
-//
-//        ResultActions resultActions = mockMvc.perform(get(url)
-//                .contentType(MediaType.APPLICATION_JSON));
-//
-//        resultActions
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.length()").value(536));
-
-    }
-
 
     @Test
     @Transactional
@@ -96,7 +82,7 @@ public class PostControllerTest {
     @Transactional
     public void getPostByIdTest() throws Exception {
         // given
-        String title = "홀쑤기";
+        String title = "test title1";
         Long postId = 1L;
 
         String url = "/post/1";
@@ -154,21 +140,21 @@ public class PostControllerTest {
         mockMvc.perform(delete(url).accept(MediaType.TEXT_PLAIN));
 
         // then
-        assertEquals(536, postJPARepository.findAll().size());
+        assertEquals(12, postJPARepository.findAll().size());
     }
 
     @Test
     @Transactional
     public void updatePostTest() throws Exception {
         // given
-        String updateTitle = "test title";
-        String updateContent = "test content";
+        String updateTitle = "test update title";
+        String updateContent = "test update content";
         PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder()
                 .title(updateTitle)
                 .content(updateContent)
                 .build();
 
-        String url = "/post/20";
+        String url = "/post/1";
 
         final String requestBody = objectMapper.writeValueAsString(postUpdateDTO);
 
@@ -223,7 +209,7 @@ public class PostControllerTest {
         // then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(6));
+                .andExpect(jsonPath("$.length()").value(9));
 
     }
 }
