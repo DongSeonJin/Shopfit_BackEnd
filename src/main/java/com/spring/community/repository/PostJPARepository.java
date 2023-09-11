@@ -40,5 +40,5 @@ public interface PostJPARepository extends JpaRepository<Post, Long> {
 
 
     // Post keyword 검색
-    Page<Post> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+    Page<Post> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String titleKeyword, String contentKeyword, Pageable pageable);
 }

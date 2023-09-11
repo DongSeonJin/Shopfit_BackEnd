@@ -154,7 +154,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public Page<Post> searchPostByKeyword(String keyword, int pageNum) {
         Pageable pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, Sort.Direction.DESC, "postId");
-        Page<Post> searchResults = postJPARepository.findByTitleContainingIgnoreCase(keyword, pageable);
+        Page<Post> searchResults = postJPARepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable);
 
         if (searchResults.getTotalElements() == 0) {
             return Page.empty(pageable);
@@ -162,7 +162,7 @@ public class PostServiceImpl implements PostService{
 
         if (searchResults.getTotalPages() < pageNum) {
             pageable = PageRequest.of(searchResults.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC, "postId");
-            searchResults = postJPARepository.findByTitleContainingIgnoreCase(keyword, pageable);
+            searchResults = postJPARepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable);
         }
         return searchResults;
     }
