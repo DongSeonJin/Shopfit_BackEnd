@@ -19,15 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl implements PostService{
 
-
-
     private final PostJPARepository postJPARepository;
     private final DynamicLikeRepository dynamicLikeRepository;
     private final ReplyRepository replyRepository;
 
-
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 게시글을 조회할지
-
 
     @Autowired
     public PostServiceImpl(PostJPARepository postRepository,
@@ -37,7 +33,6 @@ public class PostServiceImpl implements PostService{
         this.postJPARepository = postRepository;
         this.replyRepository = replyRepository;
     }
-
 
     @Override
     public IndividualPostResponseDTO getPostById(Long postId) {

@@ -94,40 +94,36 @@ public class PostServiceTest {
         assertEquals(20, posts.getSize());
     }
 
-//    @Test
-//    @Transactional
-//    public void createPostTest(){
-//        // given
-//        String content = "test content";
-//        String title = "test title";
-//        String nickname = "test nickname";
-//
-//        User user = User.createUser();
-//        user.setUserId(1L);
-//
-//        PostCategory postCategory = new PostCategory();
-//        postCategory.setCategoryId(1);
-//        postCategory.setCategoryName("오운완");
-//
-//        Post post = Post.builder()
-//                .content(content)
-//                .title(title)
-//                .nickname(nickname)
-//                .postCategory(postCategory)
-//                .build();
-//
-//        // when
-//        postService.createPost(post);
-//
-//        // then
-//        assertEquals(534, postService.getAllPosts().size());
-//
-//
-//
-//    }
+    @Test
+    @Transactional
+    public void createPostTest(){
+        // given
+        String content = "test content";
+        String title = "test title";
+        String nickname = "test nickname";
+
+        User user = new User("user1@example.com", "testPassword" );
+
+        PostCategory postCategory = new PostCategory();
+        postCategory.setCategoryId(1);
+        postCategory.setCategoryName("오운완");
+
+        Post post = Post.builder()
+                .user(user)
+                .content(content)
+                .title(title)
+                .nickname(nickname)
+                .postCategory(postCategory)
+                .build();
+
+        // when
+        postService.createPost(post);
+
+        // then
+        assertEquals(534, postService.getAllPosts().size());
+    }
 
 
-//    }
 
     @Test
     @Transactional
