@@ -6,6 +6,7 @@ import com.spring.user.DTO.AddUserRequestDTO;
 import com.spring.user.DTO.LoginRequestDTO;
 import com.spring.user.DTO.UserPointResponseDTO;
 import com.spring.user.DTO.UserUpdateDTO;
+import com.spring.user.entity.Authority;
 import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.repository.UserRepository;
@@ -60,6 +61,7 @@ public class UserServiceImpl implements UserService{
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
                 .nickname(dto.getNickname())
                 .imageUrl(dto.getImageUrl())
+                .authority(dto.getAuthority())
                 .build()
         );
     }

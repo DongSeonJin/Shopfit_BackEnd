@@ -49,9 +49,8 @@ public class User implements UserDetails {
     @LastModifiedDate // 자동으로 업데이트일자로 설정
     private LocalDateTime updatedAt;
 
-    @ColumnDefault("false")
-    @Column(name = "is_admin")
-    private boolean isAdmin;
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
 
     @OneToMany(mappedBy = "user")
     private List<Coupon> coupons;
