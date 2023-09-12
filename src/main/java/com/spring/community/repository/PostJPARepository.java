@@ -39,4 +39,6 @@ public interface PostJPARepository extends JpaRepository<Post, Long> {
     List<Post> findByUser_UserId (Long userId);
 
 
+    // Post keyword 검색
+    Page<Post> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String titleKeyword, String contentKeyword, Pageable pageable);
 }

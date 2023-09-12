@@ -6,9 +6,10 @@ import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.PostJPARepository;
 import com.spring.community.repository.ReplyRepository;
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -37,7 +38,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public IndividualPostResponseDTO getPostById(Long postId) {
         Post post = postJPARepository.findById(postId)
-                .orElseThrow(() -> new PostIdNotFoundException("해당 게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionCode.POST_NOT_FOUND)); // enum 활용 예시
 
         return new IndividualPostResponseDTO(post);
     }
@@ -140,5 +141,23 @@ public class PostServiceImpl implements PostService{
     @Override
     public long getReplyCount(Long postId) {
         return replyRepository.countByPost_PostId(postId);
+    }
+
+
+    // 검색 - title, postId 기준 내림차순
+    @Override
+    public Page<Post> searchPostByKeyword(String keyword, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, Sort.Direction.DESC, "postId");
+        Page<Post> searchResults = postJPARepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable);
+
+        if (searchResults.getTotalElements() == 0) {
+            return Page.empty(pageable);
+        }
+
+        if (searchResults.getTotalPages() < pageNum) {
+            pageable = PageRequest.of(searchResults.getTotalPages() - 1, PAGE_SIZE, Sort.Direction.DESC, "postId");
+            searchResults = postJPARepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable);
+        }
+        return searchResults;
     }
 }

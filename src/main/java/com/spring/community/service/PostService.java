@@ -19,4 +19,5 @@ public interface PostService {
     List<PostListByUserIdDTO> findPostsByUserId (Long userId);
     long getReplyCount (Long postId);
 
+    Page<Post> searchPostByKeyword(String keyword, int currentPageNum);
 }

@@ -7,17 +7,20 @@ import com.spring.user.DTO.UserUpdateDTO;
 import com.spring.user.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-    void save(AddUserRequestDTO dto);
+    String signup(AddUserRequestDTO dto);
 
     User createUser(User user);
     List<User> getAllUsers();
+
+    User getUserByEmail(String email);
+
     User getUserById(Long id);
     void updateUser(UserUpdateDTO userUpdateDTO);
     void deleteUserById(Long id);
     UserPointResponseDTO getUserPointById(Long userId);
+    boolean usePoints(User user, int usedPoints);
     boolean authenticateUser(LoginRequestDTO loginRequest);
 
     boolean isNicknameAvailable(String nickname);

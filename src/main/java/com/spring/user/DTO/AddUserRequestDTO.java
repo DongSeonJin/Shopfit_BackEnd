@@ -10,4 +10,5 @@ public class AddUserRequestDTO {
     private String password;
     private String nickname;
     private String imageUrl;
+    private String confirmPassword;
 }
