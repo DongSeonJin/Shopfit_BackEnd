@@ -20,13 +20,9 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl implements PostService{
 
-
-
     private final PostJPARepository postJPARepository;
     private final DynamicLikeRepository dynamicLikeRepository;
     private final ReplyRepository replyRepository;
-
-
 
     final int PAGE_SIZE = 20; // 한 페이지에 몇 개의 게시글을 조회할지
 
@@ -38,7 +34,6 @@ public class PostServiceImpl implements PostService{
         this.postJPARepository = postRepository;
         this.replyRepository = replyRepository;
     }
-
 
     @Override
     public IndividualPostResponseDTO getPostById(Long postId) {
@@ -82,7 +77,6 @@ public class PostServiceImpl implements PostService{
 
         dynamicLikeRepository.createDynamicLike(likeSave); // 동적 좋아요 테이블 생성
         postJPARepository.save(post); // post 생성
-
 
     }
 
