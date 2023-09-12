@@ -28,7 +28,7 @@ public class PostController {
         this.likeService = likeService;
     }
 
-    // 게시글 전체 조회
+//     게시글 전체 조회
 //    @GetMapping("/list")
 //    public ResponseEntity<List<Post>> getAllPosts() {
 //        List<Post> posts = postService.getAllPosts();

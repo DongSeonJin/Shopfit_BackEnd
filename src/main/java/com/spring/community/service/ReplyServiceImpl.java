@@ -22,6 +22,11 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public List<Reply> findAllByPostId(long postId) {
+        List<Reply> replyList = replyRepository.findAllByPost_PostId(postId);
+
+        if (replyList.isEmpty()) {
+            throw new CustomException(ExceptionCode.POST_NOT_FOUND);
+        }
         return replyRepository.findAllByPost_PostId(postId);
     }
 
@@ -33,6 +38,9 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public void deleteByReplyId(long replyId) {
+        if (!replyRepository.existsById(replyId)) {
+            throw new CustomException(ExceptionCode.REPLY_NOT_FOUND);
+        }
         replyRepository.deleteById(replyId);
     }
 
