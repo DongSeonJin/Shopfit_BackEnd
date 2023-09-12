@@ -217,25 +217,25 @@ public class OrderServiceImpl implements OrderService {
 
 
     private OrderDTO convertToDTO(Order order) {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setOrderId(order.getOrderId());
-        orderDTO.setUserId(order.getUser().getUserId());
-        orderDTO.setTotalPrice(order.getTotalPrice());
-        orderDTO.setDeliveryDate(order.getDeliveryDate());
-        orderDTO.setAddress(order.getAddress());
-        orderDTO.setPhoneNumber(order.getPhoneNumber());
-        orderDTO.setOrderDate(order.getOrderDate());
-        orderDTO.setOrderStatus(order.getOrderStatus());
-        return orderDTO;
+        return OrderDTO.builder()
+                .orderId(order.getOrderId())
+                .userId(order.getUser().getUserId())
+                .totalPrice(order.getTotalPrice())
+                .deliveryDate(order.getDeliveryDate())
+                .address(order.getAddress())
+                .phoneNumber(order.getPhoneNumber())
+                .orderDate(order.getOrderDate())
+                .orderStatus(order.getOrderStatus())
+                .build();
     }
 
     public OrderProductDTO convertToDTO(OrderProduct orderProduct) {
-        OrderProductDTO orderProductDTO = new OrderProductDTO();
-        orderProductDTO.setProductId(orderProduct.getProduct().getProductId());
-        orderProductDTO.setQuantity(orderProduct.getQuantity());
-        orderProductDTO.setOrderId(orderProduct.getOrder().getOrderId());
-        orderProductDTO.setOrderProductId(orderProduct.getOrderProductId());
-        return orderProductDTO;
+        return OrderProductDTO.builder()
+                .productId(orderProduct.getProduct().getProductId())
+                .quantity(orderProduct.getQuantity())
+                .orderId(orderProduct.getOrder().getOrderId())
+                .orderProductId(orderProduct.getOrderProductId())
+                .build();
     }
 
 

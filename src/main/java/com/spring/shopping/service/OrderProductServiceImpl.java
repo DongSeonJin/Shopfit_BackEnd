@@ -80,11 +80,11 @@ public class OrderProductServiceImpl implements OrderProductService {
 
 
     private OrderProductDTO convertToDTO(OrderProduct orderProduct) {
-        OrderProductDTO dto = new OrderProductDTO();
-        dto.setOrderProductId(orderProduct.getOrderProductId());
-        dto.setOrderId(orderProduct.getOrder().getOrderId());
-        dto.setProductId(orderProduct.getProduct().getProductId());
-        dto.setQuantity(orderProduct.getQuantity());
-        return dto;
+        return OrderProductDTO.builder()
+                .orderProductId(orderProduct.getOrderProductId())
+                .orderId(orderProduct.getOrder().getOrderId())
+                .productId(orderProduct.getProduct().getProductId())
+                .quantity(orderProduct.getQuantity())
+                .build();
     }
 }
