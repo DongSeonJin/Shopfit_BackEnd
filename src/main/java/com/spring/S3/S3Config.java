@@ -1,4 +1,4 @@
-package com.spring.shopping.config;
+package com.spring.S3;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

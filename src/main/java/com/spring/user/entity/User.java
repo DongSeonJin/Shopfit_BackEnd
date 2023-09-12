@@ -1,5 +1,6 @@
 package com.spring.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.spring.shopping.entity.Coupon;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class) //CreatedAt, updatedAt 자동으로 현재시간 설정하는 JPA
 @Table(name = "users")// mysql에서 USER를 테이블명으로 지정할 수 없으므로 users로 생성
+
 public class User implements UserDetails {
 
     @Id
