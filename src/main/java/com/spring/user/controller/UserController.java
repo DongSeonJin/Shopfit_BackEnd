@@ -33,8 +33,8 @@ public class UserController {
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public ResponseEntity<?> signup(@RequestBody AddUserRequestDTO requestDTO){
-        userService.signup(requestDTO); // 현재 userService에 email, pw뿐이라 수정 요망
-        return ResponseEntity.ok("회원가입 성공");
+
+        return ResponseEntity.ok(userService.signup(requestDTO));
     }
 
 //    @RequestMapping(value = "/login", method = RequestMethod.POST)

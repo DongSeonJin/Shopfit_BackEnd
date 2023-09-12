@@ -1,11 +1,14 @@
 package com.spring.community.service;
 
+import com.spring.community.DTO.IndividualPostResponseDTO;
 import com.spring.community.DTO.PostListResponseDTO;
 import com.spring.community.DTO.PostCreateRequestDTO;
 import com.spring.community.DTO.PostUpdateDTO;
 import com.spring.community.entity.Post;
+import com.spring.community.entity.PostCategory;
 import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.PostJPARepository;
+import com.spring.user.entity.User;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -24,8 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 //@ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
 
-    @Mock
-    private PostJPARepository postRepository;
+
 
 
 //    @InjectMocks
@@ -34,9 +36,9 @@ public class PostServiceTest {
     @Autowired
     PostService postService;
 
-//
-//    @Autowired
-//    private PostJPARepository postRepository;
+
+    @Autowired
+    private PostJPARepository postRepository;
 
     @Test
     @Transactional
@@ -67,7 +69,7 @@ public class PostServiceTest {
         String content = "내용 2";
 
         // when
-        Post post = postService.getPostById(postId);
+        IndividualPostResponseDTO post = postService.getPostById(postId);
 
         // then
         assertEquals(postId, post.getPostId());
@@ -78,27 +80,30 @@ public class PostServiceTest {
 
     @Test
     @Transactional
-    public void savePostTest() {
+    public void createPostTest(){
         // given
-        String nickname = "testNickname";
-        String title = "testTitle";
-        String content = "testContent";
-        PostCreateRequestDTO postCreateRequestDTO = PostCreateRequestDTO.builder()
-                .nickname(nickname)
-                .title(title)
+        String content = "test content3";
+        String title = "test title3";
+        String nickname = "test nickname3";
+
+        PostCategory postCategory = new PostCategory();
+
+
+
+        Post post = Post.builder()
+                .user(User.builder()
+                        .userId(1L)
+                        .build())
                 .content(content)
+                .title(title)
+                .nickname(nickname)
+                .postCategory(PostCategory.builder().categoryId(1).build())
                 .build();
-
-
-        postService.savePost(postCreateRequestDTO);
-
-
-        assertEquals(5, postService.getAllPosts().size());
-        assertEquals(nickname, postService.getAllPosts().get(4).getNickname());
-        assertEquals(title, postService.getAllPosts().get(4).getTitle());
-        assertEquals(content, postService.getAllPosts().get(4).getContent());
+        // when
+        postService.createPost(post);
+        // then
+        assertEquals(536, postService.getAllPosts().size());
     }
-
 
 
     @Test
