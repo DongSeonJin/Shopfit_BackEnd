@@ -1,5 +1,6 @@
 package com.spring.community.service;
 
+
 import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
 import com.spring.community.entity.PostCategory;
@@ -32,8 +33,10 @@ public class PostServiceTest {
 
 
 
+
     @Autowired
     private PostService postService;
+
 
     @Test
     @Transactional
@@ -74,6 +77,7 @@ public class PostServiceTest {
         // when
         Page<Post> posts = postService.getPostsByCategoryId(categoryId, pageNumber);
 
+
         // then
         assertEquals(20, posts.getSize());
     }
@@ -105,7 +109,6 @@ public class PostServiceTest {
 //        // then
 //        assertEquals(13, postService.getAllPosts().size());
     }
-
 
     @Test
     @Transactional
