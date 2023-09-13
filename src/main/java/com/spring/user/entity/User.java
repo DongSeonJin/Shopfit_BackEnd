@@ -103,7 +103,4 @@ public class User implements UserDetails {
     public static User createUser() {
         return new User();
     }
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 }

@@ -39,10 +39,12 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     @Transactional
     public void createOrderProduct(Order order, Product product, Long quantity) {
-        OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setOrder(order);
-        orderProduct.setProduct(product);
-        orderProduct.setQuantity(quantity);
+        OrderProduct orderProduct = OrderProduct.builder()
+                .order(order)
+                .product(product)
+                .quantity(quantity)
+                .build();
+
         orderProductRepository.save(orderProduct);
     }
 
