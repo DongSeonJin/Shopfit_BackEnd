@@ -3,12 +3,15 @@ package com.spring.user.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.spring.shopping.entity.Coupon;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -29,12 +32,17 @@ public class User implements UserDetails {
     private Long userId;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Pattern(regexp = ".+@.+\\..+", message = "잘못된 이메일 형식입니다.")
     private String email;
 
     @Column(name = "password", nullable = false, unique = true)
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "잘못된 비밀번호 형식입니다.")
+    @Size(min = 10, message = "비밀번호는 최소 10자 이상이여야 합니다.")
     private String password;
 
     @Column(name = "nickname")
+    @Pattern(regexp = "^[가-힣a-zA-Z0-9]*$", message = "잘못된 닉네임 형식입니다.")
+    @Size(min = 3, max = 7, message = "닉네임은 최소 3글자, 최대 7글자까지 설정해주세요.")
     private String nickname;
 
     @Column(name = "point")
