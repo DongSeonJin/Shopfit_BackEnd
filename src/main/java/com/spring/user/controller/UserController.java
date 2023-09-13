@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -58,7 +59,6 @@ public class UserController {
 
 
      @PostMapping("/login")
-     @ResponseBody // REST컨트롤러가 아닌 컨트롤러에서 REST형식으로 리턴을 하게 하고 싶으면 메서드 위에 해당 어노테이션 붙이기
      public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
          // 폼에서 입력한 로그인 아이디를 이용해 DB에 저장된 전체 정보 얻어오기
         User userInfo = userService.getUserByEmail(loginRequest.getEmail());
@@ -74,10 +74,14 @@ public class UserController {
          if(bCryptPasswordEncoder.matches(loginRequest.getPassword(), userInfo.getPassword())){
              // 아이디와 비번을 모두 정확하게 입력한 사용자    에게 토큰 발급
              // 사용자 정보를 토대로, 2시간동안 유효한 억세스 토큰 생성
-             String token = tokenProvider.generateToken(userInfo, Duration.ofHours(2));
+             String accessToken = tokenProvider.generateToken(userInfo, Duration.ofHours(2));
+             String refreshToken = tokenProvider.generateToken(userInfo, Duration.ofDays(7));  // 예: 7일 동안 유요
+
+             // json으로 리턴을 하고 싶으면, 클래스 요소를 리턴해야 합니다.
+             TokenResponseDTO tokenDTO = new TokenResponseDTO(accessToken, refreshToken);
+
              // json으로 리턴을 하고 싶으면, 클래스 요소를 리턴해야 합니다.
              // AccessTokenResponseDTO 를 dto패키지에 생성합니다. 멤버변수로 accessToken만 가집니다.
-             AccesssTokenResponseDTO tokenDTO = new AccesssTokenResponseDTO(token);
              return ResponseEntity.ok(tokenDTO); // 발급 성공시 토큰 리턴
          } else {
              return ResponseEntity.badRequest().body("login failed"); // 비번이나 아이디 틀리면 로그인 실패
