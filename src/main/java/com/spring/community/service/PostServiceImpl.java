@@ -8,6 +8,7 @@ import com.spring.community.repository.PostJPARepository;
 import com.spring.community.repository.ReplyRepository;
 import com.spring.exception.CustomException;
 import com.spring.exception.ExceptionCode;
+import org.openqa.selenium.remote.ErrorCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
@@ -102,7 +103,7 @@ public class PostServiceImpl implements PostService{
 
         // 해당 postId 게시글 없으면 예외처리
         if (!optionalPost.isPresent()) {
-            throw  new PostIdNotFoundException(postUpdateDTO.getPostId() + "번 게시글을 찾을 수 없습니다.");
+            throw new CustomException(ExceptionCode.POST_NOT_FOUND);
         }
 
         // 수정 전 게시글 가져오기

@@ -27,7 +27,7 @@ public class ReplyServiceImpl implements ReplyService {
         if (replyList.isEmpty()) {
             throw new CustomException(ExceptionCode.POST_NOT_FOUND);
         }
-        return replyRepository.findAllByPost_PostId(postId);
+        return replyList;
     }
 
     @Override
@@ -55,6 +55,5 @@ public class ReplyServiceImpl implements ReplyService {
         existingReply.setContent(reply.getContent());
         existingReply.setUpdatedAt(reply.getUpdatedAt());
         replyRepository.save(existingReply);
-
     }
 }
