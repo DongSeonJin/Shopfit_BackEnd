@@ -62,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 사용자의 포인트를 업데이트하기
-    private void updateUserPoint(Long orderId) {
+    public void updateUserPoint(Long orderId) {
         //orderId를 이용하여 해당 주문을 가져오기
         Order order = orderRepository.findById(orderId).orElse(null);
         if(order != null) {
@@ -180,7 +180,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private OrderDTO convertToDTO(Order order) {
+    public OrderDTO convertToDTO(Order order) {
         return OrderDTO.builder()
                 .orderId(order.getOrderId())
                 .userId(order.getUser().getUserId())
