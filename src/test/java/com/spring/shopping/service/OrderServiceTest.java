@@ -1,7 +1,6 @@
 package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.OrderDTO;
-import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
 import com.spring.shopping.entity.Product;

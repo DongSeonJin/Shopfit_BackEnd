@@ -46,34 +46,10 @@ public class ReviewServiceImpl implements ReviewService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ReviewDTO> getReviewsWithRatingGreaterThan(Double rating) {
-        List<Review> reviews = reviewRepository.findByRatingGreaterThanEqual(rating);
-        return reviews.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<ReviewDTO> getReviewById(Long reviewId) {
-        Optional<Review> review = reviewRepository.findById(reviewId);
-        return review.map(this::convertToDTO);
-    }
 
     @Override
     public void deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
-    }
-
-    private ReviewDTO convertToDTO(Review review) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setUserId(review.getUser().getUserId());
-        reviewDTO.setProductId(review.getProduct().getProductId());
-        reviewDTO.setRating(review.getRating());
-        reviewDTO.setComment(review.getComment());
-        reviewDTO.setCreatedAt(review.getCreatedAt());
-        reviewDTO.setUpdatedAt(review.getUpdatedAt());
-        return reviewDTO;
     }
 
     @Override
@@ -109,5 +85,16 @@ public class ReviewServiceImpl implements ReviewService {
                 savedReview.getCreatedAt(),
                 savedReview.getUpdatedAt()
         );
+    }
+
+    private ReviewDTO convertToDTO(Review review) {
+        ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setUserId(review.getUser().getUserId());
+        reviewDTO.setProductId(review.getProduct().getProductId());
+        reviewDTO.setRating(review.getRating());
+        reviewDTO.setComment(review.getComment());
+        reviewDTO.setCreatedAt(review.getCreatedAt());
+        reviewDTO.setUpdatedAt(review.getUpdatedAt());
+        return reviewDTO;
     }
 }
