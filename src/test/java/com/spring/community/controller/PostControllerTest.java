@@ -99,9 +99,12 @@ public class PostControllerTest {
 
     }
 
-    @Test
-    @Transactional
-    public void createPostTest() throws Exception {
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // create table, drop table 과 같은 DDL 코드는 @Transactional 어노테이션을 무시하고 강제로 커밋하기 때문에
+    // 테스트코드 실행 시 롤백이 되지 않아서 테스트코드 실행 불가
+//    @Test
+//    @Transactional
+//    public void createPostTest() throws Exception {
 //        // given
 //        String url = "/post";
 //        Post post = new Post();
@@ -127,7 +130,7 @@ public class PostControllerTest {
 //        // then
 //        resultActions.andExpect(status().isOk())
 //                .andExpect(content().string("게시글이 저장되었습니다."));
-    }
+//    }
 
     @Test
     @Transactional
