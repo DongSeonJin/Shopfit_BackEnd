@@ -9,7 +9,7 @@ import com.spring.user.entity.User;
 import java.util.List;
 
 public interface UserService {
-    String signup(AddUserRequestDTO dto);
+    User signup(AddUserRequestDTO dto);
 
     User createUser(User user);
     List<User> getAllUsers();

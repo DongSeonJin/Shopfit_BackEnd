@@ -1,5 +1,6 @@
 package com.spring.user.controller;
 
+import com.spring.exception.CustomException;
 import com.spring.user.DTO.*;
 import com.spring.user.config.jwt.TokenProvider;
 import com.spring.user.entity.User;
@@ -33,8 +34,8 @@ public class UserController {
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public ResponseEntity<?> signup(@RequestBody AddUserRequestDTO requestDTO){
-        userService.signup(requestDTO); // 현재 userService에 email, pw뿐이라 수정 요망
-        return ResponseEntity.ok("회원가입 성공");
+
+        return ResponseEntity.ok(userService.signup(requestDTO));
     }
 
 //    @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -61,6 +62,8 @@ public class UserController {
      public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
          // 폼에서 입력한 로그인 아이디를 이용해 DB에 저장된 전체 정보 얻어오기
         User userInfo = userService.getUserByEmail(loginRequest.getEmail());
+
+
 
          // 유저가 폼에서 날려주는 정보는 id랑 비번인데, 먼저 아이디를 통해 위에서 정보를 얻어오고
          // 비밀번호는 암호화 구문끼리 비교해야 하므로, 이 경우 bCryptEncoder의 .matchs(평문, 암호문) 를 이용하면

@@ -1,6 +1,6 @@
-package com.spring.shopping.controller;
+package com.spring.S3;
 
-import com.spring.shopping.component.S3Uploader;
+import com.spring.S3.S3Uploader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
