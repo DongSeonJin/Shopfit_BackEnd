@@ -44,7 +44,9 @@ dependencies {
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1' // chatbot
 	compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1' // Servlet API (chatbot)
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // 레디스
+
 
 
 }
