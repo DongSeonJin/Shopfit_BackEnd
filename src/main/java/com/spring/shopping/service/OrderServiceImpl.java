@@ -82,7 +82,6 @@ public class OrderServiceImpl implements OrderService {
                         .imageUrl(user.getImageUrl())
                         .createdAt(user.getCreatedAt())
                         .updatedAt(LocalDateTime.now())
-                        .isAdmin(user.isAdmin())
                         .build();
 
                 userRepository.save(updatedUser);

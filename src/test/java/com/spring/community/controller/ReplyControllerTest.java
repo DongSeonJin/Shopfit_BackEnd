@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.parameters.P;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -41,12 +43,12 @@ public class ReplyControllerTest {
     private ReplyService replyService;
 
 
-
     @Test
     @Transactional
+    @DisplayName("해당 postId 에 달린 댓글 전부 조회")
     public void getAllRepliesByPostIdTest() throws Exception {
         // given
-        String url = "/reply/102/all";
+        String url = "/reply/1/all";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -56,14 +58,15 @@ public class ReplyControllerTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(1));
+                .andExpect(jsonPath("$.length()").value(2));
     }
 
     @Test
     @Transactional
+    @DisplayName("replyId에 해당하는 댓글 조회")
     public void getReplyByReplyIdTest() throws Exception {
         // given
-        String url = "/reply/2";
+        String url = "/reply/1";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -72,25 +75,21 @@ public class ReplyControllerTest {
         // then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value("This is a reply to the second post."));
+                .andExpect(jsonPath("$.content").value("reply content1"));
     }
 
     @Test
     @Transactional
-    public void createReplyTest() throws Exception {
+    @DisplayName("새로운 댓글 작성")
+    public void createReplyTest() throws Exception{
         // given
-        long postId = 101;
-        String content = "create reply test";
-        long userId = 1;
+        Reply reply = new Reply();
+        reply.setContent("create reply test");
 
         String url = "/reply";
 
-        ReplyCreateRequestDTO replyCreateRequestDTO = new ReplyCreateRequestDTO();
-        replyCreateRequestDTO.setPostId(postId);
-        replyCreateRequestDTO.setContent(content);
-
         // 데이터 직렬화
-        final String requestBody = objectMapper.writeValueAsString(replyCreateRequestDTO);
+        final String requestBody = objectMapper.writeValueAsString(reply);
 
         // when
         ResultActions resultActions = mockMvc.perform(post(url)
@@ -99,18 +98,19 @@ public class ReplyControllerTest {
 
         // then
         resultActions
-                .andExpect(status().isOk())
-                .andExpect(content().string("댓글이 등록되었습니다."));
+                .andExpect(status().isCreated())
+                .andExpect(content().string("댓글 등록 성공"));
     }
+
 
     @Test
     @Transactional
-    @DisplayName("댓글번호 3번 삭제시 글번호 102의 댓글수 1개, 단일댓글 조회시 null")
+    @DisplayName("replyId 에 해당하는 댓글 삭제")
     public void deleteReplyTest() throws Exception {
         // given
-        long replyId = 3;
-        long postId = 102;
-        String url = "/reply/3";
+        Long replyId = 2L;
+        Long postId = 1L;
+        String url = "/reply/2";
 
         // when
         ResultActions resultActions =  mockMvc.perform(delete(url)
@@ -118,17 +118,22 @@ public class ReplyControllerTest {
 
         // then
         resultActions
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
+
+        List<Reply> replyList = replyService.findAllByPostId(postId);
+        int replyCount = replyList.size();
+        assertEquals(1, replyCount);
     }
 
     @Test
     @Transactional
+    @DisplayName("replyId에 해당하는 댓글 수정")
     public void updateReplyTest() throws Exception {
         // given
-        long replyId = 2;
-        String content = "댓글 수정";
+        long replyId = 1L;
+        String content = "update reply test";
 
-        String url = "/reply/2";
+        String url = "/reply/1";
 
         Reply updatedReply = new Reply();
         updatedReply.setContent(content);

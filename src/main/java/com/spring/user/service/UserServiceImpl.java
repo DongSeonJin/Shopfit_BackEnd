@@ -1,9 +1,12 @@
 package com.spring.user.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.user.DTO.AddUserRequestDTO;
 import com.spring.user.DTO.LoginRequestDTO;
 import com.spring.user.DTO.UserPointResponseDTO;
 import com.spring.user.DTO.UserUpdateDTO;
+import com.spring.user.entity.Authority;
 import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.repository.UserRepository;
@@ -32,33 +35,35 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public String signup(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
+    public User signup(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
 
         boolean existEmail = userRepository.existsByEmail(dto.getEmail()); // 존재하는 이메일인지 확인
-
+        User userNickname = userRepository.findByNickname(dto.getNickname());
 
         String password = dto.getPassword();
         String passwordCheck = dto.getConfirmPassword();
 
         if(!password.equals(passwordCheck)){
-            return "비밀번호를 확인해주세요.";
+            throw new CustomException(ExceptionCode.PASSWORD_WRONG);
         }
-
 
         if(existEmail){
-            return "이미 존재하는 이메일 입니다.";
+            throw new CustomException(ExceptionCode.EXIST_EMAIL);
+        }
+
+        if(userNickname != null){
+            throw new CustomException(ExceptionCode.EXIST_NICKNAME);
         }
 
 
-
-         userRepository.save(User.builder()
+        return userRepository.save(User.builder()
                 .email(dto.getEmail())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
-                 .nickname(dto.getNickname())
-                 .imageUrl(dto.getImageUrl())
+                .nickname(dto.getNickname())
+                .imageUrl(dto.getImageUrl())
+                .authority(dto.getAuthority())
                 .build()
-         );
-        return null;
+        );
     }
 
     @Override

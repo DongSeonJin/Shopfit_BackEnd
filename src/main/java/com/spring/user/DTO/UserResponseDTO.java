@@ -4,6 +4,8 @@ import com.spring.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -23,7 +25,14 @@ public class UserResponseDTO {
         dto.setImageUrl(user.getImageUrl());
 
         // 쿠폰 개수 설정
-        int couponCount = user.getCoupons() != null ? user.getCoupons().size() : 0;
+        // 유효기간이 아직 지나지 않은 쿠폰만 필터링하여 개수 계산
+        LocalDateTime currentDate = LocalDateTime.now();
+        int couponCount = user.getCoupons() != null ? user.getCoupons()
+                .stream()
+                .filter(coupon -> coupon.getValidTo().isAfter(currentDate))
+                .toList()
+                .size()
+                : 0;
         dto.setCouponCount(couponCount);
 
         return dto;

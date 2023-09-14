@@ -28,13 +28,13 @@ public class PostController {
         this.likeService = likeService;
     }
 
-    // 게시글 전체 조회
-    @GetMapping("/list")
-    public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
-
-        return ResponseEntity.ok(posts);
-    }
+//     게시글 전체 조회
+//    @GetMapping("/list")
+//    public ResponseEntity<List<Post>> getAllPosts() {
+//        List<Post> posts = postService.getAllPosts();
+//
+//        return ResponseEntity.ok(posts);
+//    }
 
     // 게시글 카테고리별 조회
     @GetMapping({"/list/{categoryId}/{pageNumb}", "/list/{categoryId}"})

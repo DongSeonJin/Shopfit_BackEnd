@@ -1,5 +1,6 @@
 package com.spring.community.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.spring.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +29,7 @@ public class Post {
     @Column(name = "post_id")
     private Long postId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE) // on delete cascasde; 유저 탈퇴시 게시글도 같이 삭제
     private User user;
@@ -36,7 +37,7 @@ public class Post {
     @Column(name="nickname", nullable = false)
     private String nickname;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private PostCategory postCategory;
 
@@ -45,7 +46,6 @@ public class Post {
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
-
 
     @Column(name = "view_count", nullable = false)
     @Builder.Default // viewcount의 default값을 0으로 설정할 시, 넣어야 할 어노테이션. 없으면 builder가 무시됨.
@@ -71,7 +71,7 @@ public class Post {
     @Lob
     private String imageUrl3;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL) // reply에 Lazy 속성 추가 예정
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // reply에 Lazy 속성 추가 예정
     private List<Reply> replies = new ArrayList<>();
 
 
