@@ -39,10 +39,12 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     @Transactional
     public void createOrderProduct(Order order, Product product, Long quantity) {
-        OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setOrder(order);
-        orderProduct.setProduct(product);
-        orderProduct.setQuantity(quantity);
+        OrderProduct orderProduct = OrderProduct.builder()
+                .order(order)
+                .product(product)
+                .quantity(quantity)
+                .build();
+
         orderProductRepository.save(orderProduct);
     }
 
@@ -80,11 +82,11 @@ public class OrderProductServiceImpl implements OrderProductService {
 
 
     private OrderProductDTO convertToDTO(OrderProduct orderProduct) {
-        OrderProductDTO dto = new OrderProductDTO();
-        dto.setOrderProductId(orderProduct.getOrderProductId());
-        dto.setOrderId(orderProduct.getOrder().getOrderId());
-        dto.setProductId(orderProduct.getProduct().getProductId());
-        dto.setQuantity(orderProduct.getQuantity());
-        return dto;
+        return OrderProductDTO.builder()
+                .orderProductId(orderProduct.getOrderProductId())
+                .orderId(orderProduct.getOrder().getOrderId())
+                .productId(orderProduct.getProduct().getProductId())
+                .quantity(orderProduct.getQuantity())
+                .build();
     }
 }

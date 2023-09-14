@@ -1,9 +1,7 @@
     package com.spring.shopping.controller;
 
     import com.spring.shopping.DTO.OrderDTO;
-    import com.spring.shopping.DTO.OrderProductDTO;
     import com.spring.shopping.entity.Order;
-    import com.spring.shopping.service.OrderProductService;
     import com.spring.shopping.service.OrderService;
     import com.spring.user.entity.User;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
 
-    import java.util.ArrayList;
     import java.util.List;
     import java.util.Optional;
 
@@ -20,22 +17,20 @@
     public class OrderController {
 
         private final OrderService orderService;
-        private final OrderProductService orderProductService;
 
         @Autowired
-        public OrderController(OrderService orderService, OrderProductService orderProductService) {
+        public OrderController(OrderService orderService) {
             this.orderService = orderService;
-            this.orderProductService = orderProductService;
         }
 
-        // 오더 생성
+        // 주문 생성
         @PostMapping
         public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
             OrderDTO createdOrder = orderService.createOrder(orderDTO);
-//            System.out.println(createdOrder.toString());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
         }
 
+        // 유저로 주문 조회
         @GetMapping("/user/{userId}")
         public List<OrderDTO> getOrdersByUser(@PathVariable Long userId) {
             // 사용자 정보 가져오는 로직
@@ -43,17 +38,16 @@
             return orderService.getOrdersByUser(user);
         }
 
+        // 주문번호로 주문 조회
         @GetMapping("/{orderId}")
         public Optional<OrderDTO> getOrderById(@PathVariable Long orderId) {
             Order order = orderService.getOrderInfo(orderId);
             return orderService.getOrderById(orderId);
         }
 
+        // 주문상태 업데이트
         @PutMapping("/{orderId}/status/{orderStatus}")
-        public ResponseEntity<String> updateOrderStatus(
-                @PathVariable Long orderId,
-                @PathVariable String orderStatus
-        ) {
+        public ResponseEntity<String> updateOrderStatus(@PathVariable Long orderId, @PathVariable String orderStatus) {
             int rowsAffected = orderService.updateOrderStatus(orderId, orderStatus);
 
             if (rowsAffected > 0) {
@@ -63,7 +57,7 @@
             }
         }
 
-        // 주문 삭제
+        // 주문번호로 주문 삭제
         @DeleteMapping("/{orderId}")
         public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
             try {

@@ -31,10 +31,7 @@ public class ReviewController {
     //특정 상품 리뷰 조회
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ReviewDTO>> getReviewsByProduct(@PathVariable Long productId) {
-        Product product = productService.getProductInfo(productId);
-        product.setProductId(productId);
-
-        List<ReviewDTO> reviews = reviewService.getReviewsByProduct(product);
+        List<ReviewDTO> reviews = reviewService.getReviewsByProduct(productService.getProductInfo(productId));
         return ResponseEntity.ok(reviews);
     }
 
@@ -42,25 +39,8 @@ public class ReviewController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ReviewDTO>> getReviewsByUser(@PathVariable Long userId) {
         User user = orderService.getUserInfo(userId);
-        user.setUserId(userId);
-
         List<ReviewDTO> reviews = reviewService.getReviewsByUser(user);
         return ResponseEntity.ok(reviews);
-    }
-
-    // 특정 평점 이상의 리뷰 조회 -> 굳이 필요할까?
-    @GetMapping("/rating/{rating}")
-    public ResponseEntity<List<ReviewDTO>> getReviewsWithRatingGreaterThan(@PathVariable Double rating) {
-        List<ReviewDTO> reviews = reviewService.getReviewsWithRatingGreaterThan(rating);
-        return ResponseEntity.ok(reviews);
-    }
-
-    // 특정 리뷰 상세 정보 조회 -> 얘도 굳이?
-    @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long reviewId) {
-        return reviewService.getReviewById(reviewId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
     }
 
     // 특정 리뷰를 삭제

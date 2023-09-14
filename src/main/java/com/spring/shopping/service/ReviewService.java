@@ -13,10 +13,6 @@ public interface ReviewService {
 
     List<ReviewDTO> getReviewsByUser(User user);
 
-    List<ReviewDTO> getReviewsWithRatingGreaterThan(Double rating);
-
-    Optional<ReviewDTO> getReviewById(Long reviewId);
-
     ReviewDTO createReview(ReviewDTO reviewDTO);
 
     void deleteReview(Long reviewId);

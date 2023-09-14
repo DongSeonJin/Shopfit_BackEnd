@@ -313,7 +313,7 @@ public class ProductServiceImpl implements ProductService{
             Product product = productRepository.findByIdPessimistic(requestDTO.getProductId());
 
             // 상품의 재고(stock) 수량을 업데이트합니다.
-            product.setStockQuantity(requestDTO.getStockQuantity());
+            product.builder().stockQuantity(requestDTO.getStockQuantity()).build();
 
             // 업데이트된 상품 정보를 저장합니다.
             productRepository.save(product);

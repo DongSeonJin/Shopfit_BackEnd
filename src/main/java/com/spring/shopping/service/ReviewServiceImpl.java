@@ -46,34 +46,10 @@ public class ReviewServiceImpl implements ReviewService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ReviewDTO> getReviewsWithRatingGreaterThan(Double rating) {
-        List<Review> reviews = reviewRepository.findByRatingGreaterThanEqual(rating);
-        return reviews.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<ReviewDTO> getReviewById(Long reviewId) {
-        Optional<Review> review = reviewRepository.findById(reviewId);
-        return review.map(this::convertToDTO);
-    }
 
     @Override
     public void deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
-    }
-
-    private ReviewDTO convertToDTO(Review review) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setUserId(review.getUser().getUserId());
-        reviewDTO.setProductId(review.getProduct().getProductId());
-        reviewDTO.setRating(review.getRating());
-        reviewDTO.setComment(review.getComment());
-        reviewDTO.setCreatedAt(review.getCreatedAt());
-        reviewDTO.setUpdatedAt(review.getUpdatedAt());
-        return reviewDTO;
     }
 
     @Override
@@ -90,13 +66,14 @@ public class ReviewServiceImpl implements ReviewService {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
 
         // 3. 리뷰 생성 및 저장
-        Review review = new Review();
-        review.setUser(user);
-        review.setProduct(product);
-        review.setRating(rating);
-        review.setComment(comment);
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
+        Review review = Review.builder()
+                .user(user)
+                .product(product)
+                .rating(rating)
+                .comment(comment)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         Review savedReview = reviewRepository.save(review);
 
@@ -109,5 +86,16 @@ public class ReviewServiceImpl implements ReviewService {
                 savedReview.getCreatedAt(),
                 savedReview.getUpdatedAt()
         );
+    }
+
+    private ReviewDTO convertToDTO(Review review) {
+        return ReviewDTO.builder()
+                .userId(review.getUser().getUserId())
+                .productId(review.getProduct().getProductId())
+                .rating(review.getRating())
+                .comment(review.getComment())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt())
+                .build();
     }
 }

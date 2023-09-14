@@ -48,16 +48,11 @@ public class CartController {
 
     // 어떤 유저의 장바구니에 이미 해당 상품이 있는지 확인하기
     @GetMapping("/checkCart")
-    public ResponseEntity<Boolean> checkProductInCart(
-            @RequestParam Long userId,
-            @RequestParam Long productId) {
+    public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long userId, @RequestParam Long productId) {
 
         boolean isProductInCart = cartService.isProductInUserCart(userId, productId);
 
         return ResponseEntity.ok(isProductInCart);
     }
-
-
-
 
 }
