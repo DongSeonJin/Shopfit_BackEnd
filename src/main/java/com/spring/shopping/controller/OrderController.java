@@ -47,10 +47,7 @@
 
         // 주문상태 업데이트
         @PutMapping("/{orderId}/status/{orderStatus}")
-        public ResponseEntity<String> updateOrderStatus(
-                @PathVariable Long orderId,
-                @PathVariable String orderStatus
-        ) {
+        public ResponseEntity<String> updateOrderStatus(@PathVariable Long orderId, @PathVariable String orderStatus) {
             int rowsAffected = orderService.updateOrderStatus(orderId, orderStatus);
 
             if (rowsAffected > 0) {

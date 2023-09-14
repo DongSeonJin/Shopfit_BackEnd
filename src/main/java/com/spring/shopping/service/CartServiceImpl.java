@@ -22,14 +22,11 @@ public class CartServiceImpl implements CartService{
     private final ProductRepository productRepository;
 
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository,
-                           UserRepository userRepository,
-                           ProductRepository productRepository) {
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, ProductRepository productRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
     }
-
 
     // 장바구니에 추가하기
     @Override
@@ -79,19 +76,18 @@ public class CartServiceImpl implements CartService{
     }
 
 
-    // 엔터티를 DTO로 변환하기
-    private CartDTO convertToDTO(Cart cart) {
-        return new CartDTO(cart.getCartId(), cart.getUser().getUserId(), cart.getProduct().getProductId(),
-                cart.getQuantity(), cart.getCreatedAt(), cart.getUpdatedAt());
-    }
-
-
     // 어떤 유저의 장바구니에 이미 해당 상품이 있는지 확인하기
     public boolean isProductInUserCart(Long userId, Long productId) {
         Optional<Cart> cartOptional = cartRepository.findByUserUserIdAndProductProductId(userId, productId);
 
         // 장바구니가 존재하고 해당 상품이 포함되어 있는지 여부를 반환합니다.
         return cartOptional.isPresent();
+    }
+
+    // 엔터티를 DTO로 변환하기
+    private CartDTO convertToDTO(Cart cart) {
+        return new CartDTO(cart.getCartId(), cart.getUser().getUserId(), cart.getProduct().getProductId(),
+                cart.getQuantity(), cart.getCreatedAt(), cart.getUpdatedAt());
     }
 
 

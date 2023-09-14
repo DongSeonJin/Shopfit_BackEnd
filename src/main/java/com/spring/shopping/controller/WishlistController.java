@@ -41,9 +41,9 @@ public class WishlistController {
     public ResponseEntity<?> removeFromWishlist(@RequestParam Long userId, @RequestParam Long productId) {
         WishlistDTO wishlistItem = wishlistService.removeFromWishlist(userId, productId);
         if (wishlistItem != null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
             return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

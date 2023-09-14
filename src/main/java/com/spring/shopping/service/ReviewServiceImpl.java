@@ -66,13 +66,14 @@ public class ReviewServiceImpl implements ReviewService {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
 
         // 3. 리뷰 생성 및 저장
-        Review review = new Review();
-        review.setUser(user);
-        review.setProduct(product);
-        review.setRating(rating);
-        review.setComment(comment);
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
+        Review review = Review.builder()
+                .user(user)
+                .product(product)
+                .rating(rating)
+                .comment(comment)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         Review savedReview = reviewRepository.save(review);
 
@@ -88,13 +89,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private ReviewDTO convertToDTO(Review review) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setUserId(review.getUser().getUserId());
-        reviewDTO.setProductId(review.getProduct().getProductId());
-        reviewDTO.setRating(review.getRating());
-        reviewDTO.setComment(review.getComment());
-        reviewDTO.setCreatedAt(review.getCreatedAt());
-        reviewDTO.setUpdatedAt(review.getUpdatedAt());
-        return reviewDTO;
+        return ReviewDTO.builder()
+                .userId(review.getUser().getUserId())
+                .productId(review.getProduct().getProductId())
+                .rating(review.getRating())
+                .comment(review.getComment())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt())
+                .build();
     }
 }
