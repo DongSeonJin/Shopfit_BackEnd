@@ -73,8 +73,6 @@ public class CouponServiceImpl implements CouponService {
 //        couponList.removeIf(coupon -> coupon.getCouponId().equals(couponId));
 //    }
 
-    int testif = 0;
-    int testelse = 0;
 
     // 총 쿠폰 발급 개수를 체크하고, 쿠폰을 발급하는 메서드
     @Override
@@ -133,6 +131,13 @@ public class CouponServiceImpl implements CouponService {
     }
 
     // 쿠폰 사용
+    public void expireCoupon(Long couponId) {
+        Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new RuntimeException("Coupon not found"));
 
+        // 현재 시간으로 유효기간 종료 업데이트
+        coupon.setValidTo(LocalDateTime.now());
+
+        couponRepository.save(coupon);
+    }
 
 }
