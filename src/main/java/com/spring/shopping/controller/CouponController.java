@@ -85,8 +85,11 @@ public class CouponController {
         return ResponseEntity.ok(coupons);
     }
 
-    // 쿠폰 사용
-
+    // 쿠폰 사용 - 쿠폰 사용 시 해당 쿠폰 만료시키기
+    @PostMapping("/expire/{couponId}")
+    public void expireCoupon(@PathVariable Long couponId) {
+        couponService.expireCoupon(couponId);
+    }
 
 
 

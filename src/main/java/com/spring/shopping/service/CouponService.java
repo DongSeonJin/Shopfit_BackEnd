@@ -24,7 +24,7 @@ public interface CouponService {
     List<CouponDTO> getCouponsByUserId(Long userId);
     // 쿠폰 사용
     // 결제하기 클릭 시 사용한 쿠폰 validTo를 현재 날짜로 수정하여 유효하지 않은 쿠폰으로 만들기.
-
+    void expireCoupon(Long couponId);
 
 
 }
