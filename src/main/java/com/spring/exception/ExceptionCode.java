@@ -14,17 +14,33 @@ public enum ExceptionCode { // 예외 발생시, body에 실어 날려줄 상태
     /* 예외들은 서로 , 콤마로 구분하고 있으므로 잘 확인하고 작성해주세요. */
 // ==================================== community ========================================
     // ==칸으로 구분하여 예외처리 추가 할 것.(이칸은 shopping)
+    PRODUCT_ID_NOT_FOUND(404, "SHOP_001", "해당되는 id의 상품을 찾을 수 없습니다."),
+    CART_ID_NOT_FOUND(404, "SHOP_002", "해당되는 id의 장바구니를 찾을 수 없습니다."),
+    ORDER_ID_NOT_FOUND(404, "SHOP_003", "해당되는 id의 주문을 찾을 수 없습니다."),
+    IMAGE_ID_NOT_FOUND(404, "SHOP_004", "해당되는 id의 이미지를 찾을 수 없습니다."),
+    CATEGORY_ID_NOT_FOUND(404, "SHOP_005", "해당되는 id의 카테고리를 찾을 수 없습니다."),
+    WISHLIST_NOT_FOUND(404, "SHOP_006", "해당하는 찜을 찾을 수 없습니다."),
+    ORDER_PRODUCT_NOT_FOUND(404, "SHOP_007", "주어진 order로 주문상품을 찾을 수 없습니다."),
+    PRODUCT_CAN_NOT_BE_NULL(400, "SHOP_008", "상품은 null이 될 수 없습니다."),
+    ORDER_CAN_NOT_BE_NULL(400, "SHOP_009", "주문은 null이 될 수 없습니다."),
+    COUPON_ISSUANCE_EXCEPTION(403,"SHOP_010", "쿠폰 발급 한도를 초과하였습니다."),
+    PRODUCT_SAVE_EXCEPTION(500, "SHOP_011", "상품 저장 중 예외가 발생하였습니다."),
+    STOCK_UPDATE_EXCEPTION(500, "SHOP_012", "상품 재고 수정 중 예외가 발생하였습니다."),
+    STOCK_QUANTITY_INVALID(400, "SHOP_013", "재고수량은 음수일 수 없습니다."),
+    QUANTITY_INVALID(400, "SHOP_014", "수량은 0이거나 음수일 수 없습니다."),
+    SORT_INVALID(400, "SHOP_015", "잘못된 정렬 요청입니다."),
 
+// ==================================== shopping =========================================
 
-    // ==================================== shopping =========================================
-    USER_NOT_FOUND(404,"USER_001","로그인이 필요한 기능입니다."),
 
 
 // ==================================== news =============================================
     EXIST_EMAIL(409, "USER_001", "이미 존재하는 이메일 입니다."),
     PASSWORD_WRONG(400,"USER_002", "비밀번호를 확인해주세요."),
-
-    EXIST_NICKNAME(409,"USER_003", "이미 존재하는 닉네임입니다.");
+    EXIST_NICKNAME(409,"USER_003", "이미 존재하는 닉네임입니다."),
+    USER_NOT_FOUND(404,"USER_004","로그인이 필요한 기능입니다."),
+    USER_CAN_NOT_BE_NULL(400, "USER_005", "사용자는 null이 될 수 없습니다."),
+    USER_ID_NOT_FOUND(404, "USER_006", "해당되는 id의 사용자를 찾을 수 없습니다.");
 
 // ==================================== user ==============================================
     // 1. status = 날려줄 상태코드

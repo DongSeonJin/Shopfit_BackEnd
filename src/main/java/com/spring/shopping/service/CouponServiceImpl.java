@@ -1,5 +1,7 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.CouponDTO;
 
 import java.time.LocalDateTime;
@@ -35,56 +37,17 @@ public class CouponServiceImpl implements CouponService {
     }
 
 
-//    private final List<CouponDTO> couponList = new ArrayList<>();
-
-//    @Override
-//    public Optional<CouponDTO> getCouponById(Long couponId) {
-//        return couponList.stream()
-//                .filter(coupon -> coupon.getCouponId().equals(couponId))
-//                .findFirst();
-//    }
-
-//    @Override
-//    public List<CouponDTO> getCouponsByUserId(Long userId) {
-//        return couponList.stream()
-//                .filter(coupon -> coupon.getUserId().equals(userId))
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<CouponDTO> getExpiringCoupons(LocalDateTime dateTime) {
-//        return couponList.stream()
-//                .filter(coupon -> coupon.getValidTo().isBefore(dateTime))
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<CouponDTO> getAllCoupons() {
-//        return couponList;
-//    }
-//
-//    @Override
-//    public void saveCoupon(CouponDTO couponDTO) {
-//        couponList.add(couponDTO);
-//    }
-//
-//    @Override
-//    public void deleteCoupon(Long couponId) {
-//        couponList.removeIf(coupon -> coupon.getCouponId().equals(couponId));
-//    }
-
-
     // 총 쿠폰 발급 개수를 체크하고, 쿠폰을 발급하는 메서드
     @Override
     public void confirm(Long userId) {
         Long count = couponCountRepository.increment(); // 1씩 증가시키고 증가된 값을 받아온다.
 
         if(count > 100) { // 발급된 쿠폰이 100개가 넘으면 발급 방지
-            return;
+            throw new CustomException(ExceptionCode.COUPON_ISSUANCE_EXCEPTION);
         } else { // 발급된 쿠폰이 100개 이하라면 쿠폰 발급
 
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                    .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
             String couponCode = "10000COUPON";  // 쿠폰코드
 
             // 메인화면의 쿠폰 발급 쿠폰 생성 로직 - 10000원 할인쿠폰
@@ -107,8 +70,6 @@ public class CouponServiceImpl implements CouponService {
 
 
 
-
-
     // 어떤 유저가 이미 쿠폰을 가지고 있는지 확인하는 로직
     @Override
     public boolean checkCoupon(Long userId, String couponCode) {
@@ -119,10 +80,14 @@ public class CouponServiceImpl implements CouponService {
     }
 
 
-    // 유저 ID로 가지고 있는 쿠폰 조회
+    // 유저 ID로 가지고 있는 쿠폰 조회 - (사용 가능한 쿠폰만 조회)
     @Override
     public List<CouponDTO> getCouponsByUserId(Long userId) {
         LocalDateTime currentDate = LocalDateTime.now(); // 현재 날짜 가져오기
+
+        // 주어진 userId에 해당하는 사용자를 찾는다.
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
 
         return couponRepository.findByUser_UserId(userId).stream()
                 .filter(coupon -> coupon.getValidTo().isAfter(currentDate)) // 유효기간이 아직 지나지 않은 쿠폰만 선택
@@ -132,7 +97,8 @@ public class CouponServiceImpl implements CouponService {
 
     // 쿠폰 사용
     public void expireCoupon(Long couponId) {
-        Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new RuntimeException("Coupon not found"));
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.CART_ID_NOT_FOUND));
 
         // 현재 시간으로 유효기간 종료 업데이트
         coupon.setValidTo(LocalDateTime.now());

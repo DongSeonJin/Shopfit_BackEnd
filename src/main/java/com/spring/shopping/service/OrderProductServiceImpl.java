@@ -1,5 +1,7 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
@@ -30,7 +32,16 @@ public class OrderProductServiceImpl implements OrderProductService {
 
     @Override
     public List<OrderProductDTO> getOrderProductsByOrder(Order order) {
+        // 예외처리 추가
+        if (order == null) {
+            throw new CustomException(ExceptionCode.ORDER_CAN_NOT_BE_NULL);
+        }
+
         List<OrderProduct> orderProducts = orderProductRepository.findByOrder(order);
+
+        if (orderProducts.isEmpty()) {
+            throw new CustomException(ExceptionCode.ORDER_PRODUCT_NOT_FOUND);
+        }
         return orderProducts.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -39,6 +50,14 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     @Transactional
     public void createOrderProduct(Order order, Product product, Long quantity) {
+        // 예외처리 추가
+        if (order == null) {
+            throw new CustomException(ExceptionCode.ORDER_CAN_NOT_BE_NULL);
+        }
+        if(quantity <= 0) {
+            throw new CustomException(ExceptionCode.QUANTITY_INVALID);
+        }
+
         OrderProduct orderProduct = OrderProduct.builder()
                 .order(order)
                 .product(product)
