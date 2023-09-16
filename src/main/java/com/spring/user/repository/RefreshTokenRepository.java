@@ -7,4 +7,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     RefreshToken findByUserId(Long userId); // 유저번호로 토큰정보 얻기
     RefreshToken findByRefreshToken(String refreshToken); // 토큰으로 토큰정보 얻기
+    void deleteByUserId(Long userId);
+
 }
