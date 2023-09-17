@@ -3,12 +3,10 @@ package com.spring.shopping.controller;
 
 import com.spring.shopping.DTO.*;
 import com.spring.shopping.entity.Product;
-import com.spring.shopping.exception.ProductIdNotFoundException;
 import com.spring.shopping.service.ProductImageService;
 import com.spring.shopping.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

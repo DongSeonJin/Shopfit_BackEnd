@@ -31,9 +31,10 @@ public enum ExceptionCode { // 예외 발생시, body에 실어 날려줄 상태
     QUANTITY_INVALID(400, "SHOP_015", "수량은 0이거나 음수일 수 없습니다."),
     SORT_INVALID(400, "SHOP_016", "잘못된 정렬 요청입니다."),
     ORDERSTATUS_UPDATE_FAILED(400, "SHOP_017", "주어진 OrderId로 OrderStatus 수정에 실패했습니다."),
+    INSUFFICIENT_POINT_EXCEPTION(400, "SHOP_018", "포인트가 부족합니다."),
 
 // ==================================== shopping =========================================
-
+    NEWS_ID_NOT_FOUND(404, "NEWS_001", "해당되는 id의 뉴스를 찾을 수 없습니다."),
 
 
 // ==================================== news =============================================
