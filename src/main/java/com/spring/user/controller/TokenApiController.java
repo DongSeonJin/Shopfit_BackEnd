@@ -2,6 +2,7 @@ package com.spring.user.controller;
 
 import com.spring.user.DTO.RefreshTokenRequestDTO;
 import com.spring.user.DTO.AccesssTokenResponseDTO;
+import com.spring.user.DTO.RefreshTokenRotationDTO;
 import com.spring.user.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,12 @@ public class TokenApiController {
     private final TokenService tokenService;
 
     @PostMapping("/api/token")                                        // json으로 보내야 파라미터 매핑됨
-    public ResponseEntity<AccesssTokenResponseDTO> createNewAccessToken(@RequestBody RefreshTokenRequestDTO request){
+    public ResponseEntity<RefreshTokenRotationDTO> createNewAccessToken(@RequestBody RefreshTokenRequestDTO request){
         // 전달받은 리프레시 토큰을 이용해 새로운 억세스 토큰 발급
-        String newAccessToken = tokenService.createNewAccessToken(request.getRefreshToken());
+        RefreshTokenRotationDTO refreshTokenRotation = tokenService.createNewAccessToken(request.getRefreshToken());
 
-        // 발급된 토큰을 401 응답(생성됨) 과 함께 리턴
+        // 발급된 토큰을 201 응답(생성됨) 과 함께 리턴
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new AccesssTokenResponseDTO(newAccessToken));
+                .body(refreshTokenRotation);
     }
 }

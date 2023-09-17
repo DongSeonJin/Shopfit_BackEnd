@@ -15,4 +15,5 @@ public class RefreshTokenService {
     public RefreshToken findByRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken);
     }
+
 }
