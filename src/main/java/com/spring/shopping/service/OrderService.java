@@ -19,11 +19,7 @@ public interface OrderService {
 
     Order getOrderInfo(Long orderId);
 
-    // 주문 생성
     OrderDTO createOrder(OrderDTO orderDTO);
-
-    // 주문 상품 생성
-    void createOrderProduct(OrderProductDTO orderProductDTO);
 
     // 주문금액 결제금액 비교
     Long calculateActualOrderAmount(Order order);

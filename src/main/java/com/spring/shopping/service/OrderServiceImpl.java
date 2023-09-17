@@ -1,13 +1,12 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.OrderDTO;
-import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
-import com.spring.shopping.entity.Product;
 import com.spring.shopping.repository.OrderProductRepository;
 import com.spring.shopping.repository.OrderRepository;
-import com.spring.shopping.repository.ProductRepository;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,22 +24,24 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final ProductRepository productRepository;
     private final OrderProductRepository orderProductRepository;
 
     // 상품 구매 시 적립되는 포인트 계산을 위한 상수(10%)
     private static final double POINT_PERCENTAGE = 0.10;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, OrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
-        this.productRepository = productRepository;
         this.orderProductRepository = orderProductRepository;
     }
 
     @Override
     public List<OrderDTO> getOrdersByUser(User user) {
+        if (user == null) {
+            throw new CustomException(ExceptionCode.USER_CAN_NOT_BE_NULL);
+        }
+
         List<Order> orders = orderRepository.findByUser(user);
         return orders.stream()
                 .map(this::convertToDTO)
@@ -63,58 +64,68 @@ public class OrderServiceImpl implements OrderService {
         if("5".equals(orderStatus)) {
             updateUserPoint(orderId);
         }
+        if (updatedRows <= 0) {
+            throw new CustomException(ExceptionCode.ORDERSTATUS_UPDATE_FAILED);
+        }
         return updatedRows;
     }
 
     // 사용자의 포인트를 업데이트하기
-    private void updateUserPoint(Long orderId) {
+    public void updateUserPoint(Long orderId) {
         //orderId를 이용하여 해당 주문을 가져오기
-        Order order = orderRepository.findById(orderId).orElse(null);
-        if(order != null) {
-            User user = order.getUser();
-            if (user != null) {
-                int currentPoint = user.getPoint();
-                long additionalPoint =(long) (order.getTotalPrice() * POINT_PERCENTAGE);
-                int newPoint = currentPoint + (int) additionalPoint;
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND));
 
-                // 빌더 패턴을 사용하여 포인트를 설정한 새로운 User 객체 생성
-                User updatedUser = User.builder()
-                        .userId(user.getUserId())
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .nickname(user.getNickname())
-                        .point(newPoint)
-                        .imageUrl(user.getImageUrl())
-                        .createdAt(user.getCreatedAt())
-                        .updatedAt(LocalDateTime.now())
-                        .build();
-
-                userRepository.save(updatedUser);
-            }
+        User user = order.getUser();
+        if (user == null) {
+            throw new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
-    }
 
+
+        int currentPoint = user.getPoint();
+        long additionalPoint =(long) (order.getTotalPrice() * POINT_PERCENTAGE);
+        int newPoint = currentPoint + (int) additionalPoint;
+
+        // 빌더 패턴을 사용하여 포인트를 설정한 새로운 User 객체 생성
+        User updatedUser = User.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .nickname(user.getNickname())
+                .point(newPoint)
+                .imageUrl(user.getImageUrl())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        userRepository.save(updatedUser);
+
+
+    }
 
 
     @Override
     public User getUserInfo(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
     }
 
 
     @Override
     public Order getOrderInfo(Long orderId) {
-        return orderRepository.findById(orderId).orElse(null);
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND));
     }
 
 
+    // order + orderProduct 생성
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
 
-        Order order = Order.builder()
+        // 주문 생성
+        Order order = orderRepository.save(Order.builder()
                 .user(user)
                 .totalPrice(orderDTO.getTotalPrice())
                 .deliveryDate(orderDTO.getDeliveryDate())
@@ -122,56 +133,24 @@ public class OrderServiceImpl implements OrderService {
                 .phoneNumber(orderDTO.getPhoneNumber())
                 .orderDate(orderDTO.getOrderDate())
                 .orderStatus(orderDTO.getOrderStatus())
-                .build();
+                .build());
 
         Order savedOrder = orderRepository.save(order);
 
-        // orderProductDTO 데이터 매핑
-        List<OrderProductDTO> orderProductDTOs = orderDTO.getOrderProducts().stream()
-                .map(orderProduct -> {
-                    Product product = productRepository.findById(orderProduct.getProductId())
-                            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-                    return OrderProductDTO.builder()
-                            .orderId(savedOrder.getOrderId())
-                            .productId(product.getProductId())
-                            .quantity(orderProduct.getQuantity())
-                            .build();
-                })
-                .toList();
-
-        // saveAll() 쓰기 위해 orderProductDTO -> orderProduct 형태 변환
-        List<OrderProduct> orderProducts = orderProductDTOs.stream()
-                .map(this::convertToEntity)
+        // 주문 상품 생성 및 연결
+        List<OrderProduct> orderProducts = orderDTO.getOrderProducts().stream()
+                .map(orderProductDTO -> OrderProduct.builder()
+                        .order(savedOrder)
+                        .product(orderProductDTO.getProduct())
+                        .quantity(orderProductDTO.getQuantity())
+                        .build())
                 .collect(Collectors.toList());
+
         orderProductRepository.saveAll(orderProducts);
 
-        System.out.println(orderProducts.toString());
-
-        // OrderProduct를 OrderProductDTO로 변환
-        List<OrderProductDTO> orderProductDTOList = orderProducts.stream()
-                .map(this::convertToDTO) // convertToDTO는 OrderProduct를 OrderProductDTO로 변환하는 메서드라고 가정
-                .collect(Collectors.toList());
-
-        OrderDTO savedOrderDTO = convertToDTO(savedOrder);
-        savedOrderDTO.setOrderProducts(orderProductDTOList);
-
-        return savedOrderDTO;
+        return convertToDTO(savedOrder);
     }
 
-
-    @Override
-    public void createOrderProduct(OrderProductDTO orderProductDTO) {
-        Order order = orderRepository.findById(orderProductDTO.getOrderId()).orElse(null);
-        Product product = productRepository.findById(orderProductDTO.getProductId()).orElse(null);
-
-        if (order != null && product != null) {
-            OrderProduct orderProduct = new OrderProduct(order, product, orderProductDTO.getQuantity());
-            orderProductRepository.save(orderProduct);
-        } else {
-            throw new IllegalArgumentException("Invalid order or product information");
-        }
-    }
 
     // 결제금액 계산 - 포인트/쿠폰 추가 후 수정 예정
     @Override
@@ -210,40 +189,23 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.delete(order);
             return true;
         } else {
-            return false;
+            throw new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND);
         }
     }
 
 
-    private OrderDTO convertToDTO(Order order) {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setOrderId(order.getOrderId());
-        orderDTO.setUserId(order.getUser().getUserId());
-        orderDTO.setTotalPrice(order.getTotalPrice());
-        orderDTO.setDeliveryDate(order.getDeliveryDate());
-        orderDTO.setAddress(order.getAddress());
-        orderDTO.setPhoneNumber(order.getPhoneNumber());
-        orderDTO.setOrderDate(order.getOrderDate());
-        orderDTO.setOrderStatus(order.getOrderStatus());
-        return orderDTO;
+    public OrderDTO convertToDTO(Order order) {
+        return OrderDTO.builder()
+                .orderId(order.getOrderId())
+                .userId(order.getUser().getUserId())
+                .totalPrice(order.getTotalPrice())
+                .deliveryDate(order.getDeliveryDate())
+                .address(order.getAddress())
+                .phoneNumber(order.getPhoneNumber())
+                .orderDate(order.getOrderDate())
+                .orderStatus(order.getOrderStatus())
+                .build();
     }
 
-    public OrderProductDTO convertToDTO(OrderProduct orderProduct) {
-        OrderProductDTO orderProductDTO = new OrderProductDTO();
-        orderProductDTO.setProductId(orderProduct.getProduct().getProductId());
-        orderProductDTO.setQuantity(orderProduct.getQuantity());
-        orderProductDTO.setOrderId(orderProduct.getOrder().getOrderId());
-        orderProductDTO.setOrderProductId(orderProduct.getOrderProductId());
-        return orderProductDTO;
-    }
-
-
-    public OrderProduct convertToEntity(OrderProductDTO orderProductDTO) {
-        OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setOrderId(orderProductDTO.getOrderId());
-        orderProduct.setProductId(orderProductDTO.getProductId());
-        orderProduct.setQuantity(orderProductDTO.getQuantity());
-        return orderProduct;
-    }
 
 }

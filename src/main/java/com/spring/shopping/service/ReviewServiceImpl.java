@@ -1,5 +1,7 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.ReviewDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.Review;
@@ -32,6 +34,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDTO> getReviewsByProduct(Product product) {
+        if (product == null) {
+            throw new CustomException(ExceptionCode.PRODUCT_CAN_NOT_BE_NULL);
+        }
+
         List<Review> reviews = reviewRepository.findByProduct(product);
         return reviews.stream()
                 .map(this::convertToDTO)
@@ -40,40 +46,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDTO> getReviewsByUser(User user) {
+        if (user == null) {
+            throw new CustomException(ExceptionCode.USER_CAN_NOT_BE_NULL);
+        }
+
         List<Review> reviews = reviewRepository.findByUser(user);
         return reviews.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ReviewDTO> getReviewsWithRatingGreaterThan(Double rating) {
-        List<Review> reviews = reviewRepository.findByRatingGreaterThanEqual(rating);
-        return reviews.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<ReviewDTO> getReviewById(Long reviewId) {
-        Optional<Review> review = reviewRepository.findById(reviewId);
-        return review.map(this::convertToDTO);
-    }
 
     @Override
     public void deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
-    }
-
-    private ReviewDTO convertToDTO(Review review) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setUserId(review.getUser().getUserId());
-        reviewDTO.setProductId(review.getProduct().getProductId());
-        reviewDTO.setRating(review.getRating());
-        reviewDTO.setComment(review.getComment());
-        reviewDTO.setCreatedAt(review.getCreatedAt());
-        reviewDTO.setUpdatedAt(review.getUpdatedAt());
-        return reviewDTO;
     }
 
     @Override
@@ -86,17 +72,20 @@ public class ReviewServiceImpl implements ReviewService {
         String comment = reviewDTO.getComment();
 
         // 2. 사용자(User)와 제품(Product) 확인
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
 
         // 3. 리뷰 생성 및 저장
-        Review review = new Review();
-        review.setUser(user);
-        review.setProduct(product);
-        review.setRating(rating);
-        review.setComment(comment);
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
+        Review review = Review.builder()
+                .user(user)
+                .product(product)
+                .rating(rating)
+                .comment(comment)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         Review savedReview = reviewRepository.save(review);
 
@@ -109,5 +98,16 @@ public class ReviewServiceImpl implements ReviewService {
                 savedReview.getCreatedAt(),
                 savedReview.getUpdatedAt()
         );
+    }
+
+    private ReviewDTO convertToDTO(Review review) {
+        return ReviewDTO.builder()
+                .userId(review.getUser().getUserId())
+                .productId(review.getProduct().getProductId())
+                .rating(review.getRating())
+                .comment(review.getComment())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt())
+                .build();
     }
 }

@@ -1,5 +1,7 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.CartDTO;
 import com.spring.shopping.DTO.CartListResponseDTO;
 import com.spring.shopping.entity.Cart;
@@ -22,14 +24,11 @@ public class CartServiceImpl implements CartService{
     private final ProductRepository productRepository;
 
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository,
-                           UserRepository userRepository,
-                           ProductRepository productRepository) {
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, ProductRepository productRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
     }
-
 
     // 장바구니에 추가하기
     @Override
@@ -49,6 +48,12 @@ public class CartServiceImpl implements CartService{
             Cart cartItem = new Cart(user, product, quantity);
             cartRepository.save(cartItem);
             return convertToDTO(cartItem);
+        } else {
+            if (!userOptional.isPresent()) {
+                throw new CustomException(ExceptionCode.USER_ID_NOT_FOUND);
+            } else if (!productOptional.isPresent()) {
+                throw new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
+            }
         }
         return null; // 사용자나 상품이 없는 경우
     }
@@ -74,15 +79,9 @@ public class CartServiceImpl implements CartService{
                 cartDTOList.add(CartListResponseDTO.from(cartItem)); // Cart 엔티티를 CartListResponseDTO로 변환하여 리스트에 추가
             }
             return cartDTOList; // 변환된 CartDTO 리스트를 반환
+        } else {
+            throw new CustomException(ExceptionCode.USER_ID_NOT_FOUND); // 사용자가 존재하지 않으면 예외 처리
         }
-        return new ArrayList<>(); // 사용자가 존재하지 않으면 빈 리스트를 반환
-    }
-
-
-    // 엔터티를 DTO로 변환하기
-    private CartDTO convertToDTO(Cart cart) {
-        return new CartDTO(cart.getCartId(), cart.getUser().getUserId(), cart.getProduct().getProductId(),
-                cart.getQuantity(), cart.getCreatedAt(), cart.getUpdatedAt());
     }
 
 
@@ -92,6 +91,12 @@ public class CartServiceImpl implements CartService{
 
         // 장바구니가 존재하고 해당 상품이 포함되어 있는지 여부를 반환합니다.
         return cartOptional.isPresent();
+    }
+
+    // 엔터티를 DTO로 변환하기
+    private CartDTO convertToDTO(Cart cart) {
+        return new CartDTO(cart.getCartId(), cart.getUser().getUserId(), cart.getProduct().getProductId(),
+                cart.getQuantity(), cart.getCreatedAt(), cart.getUpdatedAt());
     }
 
 

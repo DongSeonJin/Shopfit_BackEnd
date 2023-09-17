@@ -8,6 +8,7 @@ import com.spring.community.repository.PostJPARepository;
 import com.spring.community.repository.ReplyRepository;
 import com.spring.exception.CustomException;
 import com.spring.exception.ExceptionCode;
+import org.openqa.selenium.remote.ErrorCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
@@ -35,6 +36,7 @@ public class PostServiceImpl implements PostService{
         this.replyRepository = replyRepository;
     }
 
+    // get Post By PostId
     @Override
     public IndividualPostResponseDTO getPostById(Long postId) {
         Post post = postJPARepository.findById(postId)
@@ -43,12 +45,14 @@ public class PostServiceImpl implements PostService{
         return new IndividualPostResponseDTO(post);
     }
 
+    // get All Posts
     @Override
     public List<Post> getAllPosts() {
 
         return postJPARepository.findAll();
     }
 
+    // get Posts By CategoryId
     @Override
     public Page<Post> getPostsByCategoryId(Long categoryId, int pageNumb){
         Page<Post> postlist = postJPARepository.findByPostCategory_CategoryId(
@@ -63,6 +67,7 @@ public class PostServiceImpl implements PostService{
 
     }
 
+    // create Post
     @Override
     public void createPost(Post post) {
 
@@ -80,11 +85,16 @@ public class PostServiceImpl implements PostService{
 
     }
 
+    // delete Post By PostId
     @Override
     public void deletePostById(Long id) {
+        if (!postJPARepository.existsById(id)) {
+            throw new CustomException(ExceptionCode.POST_NOT_FOUND);
+        }
         postJPARepository.deleteById(id);
     }
 
+    // update
     @Override
     public void update(PostUpdateDTO postUpdateDTO) {
 
@@ -93,8 +103,9 @@ public class PostServiceImpl implements PostService{
 
         // 해당 postId 게시글 없으면 예외처리
         if (!optionalPost.isPresent()) {
-            throw  new PostIdNotFoundException(postUpdateDTO.getPostId() + "번 게시글을 찾을 수 없습니다.");
+            throw new CustomException(ExceptionCode.POST_NOT_FOUND);
         }
+
         // 수정 전 게시글 가져오기
         Post existingPost = optionalPost.get();
 
@@ -111,11 +122,13 @@ public class PostServiceImpl implements PostService{
     }
 
 
+    // increase ViewCount
     @Override
     public void increaseViewCount (Long postId) {
         postJPARepository.increaseViewCount(postId);
     }
 
+    // get Recent Top4 Posts
     @Override
     public List<PostTop4DTO> getRecentTop4Posts() {
         List<PostTop4DTO> top4DTOs = postJPARepository.findAllByOrderByViewCountDesc(PageRequest.of(0, 4))
@@ -130,6 +143,7 @@ public class PostServiceImpl implements PostService{
         return top4DTOs;
     }
 
+    // find Posts By UserId
     @Override
     public List<PostListByUserIdDTO> findPostsByUserId(Long userId) {
         List<Post> posts = postJPARepository.findByUser_UserId(userId);
@@ -138,6 +152,7 @@ public class PostServiceImpl implements PostService{
                 .collect(Collectors.toList());
     }
 
+    // get Reply Count
     @Override
     public long getReplyCount(Long postId) {
         return replyRepository.countByPost_PostId(postId);

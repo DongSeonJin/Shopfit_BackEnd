@@ -31,10 +31,7 @@ public class ReviewController {
     //특정 상품 리뷰 조회
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ReviewDTO>> getReviewsByProduct(@PathVariable Long productId) {
-        Product product = productService.getProductInfo(productId);
-        product.setProductId(productId);
-
-        List<ReviewDTO> reviews = reviewService.getReviewsByProduct(product);
+        List<ReviewDTO> reviews = reviewService.getReviewsByProduct(productService.getProductInfo(productId));
         return ResponseEntity.ok(reviews);
     }
 
@@ -42,25 +39,8 @@ public class ReviewController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ReviewDTO>> getReviewsByUser(@PathVariable Long userId) {
         User user = orderService.getUserInfo(userId);
-        user.setUserId(userId);
-
         List<ReviewDTO> reviews = reviewService.getReviewsByUser(user);
         return ResponseEntity.ok(reviews);
-    }
-
-    // 특정 평점 이상의 리뷰 조회 -> 굳이 필요할까?
-    @GetMapping("/rating/{rating}")
-    public ResponseEntity<List<ReviewDTO>> getReviewsWithRatingGreaterThan(@PathVariable Double rating) {
-        List<ReviewDTO> reviews = reviewService.getReviewsWithRatingGreaterThan(rating);
-        return ResponseEntity.ok(reviews);
-    }
-
-    // 특정 리뷰 상세 정보 조회 -> 얘도 굳이?
-    @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long reviewId) {
-        return reviewService.getReviewById(reviewId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
     }
 
     // 특정 리뷰를 삭제
@@ -73,13 +53,13 @@ public class ReviewController {
     // 리뷰 생성
     @PostMapping("/create")
     public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) {
-        try {
+//        try {
             // ReviewDTO를 사용하여 리뷰를 생성하고 반환
             ReviewDTO createdReview = reviewService.createReview(reviewDTO);
             return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            // 사용자나 제품을 찾을 수 없는 경우 예외 처리
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        } catch (IllegalArgumentException e) {
+//            // 사용자나 제품을 찾을 수 없는 경우 예외 처리
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } 예외처리 -> 서비스레이어에서 처리하도록 수정함
     }
 }

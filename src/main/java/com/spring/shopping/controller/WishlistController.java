@@ -30,21 +30,21 @@ public class WishlistController {
     @PostMapping("/add")
     public ResponseEntity<WishlistDTO> addToWishlist(@RequestParam Long userId, @RequestParam Long productId) {
         WishlistDTO wishlistItem = wishlistService.addToWishlist(userId, productId);
-        if (wishlistItem != null) {
+//        if (wishlistItem != null) {
             return new ResponseEntity<>(wishlistItem, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        } 예외 처리 관련 로직 서비스 레이어에서 처리함
     }
 
     @DeleteMapping("/remove")
     public ResponseEntity<?> removeFromWishlist(@RequestParam Long userId, @RequestParam Long productId) {
         WishlistDTO wishlistItem = wishlistService.removeFromWishlist(userId, productId);
-        if (wishlistItem != null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
+//        if (wishlistItem != null) {
             return new ResponseEntity<>(HttpStatus.OK);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } 예외 처리를 서비스 레이어에서 하도록 수정하였음
     }
 
     // wishlist 선택 삭제

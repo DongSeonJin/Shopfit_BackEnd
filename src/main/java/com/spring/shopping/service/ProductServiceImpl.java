@@ -1,15 +1,14 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
-import com.spring.shopping.DTO.ProductListResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
 import com.spring.shopping.DTO.ProductStockUpdateRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.ProductImage;
 import com.spring.shopping.entity.ShopCategory;
-import com.spring.shopping.exception.CategoryIdNotFoundException;
-import com.spring.shopping.exception.ProductIdNotFoundException;
 import com.spring.shopping.repository.ProductImageRepository;
 import com.spring.shopping.repository.ProductRepository;
 import com.spring.shopping.repository.ShopCategoryRepository;
@@ -86,7 +85,7 @@ public class ProductServiceImpl implements ProductService{
         );
 
         if (productsByCategoryAndSorting.isEmpty()) {
-            throw new CategoryIdNotFoundException("잘못된 요청입니다");
+            throw new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND);
         }
 
         if (productsByCategoryAndSorting.getTotalPages() < pageNum) {
@@ -112,7 +111,7 @@ public class ProductServiceImpl implements ProductService{
         } else if (sortType == 4) { // 리뷰 기준 내림차순 (리뷰 많은 순)
             return Sort.by(Sort.Direction.DESC, "reviewCount");
         } else {
-            throw new IllegalArgumentException("잘못된 정렬 타입입니다");
+            throw new CustomException(ExceptionCode.SORT_INVALID);
         }
     }
 
@@ -127,7 +126,7 @@ public class ProductServiceImpl implements ProductService{
         );
 
         if (productsByCategory.isEmpty()) {
-            throw new CategoryIdNotFoundException("존재하지 않는 카테고리입니다");
+            throw new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND);
         }
 
         if (productsByCategory.getTotalPages() < pageNum) {
@@ -146,7 +145,7 @@ public class ProductServiceImpl implements ProductService{
         Product product = productRepository.findByProductId(productId);
 
         if (product == null) {
-            throw new ProductIdNotFoundException("존재하지 않는 상품 ID입니다");
+            throw new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
         }
 
         return ProductDetailResponseDTO.from(product);
@@ -198,7 +197,7 @@ public class ProductServiceImpl implements ProductService{
         try {
             // 상품 정보 추출
             ShopCategory category = shopCategoryRepository.findById(requestDTO.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 categoryId"));
+                    .orElseThrow(() -> new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND));
 
             Product newProduct = Product.builder()
                     .shopCategory(category)
@@ -222,8 +221,7 @@ public class ProductServiceImpl implements ProductService{
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new CustomException(ExceptionCode.PRODUCT_SAVE_EXCEPTION);
         }
     }
 
@@ -242,16 +240,13 @@ public class ProductServiceImpl implements ProductService{
         try {
             // 기존 상품 정보 가져오기
             Product product = productRepository.findById(requestDTO.getProductId())
-                    .orElse(null);
+                    .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
 
             // 카테고리 정보 불러오기
             ShopCategory category = shopCategoryRepository.findById(requestDTO.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 categoryId"));
+                    .orElseThrow(() -> new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND));
 
 
-            if (product == null) {
-                return false; // 기존 상품이 없으면 수정 실패
-            }
 
             Product updatingProduct = Product.builder()
                     .productId(requestDTO.getProductId())
@@ -288,8 +283,7 @@ public class ProductServiceImpl implements ProductService{
 
             return true;
         } catch (Exception e) {
-        e.printStackTrace();
-        return false;
+            throw new CustomException(ExceptionCode.PRODUCT_SAVE_EXCEPTION);
          }
     }
 
@@ -297,7 +291,8 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product getProductInfo(Long productId) {
-        return productRepository.findById(productId).orElse(null);
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
     }
 
     @Override
@@ -309,18 +304,27 @@ public class ProductServiceImpl implements ProductService{
 //                    .orElseThrow(() -> new ProductIdNotFoundException("없는 상품 번호입니다 : " + requestDTO.getProductId()));
 
             // 비관적 락(Pessimistic Lock) 적용하기
-            // Optional이 아니므로 orElseThrow는 삭제
             Product product = productRepository.findByIdPessimistic(requestDTO.getProductId());
 
+            if (product == null) {
+                throw new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
+            }
+
+            Long stockQuantity = requestDTO.getStockQuantity();
+
+            if (stockQuantity < 0) {
+                throw new CustomException(ExceptionCode.STOCK_QUANTITY_INVALID);
+            }
+
             // 상품의 재고(stock) 수량을 업데이트합니다.
-            product.setStockQuantity(requestDTO.getStockQuantity());
+            product.builder().stockQuantity(stockQuantity).build();
 
             // 업데이트된 상품 정보를 저장합니다.
             productRepository.save(product);
 
             return true; // 업데이트 성공
         } catch (Exception e) {
-            return false; // 업데이트 실패
+            throw new CustomException(ExceptionCode.STOCK_UPDATE_EXCEPTION);
         }
     }
 }

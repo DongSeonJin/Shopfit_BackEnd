@@ -100,12 +100,12 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
 
-        if (user != null) {
+//        if (user != null) {
             UserResponseDTO userResponseDTO = UserResponseDTO.from(user);
             return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } 예외 처리를 서비스 레이어에서 하도록 수정함
     }
 
     // 회원 정보 수정
@@ -113,14 +113,14 @@ public class UserController {
     public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO) {
 
         userUpdateDTO.setUserId(id);
-        try {
+//        try {
             userService.updateUser(userUpdateDTO);
             return new ResponseEntity<>("유저 정보가 성공적으로 업데이트되었습니다.", HttpStatus.OK);
-        } catch (UserIdNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>("유저 정보 업데이트 중에 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (UserIdNotFoundException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("유저 정보 업데이트 중에 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+//        } 예외 처리를 서비스 레이어에서 하도록 수정함
     }
 
     // 닉네임 중복 검증
@@ -144,24 +144,13 @@ public class UserController {
             @PathVariable Long userId,
             @PathVariable int usedPoints
     ) {
-        try {
-            // userId로 사용자 정보를 조회
-            User user = userService.getUserById(userId);
+        // userId로 사용자 정보를 조회
+        User user = userService.getUserById(userId);
 
-            // 포인트 사용 로직 호출
-            boolean success = userService.usePoints(user, usedPoints);
+        // 포인트 사용 로직 호출
+        userService.usePoints(user, usedPoints);
 
-            if (success) {
-                // 성공적으로 처리된 경우
-                return ResponseEntity.ok("포인트가 성공적으로 사용되었습니다.");
-            } else {
-                // 포인트가 부족한 경우
-                return ResponseEntity.badRequest().body("포인트가 부족합니다.");
-            }
-        } catch (UserIdNotFoundException e) {
-            // 사용자를 찾을 수 없는 경우
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok("포인트가 성공적으로 사용되었습니다.");
     }
 
 

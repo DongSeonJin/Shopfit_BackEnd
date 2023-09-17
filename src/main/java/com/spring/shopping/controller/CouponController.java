@@ -23,42 +23,6 @@ public class CouponController {
         this.couponService = couponService;
     }
 
-    @GetMapping("/{couponId}")
-    public ResponseEntity<CouponDTO> getCouponById(@PathVariable Long couponId) {
-        Optional<CouponDTO> coupon = couponService.getCouponById(couponId);
-        return coupon.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CouponDTO>> getCouponsByUserId(@PathVariable Long userId) {
-        List<CouponDTO> coupons = couponService.getCouponsByUserId(userId);
-        return ResponseEntity.ok(coupons);
-    }
-
-    @GetMapping("/expiring")
-    public ResponseEntity<List<CouponDTO>> getExpiringCoupons(@RequestParam LocalDateTime dateTime) {
-        List<CouponDTO> expiringCoupons = couponService.getExpiringCoupons(dateTime);
-        return ResponseEntity.ok(expiringCoupons);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<CouponDTO>> getAllCoupons() {
-        List<CouponDTO> coupons = couponService.getAllCoupons();
-        return ResponseEntity.ok(coupons);
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> saveCoupon(@RequestBody CouponDTO couponDTO) {
-        couponService.saveCoupon(couponDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{couponId}")
-    public ResponseEntity<Void> deleteCoupon(@PathVariable Long couponId) {
-        couponService.deleteCoupon(couponId);
-        return ResponseEntity.noContent().build();
-    }
 
     // 쿠폰 발급
     @PostMapping("/confirm/{userId}")
@@ -76,6 +40,19 @@ public class CouponController {
         boolean isCoupon = couponService.checkCoupon(userId, couponCode);
 
         return ResponseEntity.ok(isCoupon);
+    }
+
+    // 특정 사용자 ID에 해당하는 모든 쿠폰 조회
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<CouponDTO>> getCouponsByUserId(@PathVariable Long userId) {
+        List<CouponDTO> coupons = couponService.getCouponsByUserId(userId);
+        return ResponseEntity.ok(coupons);
+    }
+
+    // 쿠폰 사용 - 쿠폰 사용 시 해당 쿠폰 만료시키기
+    @PostMapping("/expire/{couponId}")
+    public void expireCoupon(@PathVariable Long couponId) {
+        couponService.expireCoupon(couponId);
     }
 
 

@@ -34,15 +34,11 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     private String productName;
 
-
-    @Getter
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
-  
 
     @Column(name = "price", nullable = false)
     private Long price;
-
 
     @Column(name = "stock_quantity", nullable = false)
     private Long stockQuantity; // 재고수량
@@ -55,31 +51,18 @@ public class Product {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    
+
     @OneToMany(mappedBy = "product")
     private List<ProductImage> productImages = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "product")
     private List<Review> reviews = new ArrayList<>();
+
 
     // 데이터베이스에 저장되지 않는 가상의 필드로 선언하기
     @Formula("(SELECT COUNT(r.review_id) FROM review r WHERE r.product_id = product_id)")
     // 리뷰 엔터티(Review)에서 해당 제품(Product)의 리뷰를 찾아서 리뷰 개수를 계산
     private int reviewCount;
 
-    
-    
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
-
-    public void setStockQuantity(Long stockQuantity) {
-        this.stockQuantity = stockQuantity;
-    }
 }
 

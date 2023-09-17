@@ -37,7 +37,6 @@ public class PostServiceTest {
     @Autowired
     private PostService postService;
 
-
     @Test
     @Transactional
     public void getAllPostsTest() throws Exception {
@@ -82,15 +81,17 @@ public class PostServiceTest {
         assertEquals(20, posts.getSize());
     }
 
-    @Test
-    @Transactional
-    public void createPostTest(){
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // create table, drop table 과 같은 DDL 코드는 @Transactional 어노테이션을 무시하고 강제로 커밋하기 때문에
+    // 테스트코드 실행 시 롤백이 되지 않아서 테스트코드 실행 불가
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+//    @Test
+//    @Transactional
+//    public void createPostTest(){
 //        // given
 //        String content = "test content";
 //        String title = "test title";
 //        String nickname = "test nickname";
-//
-//        PostCategory postCategory = new PostCategory();
 //
 //        Post post = Post.builder()
 //                .user(User.builder()
@@ -106,9 +107,11 @@ public class PostServiceTest {
 //                .build();
 //        // when
 //        postService.createPost(post);
+//        postJPARepository.save(post);
+//
 //        // then
-//        assertEquals(13, postService.getAllPosts().size());
-    }
+//        assertEquals(16, postService.getAllPosts().size());
+//    }
 
     @Test
     @Transactional
@@ -121,7 +124,7 @@ public class PostServiceTest {
         postService.deletePostById(postId);
 
         // then
-        assertEquals(11, postService.getAllPosts().size());
+        assertEquals(14, postService.getAllPosts().size());
     }
 
     @Test

@@ -25,11 +25,8 @@ public class CartController {
     @PostMapping
     public ResponseEntity<CartDTO> addToCart(@RequestBody CartDTO cartDTO) {
         CartDTO cartItem = cartService.addToCart(cartDTO);
-        if(cartItem != null) {
-            return new ResponseEntity<>(cartItem, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(cartItem, HttpStatus.CREATED);
+
     }
 
     // 장바구니에서 삭제
@@ -48,16 +45,11 @@ public class CartController {
 
     // 어떤 유저의 장바구니에 이미 해당 상품이 있는지 확인하기
     @GetMapping("/checkCart")
-    public ResponseEntity<Boolean> checkProductInCart(
-            @RequestParam Long userId,
-            @RequestParam Long productId) {
+    public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long userId, @RequestParam Long productId) {
 
         boolean isProductInCart = cartService.isProductInUserCart(userId, productId);
 
         return ResponseEntity.ok(isProductInCart);
     }
-
-
-
 
 }

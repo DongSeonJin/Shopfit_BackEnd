@@ -1,7 +1,8 @@
 package com.spring.news.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.news.entity.News;
-import com.spring.news.exception.NewsIdNotFoundException;
 import com.spring.news.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class NewsServiceImpl implements NewsService{
     @Override
     public News getNewsById(long newsId) {
         return newsRepository.findById(newsId)
-                .orElseThrow(() -> new NewsIdNotFoundException("존재하지 않는 뉴스번호: " + newsId ));
+                .orElseThrow(() -> new CustomException(ExceptionCode.NEWS_ID_NOT_FOUND));
     }
 
     @Override

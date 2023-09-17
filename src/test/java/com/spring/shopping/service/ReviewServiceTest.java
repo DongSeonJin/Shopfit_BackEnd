@@ -1,112 +1,127 @@
-//package com.spring.shopping.service;
-//
-//import com.spring.shopping.DTO.ReviewDTO;
-//import com.spring.shopping.entity.Product;
-//import com.spring.shopping.entity.Review;
-//import com.spring.user.entity.User;
-//import com.spring.shopping.repository.ReviewRepository;
-//import jakarta.transaction.Transactional;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.Mockito.*;
-//
-//public class ReviewServiceTest {
-//
-//    @Mock
-//    private ReviewRepository reviewRepository; // Mock 객체로 대체된 리뷰 리포지토리
-//
-//    @InjectMocks
-//    private ReviewServiceImpl reviewService; // 실제 테스트할 리뷰 서비스
-//
-//    @BeforeEach
-//    public void setUp() {
-//        MockitoAnnotations.openMocks(this); // Mockito의 Mock 및 InjectMocks 어노테이션 초기화
-//    }
-//
-//    @Test
-//    void testGetReviewsByProduct() {
-//        Product product = new Product(); // 가상의 상품 객체 생성
-//        when(reviewRepository.findByProduct(product)).thenReturn(new ArrayList<>()); // 리뷰 리포지토리의 findByProduct 메서드 호출 시 빈 리스트 반환 설정
-//
-//        List<ReviewDTO> result = reviewService.getReviewsByProduct(product); // 리뷰 서비스의 getReviewsByProduct 메서드 호출
-//
-//        assertEquals(0, result.size()); // 결과가 빈 리스트인지 확인
-//    }
-//
-//    @Test
-//    void testGetReviewsByUser() {
-//        User user = User.createUser(); // 가상의 사용자 객체 생성
-//        when(reviewRepository.findByUser(user)).thenReturn(new ArrayList<>()); // 리뷰 리포지토리의 findByUser 메서드 호출 시 빈 리스트 반환 설정
-//
-//        List<ReviewDTO> result = reviewService.getReviewsByUser(user); // 리뷰 서비스의 getReviewsByUser 메서드 호출
-//
-//        assertEquals(0, result.size()); // 결과가 빈 리스트인지 확인
-//    }
-//
-//    @Test
-//    void testGetReviewsWithRatingGreaterThan() {
-//        Double rating = 4.0; // 기준 평점 설정
-//        when(reviewRepository.findByRatingGreaterThanEqual(rating)).thenReturn(new ArrayList<>()); // 리뷰 리포지토리의 findByRatingGreaterThanEqual 메서드 호출 시 빈 리스트 반환 설정
-//
-//        List<ReviewDTO> result = reviewService.getReviewsWithRatingGreaterThan(rating); // 리뷰 서비스의 getReviewsWithRatingGreaterThan 메서드 호출
-//
-//        assertEquals(0, result.size()); // 결과가 빈 리스트인지 확인
-//    }
-//
-//    @Test
-//    void testGetReviewById() {
-//        Long reviewId = 1L; // 리뷰 ID 설정
-//        Review review = new Review(); // 가상의 리뷰 객체 생성
-//        review.setReviewId(reviewId);
-//
-//        User user = User.createUser(); // 가상의 사용자 객체 생성
-//        user.setUserId(123L); // 사용자 ID 설정
-//        review.setUser(user);
-//
-//        Product product = new Product(); // 가상의 상품 객체 생성
-//        product.setProductId(456L); // 상품 ID 설정
-//        review.setProduct(product);
-//
-//        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review)); // 리뷰 리포지토리의 findById 메서드 호출 시 가상의 리뷰 객체 반환 설정
-//
-//        Optional<ReviewDTO> result = reviewService.getReviewById(reviewId); // 리뷰 서비스의 getReviewById 메서드 호출
-//
-//        assertEquals(reviewId, result.get().getReviewId()); // 결과의 리뷰 ID가 예상 값과 일치하는지 확인
-//    }
-//
-////    @Test
-////    @Transactional
-////    void testCreateReview() {
-////        User user = User.createUser(); // 가상의 사용자 객체 생성
-////        user.setUserId(1L); // 사용자 ID 설정
-////        Product product = new Product(); // 가상의 상품 객체 생성
-////        product.setProductId(4L); // 상품 ID 설정
-////        Double rating = 4.5; // 리뷰 평점 설정
-////        String comment = "Good product"; // 리뷰 코멘트 설정
-////
-////        ReviewDTO createdReview = reviewService.createReview(user, product, rating, comment); // 리뷰 서비스의 createReview 메서드 호출
-////
-////        assertEquals(user.getUserId(), createdReview.getUserId()); // 결과의 사용자 ID가 예상 값과 일치하는지 확인
-////        assertEquals(product.getProductId(), createdReview.getProductId()); // 결과의 상품 ID가 예상 값과 일치하는지 확인
-////        assertEquals(rating, createdReview.getRating()); // 결과의 평점이 예상 값과 일치하는지 확인
-////        assertEquals(comment, createdReview.getComment()); // 결과의 코멘트가 예상 값과 일치하는지 확인
-////    }
-//
-//    @Test
-//    void testDeleteReview() {
-//        Long reviewId = 1L; // 리뷰 ID 설정
-//
-//        reviewService.deleteReview(reviewId); // 리뷰 서비스의 deleteReview 메서드 호출
-//
-//        verify(reviewRepository, times(1)).deleteById(reviewId); // 리뷰 리포지토리의 deleteById 메서드가 호출되었는지 확인
-//    }
-//}
+package com.spring.shopping.service;
+
+import com.spring.shopping.DTO.ReviewDTO;
+import com.spring.shopping.entity.Product;
+import com.spring.shopping.entity.Review;
+import com.spring.shopping.repository.ProductRepository;
+import com.spring.shopping.repository.ReviewRepository;
+
+import com.spring.user.entity.User;
+import com.spring.user.repository.UserRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class ReviewServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ProductRepository productRepository;
+
+    @Mock
+    private ReviewRepository reviewRepository;
+
+    @InjectMocks
+    private ReviewServiceImpl reviewService;
+
+    @Test
+    public void testGetReviewsByProduct() {
+        // 가짜 Review 객체 생성
+        User testUser1 = User.builder().userId(1L).build();
+        User testUser2 = User.builder().userId(2L).build();
+        Product testProduct = Product.builder().productId(1L).build();
+        List<Review> testReviews = new ArrayList<>();
+        testReviews.add(Review.builder().user(testUser1).product(testProduct).build());
+        testReviews.add(Review.builder().user(testUser2).product(testProduct).build());
+
+        // reviewRepository.findByProduct 메서드가 호출될 때 가짜 리뷰 목록을 반환하도록 설정
+        when(reviewRepository.findByProduct(testProduct)).thenReturn(testReviews);
+
+        // 테스트할 메서드 호출
+        List<ReviewDTO> result = reviewService.getReviewsByProduct(testProduct);
+
+        // 결과 검증 : 테스트제품에 등록 된 리뷰는 2개
+        assertEquals(2, result.size());
+
+    }
+
+    @Test
+    public void testGetReviewsByUser() {
+        // 가짜 User 객체 생성
+        User testUser = User.builder().userId(1L).build();
+        Product testProduct1 = Product.builder().productId(1L).build();
+        Product testProduct2 = Product.builder().productId(2L).build();
+        List<Review> testReviews = new ArrayList<>();
+        testReviews.add(Review.builder().user(testUser).product(testProduct1).build());
+        testReviews.add(Review.builder().user(testUser).product(testProduct1).build());
+        testReviews.add(Review.builder().user(testUser).product(testProduct2).build());
+
+        // reviewRepository.findByUser 메서드가 호출될 때 가짜 리뷰 목록을 반환하도록 설정
+        when(reviewRepository.findByUser(testUser)).thenReturn(testReviews);
+
+        // 테스트할 메서드 호출
+        List<ReviewDTO> result = reviewService.getReviewsByUser(testUser);
+
+        // 결과 검증 : 테스트유저가 등록한 리뷰는 3개
+        assertEquals(3, result.size());
+    }
+    @Test
+    public void testDeleteReview() {
+        // 테스트용 리뷰 ID
+        Review testReview = Review.builder().reviewId(1L).build();
+
+        // 테스트할 메서드 호출
+        reviewService.deleteReview(testReview.getReviewId());
+
+        // 결과 검증 : reviewRepository의 deleteById 메서드가 호출되었는지 검증
+        verify(reviewRepository).deleteById(testReview.getReviewId());
+    }
+
+    @Test
+    @Transactional
+    public void testCreateReview() {
+        // testUser, testProduct, testReviewDTO 생성
+        User testUser = User.builder().userId(1L).build();
+        Product testProduct = Product.builder().productId(1L).build();
+        ReviewDTO testReviewDTO = ReviewDTO.builder()
+                .userId(1L)
+                .productId(1L)
+                .rating(4.5)
+                .comment("댓글")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        // userRepository.findById 및 productRepository.findById의 모의(mock) 설정
+        when(userRepository.findById(testReviewDTO.getUserId())).thenReturn(Optional.of(testUser));
+        when(productRepository.findById(testReviewDTO.getProductId())).thenReturn(Optional.of(testProduct));
+
+        // reviewRepository.save의 모의(mock) 설정
+        when(reviewRepository.save(org.mockito.ArgumentMatchers.any(Review.class)))
+                .thenReturn(Review.builder().user(testUser).product(testProduct).rating(4.5).comment("댓글").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build());
+
+        // 테스트할 메서드 호출
+        ReviewDTO result = reviewService.createReview(testReviewDTO);
+
+        // 결과 검증 : 생성 된 리뷰와 선언한 리뷰의 요소 동일
+        assertNotNull(result);
+        assertEquals(testReviewDTO.getUserId(), result.getUserId());
+        assertEquals(testReviewDTO.getProductId(), result.getProductId());
+        assertEquals(testReviewDTO.getRating(), result.getRating());
+        assertEquals(testReviewDTO.getComment(), result.getComment());
+    }
+
+}
