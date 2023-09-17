@@ -2,13 +2,12 @@ package com.spring.user.service;
 
 import com.spring.exception.CustomException;
 import com.spring.exception.ExceptionCode;
-import com.spring.user.DTO.AddUserRequestDTO;
-import com.spring.user.DTO.LoginRequestDTO;
-import com.spring.user.DTO.UserPointResponseDTO;
-import com.spring.user.DTO.UserUpdateDTO;
+import com.spring.user.DTO.*;
+import com.spring.user.config.jwt.TokenProvider;
 import com.spring.user.entity.Authority;
+import com.spring.user.entity.RefreshToken;
 import com.spring.user.entity.User;
-import com.spring.user.exception.UserIdNotFoundException;
+import com.spring.user.repository.RefreshTokenRepository;
 import com.spring.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,24 +24,33 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+
+    private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final TokenProvider tokenProvider;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder, TokenProvider tokenProvider) {
         this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.tokenProvider = tokenProvider;
     }
 
 
 
     @Override
-    public User signup(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
+    public void signup(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
 
         boolean existEmail = userRepository.existsByEmail(dto.getEmail()); // 존재하는 이메일인지 확인
         User userNickname = userRepository.findByNickname(dto.getNickname());
 
         String password = dto.getPassword();
         String passwordCheck = dto.getConfirmPassword();
+
+        dto.setAuthority(Authority.valueOf("USER")); // 회원가입은 기본 USER
 
         if(!password.equals(passwordCheck)){
             throw new CustomException(ExceptionCode.PASSWORD_WRONG);
@@ -56,7 +65,7 @@ public class UserServiceImpl implements UserService{
         }
 
 
-        return userRepository.save(User.builder()
+        userRepository.save(User.builder()
                 .email(dto.getEmail())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
                 .nickname(dto.getNickname())
@@ -64,6 +73,46 @@ public class UserServiceImpl implements UserService{
                 .authority(dto.getAuthority())
                 .build()
         );
+
+        System.out.println(dto.getAuthority());
+    }
+
+    //  persist, merge, remove와 같은 JPA 연산을 트랜잭션이 활성화된 상태가 아닌 곳에서 호출할 때
+    //  TransactionRequiredException이 발생합니다. if문 내부에 토큰 삭제구문이 있으므로 transactional 걸어줘야함.
+    @Transactional
+    @Override
+    public TokenResponseDTO login(LoginRequestDTO loginRequest) {
+        // 폼에서 입력한 로그인 아이디를 이용해 DB에 저장된 전체 정보 얻어오기
+        User userInfo = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(()
+                -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+
+        // 유저가 폼에서 날려주는 정보는 id랑 비번인데, 먼저 아이디를 통해 위에서 정보를 얻어오고
+        // 비밀번호는 암호화 구문끼리 비교해야 하므로, 이 경우 bCryptEncoder의 .matchs(평문, 암호문) 를 이용하면
+        // 같은 암호화 구문끼리 비교하는 효과가 생깁니다.
+        // 상단에 bCryptPasswordEncoder 의존성을 생성한 후, if문 내부에서 비교합니다.
+                                            // 폼에서 날려준 평문       // 디비에 들어있던 암호문
+        if(bCryptPasswordEncoder.matches(loginRequest.getPassword(), userInfo.getPassword())){
+
+            String accessToken = tokenProvider.generateAccessToken(userInfo, Duration.ofHours(2));//2시간동안 유효한 엑세스토큰 발급
+            String refreshToken = tokenProvider.generateRefreshToken(userInfo, Duration.ofDays(7));//7일동안 유효한 리프레시토큰 발급
+
+
+            //새로운 리프레시토큰 refreshToken 엔터티 객체에 담기
+            RefreshToken newRefreshToken = new RefreshToken(userInfo.getUserId(), refreshToken);
+            // DB에서 userId에 해당하는 refresh토큰 검색
+            Optional<RefreshToken> existingToken = Optional.ofNullable(refreshTokenRepository.findByUserId(userInfo.getUserId()));
+
+            // 기존 토근이 있든 없든 갱신하거나 새로 저장합니다.
+            refreshTokenRepository.save(existingToken.orElse(newRefreshToken).update(newRefreshToken.getRefreshToken()));
+                                        // null이라면 new토큰 저장             // 이미 있다면 업데이트후 저장
+
+
+
+            // accessToken과 refreshToken 둘다 저장, user정보도 넘김
+            return new TokenResponseDTO(accessToken, refreshToken, userInfo);
+        } else {
+            throw new IllegalArgumentException("login failed");
+        }
     }
 
     @Override
@@ -76,15 +125,23 @@ public class UserServiceImpl implements UserService{
         return userRepository.findAll();
     }
 
+    @Override
+    public User getUserByNickname(String nickname) {
+        return userRepository.findByNickname(nickname);
+    }
+
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("없는 유저입니다."));
+        return userRepository.findByEmail(email).orElseThrow(()
+                -> new CustomException(ExceptionCode.USER_NOT_FOUND));
     }
 
     @Override
     public User getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+        User user = userRepository.findById(id).orElseThrow(()
+                -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+
         return user;
     }
 
@@ -94,7 +151,8 @@ public class UserServiceImpl implements UserService{
     public void updateUser(UserUpdateDTO userUpdateDTO) {
 
         User user = userRepository.findById(userUpdateDTO.getUserId())
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
 
         User updatingUser = User.builder()
                 .userId(userUpdateDTO.getUserId())
@@ -110,10 +168,11 @@ public class UserServiceImpl implements UserService{
         userRepository.save(updatingUser);
     }
 
-
     @Override
-    public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(Long id) {
+        User user = this.userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+        this.userRepository.delete(user);
     }
 
     @Override
@@ -142,7 +201,9 @@ public class UserServiceImpl implements UserService{
     public UserPointResponseDTO getUserPointById(Long userId) {
         // 유저 ID로 유저 정보를 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+
 
 
         // 조회한 유저 정보에서 포인트를 가져와서 DTO에 담아 반환
