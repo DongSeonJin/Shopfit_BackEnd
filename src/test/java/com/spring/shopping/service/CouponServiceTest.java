@@ -1,91 +1,170 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.CouponDTO;
-
-import org.junit.jupiter.api.BeforeEach;
+import com.spring.shopping.entity.Coupon;
+import com.spring.shopping.repository.CouponCountRepository;
+import com.spring.shopping.repository.CouponRepository;
+import com.spring.user.entity.User;
+import com.spring.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class CouponServiceTest {
+    @Mock
+    private CouponRepository couponRepository;
 
-    private CouponService couponService;
+    @Mock
+    private CouponCountRepository couponCountRepository;
 
-    @BeforeEach
-    void setUp() {
-        // 테스트를 위해 CouponServiceImpl 객체를 생성합니다.
-        couponService = new CouponServiceImpl();
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private CouponServiceImpl couponService;
+
+    @Test
+    public void testConfirm() {
+        // 가짜 유저 객체 생성
+        User testUser = User.builder().userId(1L).build();
+
+        // couponCountRepository.increment 모의(mock) 설정: 발급 가능한 쿠폰 개수를 1로 설정
+        when(couponCountRepository.increment()).thenReturn(1L);
+
+        // userRepository.findById 모의(mock) 설정
+        when(userRepository.findById(testUser.getUserId())).thenReturn(Optional.of(testUser));
+
+        // couponRepository.save 모의(mock) 설정: 반환값을 설정하여 void 메서드가 아닌 것처럼 동작하도록 함
+        when(couponRepository.save(any(Coupon.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // 테스트할 메서드 호출
+        couponService.confirm(testUser.getUserId());
+
+        // 결과 검증
+        verify(couponRepository, times(1)).save(any(Coupon.class)); // couponRepository.save 메서드가 한 번 호출되어야 함
+
+        // couponRepository.save 메서드로 전달된 Coupon 객체를 검증
+        ArgumentCaptor<Coupon> captor = ArgumentCaptor.forClass(Coupon.class);
+        verify(couponRepository).save(captor.capture());
+
+        Coupon savedCoupon = captor.getValue();
+        assertNotNull(savedCoupon);
+        assertEquals(testUser, savedCoupon.getUser());
+        assertEquals("10000COUPON", savedCoupon.getCouponCode());
+        assertEquals("10,000원 할인 쿠폰", savedCoupon.getDescription());
+        assertEquals(10000L, savedCoupon.getDiscountValue());
+        assertNotNull(savedCoupon.getValidFrom());
+        assertNotNull(savedCoupon.getValidTo());
     }
 
     @Test
-    void testGetCouponById() {
-        // 쿠폰을 생성합니다.
-        CouponDTO coupon = new CouponDTO();
-        coupon.setCouponId(1L);
-        coupon.setDescription("Test Coupon");
+    public void testConfirmCouponLimitExceeded() {
+        // couponCountRepository.increment 모의(mock) 설정: 발급 가능한 쿠폰 개수를 101로 설정
+        when(couponCountRepository.increment()).thenReturn(101L);
 
-        // 쿠폰을 저장합니다.
-        couponService.saveCoupon(coupon);
-
-        // ID를 사용하여 쿠폰을 조회합니다.
-        Optional<CouponDTO> retrievedCoupon = couponService.getCouponById(1L);
-
-        // 존재하는지와 설명이 일치하는지 확인합니다.
-        assertTrue(retrievedCoupon.isPresent());
-        assertEquals("Test Coupon", retrievedCoupon.get().getDescription());
+        // 예외를 기대하는 경우
+        assertThrows(CustomException.class, () -> couponService.confirm(1L));
     }
 
     @Test
-    void testGetCouponsByUserId() {
-        // 다른 사용자용 쿠폰을 생성합니다.
-        CouponDTO coupon1 = new CouponDTO();
-        coupon1.setCouponId(1L);
-        coupon1.setUserId(101L);
+    public void testCheckCoupon() {
+        // 사용자 ID와 쿠폰 코드 생성
+        Long userId = 1L;
+        String couponCode = "COUPON123";
 
-        // 다른 사용자용 쿠폰을 생성합니다.
-        CouponDTO coupon2 = new CouponDTO();
-        coupon2.setCouponId(2L);
-        coupon2.setUserId(102L);
+        // couponRepository.findByUser_UserIdAndCouponCode 모의(mock) 설정: 쿠폰이 존재하는 경우
+        when(couponRepository.findByUser_UserIdAndCouponCode(userId, couponCode)).thenReturn(Optional.of(new Coupon()));
 
-        // 쿠폰을 저장합니다.
-        couponService.saveCoupon(coupon1);
-        couponService.saveCoupon(coupon2);
+        // 테스트할 메서드 호출
+        boolean result = couponService.checkCoupon(userId, couponCode);
 
-        // 사용자 ID를 사용하여 해당 사용자의 쿠폰을 조회합니다.
-        List<CouponDTO> userCoupons = couponService.getCouponsByUserId(101L);
-
-        // 해당 사용자의 쿠폰이 정확히 조회되는지 확인합니다.
-        assertEquals(1, userCoupons.size());
-        assertEquals(1L, userCoupons.get(0).getCouponId());
+        // 결과 검증 : 쿠폰이 존재하는 경우 true를 반환
+        assertTrue(result);
     }
 
     @Test
-    void testGetExpiringCoupons() {
-        // 다른 만료 날짜를 가진 쿠폰을 생성합니다.
-        CouponDTO coupon1 = new CouponDTO();
-        coupon1.setCouponId(1L);
-        coupon1.setValidTo(LocalDateTime.of(2023, 8, 31, 23, 59));
+    public void testCheckCouponNotFound() {
+        // 사용자 ID와 쿠폰 코드 생성
+        Long userId = 1L;
+        String couponCode = "COUPON123";
 
-        // 다른 만료 날짜를 가진 쿠폰을 생성합니다.
-        CouponDTO coupon2 = new CouponDTO();
-        coupon2.setCouponId(2L);
-        coupon2.setValidTo(LocalDateTime.of(2023, 9, 15, 23, 59));
+        // couponRepository.findByUser_UserIdAndCouponCode 모의(mock) 설정: 쿠폰이 존재하지 않는 경우
+        when(couponRepository.findByUser_UserIdAndCouponCode(userId, couponCode)).thenReturn(Optional.empty());
 
-        // 쿠폰을 저장합니다.
-        couponService.saveCoupon(coupon1);
-        couponService.saveCoupon(coupon2);
+        // 테스트할 메서드 호출
+        boolean result = couponService.checkCoupon(userId, couponCode);
 
-        // 지정한 날짜를 기준으로 만료되는 쿠폰을 조회합니다.
-        LocalDateTime expiringDateTime = LocalDateTime.of(2023, 9, 1, 0, 0);
-        List<CouponDTO> expiringCoupons = couponService.getExpiringCoupons(expiringDateTime);
-
-        // 지정한 날짜보다 이전에 만료되는 쿠폰이 정확히 조회되는지 확인합니다.
-        assertEquals(1, expiringCoupons.size());
-        assertEquals(1L, expiringCoupons.get(0).getCouponId());
+        // 결과 검증 : 쿠폰이 존재하지 않는 경우 false를 반환
+        assertFalse(result);
     }
+
+    @Test
+    public void testGetCouponsByUserId() {
+        // 가짜 유저 객체 생성
+        User testUser = User.builder().userId(1L).build();
+
+        // 가짜 쿠폰 객체 리스트 생성
+        Coupon coupon1 = Coupon.builder()
+                .user(testUser)
+                .couponCode("COUPON1")
+                .discountValue(1000L)
+                .validFrom(LocalDateTime.now())
+                .validTo(LocalDateTime.now().plusDays(30))
+                .build();
+        Coupon coupon2 = Coupon.builder()
+                .user(testUser)
+                .couponCode("COUPON2")
+                .discountValue(2000L)
+                .validFrom(LocalDateTime.now())
+                .validTo(LocalDateTime.now().plusDays(15))
+                .build();
+
+        // userRepository.findById 모의(mock) 설정
+        when(userRepository.findById(testUser.getUserId())).thenReturn(Optional.of(testUser));
+
+        // couponRepository.findByUser_UserId 모의(mock) 설정: 두 개의 쿠폰을 포함하는 리스트 반환
+        when(couponRepository.findByUser_UserId(testUser.getUserId()))
+                .thenReturn(List.of(coupon1, coupon2));
+
+        // 테스트할 메서드 호출
+        List<CouponDTO> result = couponService.getCouponsByUserId(testUser.getUserId());
+
+        // 결과 검증 : 유효한 쿠폰만 반환되었는지 확인
+
+        LocalDateTime now = LocalDateTime.now();
+
+        assertTrue(result.stream().allMatch(coupon -> coupon.getValidTo().isAfter(now)));
+    }
+
+    @Test
+    public void testExpireCoupon() {
+        // 가짜 쿠폰 객체 생성
+        Coupon testCoupon = Coupon.builder()
+                .couponId(1L)
+                .validTo(LocalDateTime.now().plusDays(1)) // 유효기간을 1일로 설정
+                .build();
+
+        // couponRepository.findById 모의(mock) 설정
+        when(couponRepository.findById(testCoupon.getCouponId())).thenReturn(Optional.of(testCoupon));
+
+        // 테스트할 메서드 호출
+        couponService.expireCoupon(testCoupon.getCouponId());
+
+        // 결과 검증 : 쿠폰의 유효기간이 현재 시간 이전으로 설정되었는지 확인
+        assertTrue(testCoupon.getValidTo().isBefore(LocalDateTime.now()));
+    }
+
+
 }
