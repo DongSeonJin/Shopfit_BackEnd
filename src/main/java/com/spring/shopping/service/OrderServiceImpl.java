@@ -64,6 +64,9 @@ public class OrderServiceImpl implements OrderService {
         if("5".equals(orderStatus)) {
             updateUserPoint(orderId);
         }
+        if (updatedRows <= 0) {
+            throw new CustomException(ExceptionCode.ORDERSTATUS_UPDATE_FAILED);
+        }
         return updatedRows;
     }
 
@@ -186,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.delete(order);
             return true;
         } else {
-            return false;
+            throw new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND);
         }
     }
 

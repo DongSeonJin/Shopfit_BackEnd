@@ -47,6 +47,9 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public void removeFromWishlist(Long wishlistId) {
+        if(wishlistId == null) {
+            throw new CustomException(ExceptionCode.WISHLIST_ID_NOT_FOUND);
+        }
         wishlistRepository.deleteById(wishlistId);
     }
 

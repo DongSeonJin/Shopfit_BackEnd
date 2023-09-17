@@ -80,7 +80,7 @@ public class CartServiceImpl implements CartService{
             }
             return cartDTOList; // 변환된 CartDTO 리스트를 반환
         } else {
-            throw new CustomException(ExceptionCode.CART_ID_NOT_FOUND); // 사용자가 존재하지 않으면 예외 처리
+            throw new CustomException(ExceptionCode.USER_ID_NOT_FOUND); // 사용자가 존재하지 않으면 예외 처리
         }
     }
 
