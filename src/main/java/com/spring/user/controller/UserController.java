@@ -89,9 +89,9 @@ public class UserController {
 
      @PostMapping("/login")
      public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
-        TokenResponseDTO token = userService.login(loginRequest);
+        TokenResponseDTO tokenResponseDTO = userService.login(loginRequest);
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(tokenResponseDTO);
      }
 
 

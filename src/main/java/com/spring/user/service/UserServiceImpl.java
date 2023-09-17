@@ -96,21 +96,17 @@ public class UserServiceImpl implements UserService{
             String accessToken = tokenProvider.generateAccessToken(userInfo, Duration.ofHours(2));//2시간동안 유효한 엑세스토큰 발급
             String refreshToken = tokenProvider.generateRefreshToken(userInfo, Duration.ofDays(7));//7일동안 유효한 리프레시토큰 발급
 
+
             //새로운 리프레시토큰 refreshToken 엔터티 객체에 담기
             RefreshToken newRefreshToken = new RefreshToken(userInfo.getUserId(), refreshToken);
             // DB에서 userId에 해당하는 refresh토큰 검색
-            RefreshToken existingToken = refreshTokenRepository.findByUserId(userInfo.getUserId());
+            Optional<RefreshToken> existingToken = Optional.ofNullable(refreshTokenRepository.findByUserId(userInfo.getUserId()));
 
-            if(existingToken != null){ // 기존에 발급받은 토큰이 있다면
-                refreshTokenRepository.deleteByUserId(userInfo.getUserId()); // 해당유저 토큰 삭제후
-                refreshTokenRepository.flush(); // 즉시 DB에 반영
-                refreshTokenRepository.save(newRefreshToken); // 토큰 갱신
-            }
+            // 기존 토근이 있든 없든 갱신하거나 새로 저장합니다.
+            refreshTokenRepository.save(existingToken.orElse(newRefreshToken).update(newRefreshToken.getRefreshToken()));
+                                        // null이라면 new토큰 저장             // 이미 있다면 업데이트후 저장
 
 
-            System.out.println("리프레시토큰 저장:" + newRefreshToken.getRefreshToken());
-             // 리프레시토큰 DB에 저장
-            refreshTokenRepository.save(newRefreshToken);
 
             // accessToken과 refreshToken 둘다 저장, user정보도 넘김
             return new TokenResponseDTO(accessToken, refreshToken, userInfo);
