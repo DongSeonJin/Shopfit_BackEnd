@@ -25,11 +25,8 @@ public class CartController {
     @PostMapping
     public ResponseEntity<CartDTO> addToCart(@RequestBody CartDTO cartDTO) {
         CartDTO cartItem = cartService.addToCart(cartDTO);
-        if(cartItem != null) {
-            return new ResponseEntity<>(cartItem, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(cartItem, HttpStatus.CREATED);
+
     }
 
     // 장바구니에서 삭제

@@ -1,5 +1,7 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.OrderDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
@@ -36,6 +38,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getOrdersByUser(User user) {
+        if (user == null) {
+            throw new CustomException(ExceptionCode.USER_CAN_NOT_BE_NULL);
+        }
+
         List<Order> orders = orderRepository.findByUser(user);
         return orders.stream()
                 .map(this::convertToDTO)
@@ -58,48 +64,57 @@ public class OrderServiceImpl implements OrderService {
         if("5".equals(orderStatus)) {
             updateUserPoint(orderId);
         }
+        if (updatedRows <= 0) {
+            throw new CustomException(ExceptionCode.ORDERSTATUS_UPDATE_FAILED);
+        }
         return updatedRows;
     }
 
     // 사용자의 포인트를 업데이트하기
     public void updateUserPoint(Long orderId) {
         //orderId를 이용하여 해당 주문을 가져오기
-        Order order = orderRepository.findById(orderId).orElse(null);
-        if(order != null) {
-            User user = order.getUser();
-            if (user != null) {
-                int currentPoint = user.getPoint();
-                long additionalPoint =(long) (order.getTotalPrice() * POINT_PERCENTAGE);
-                int newPoint = currentPoint + (int) additionalPoint;
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND));
 
-                // 빌더 패턴을 사용하여 포인트를 설정한 새로운 User 객체 생성
-                User updatedUser = User.builder()
-                        .userId(user.getUserId())
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .nickname(user.getNickname())
-                        .point(newPoint)
-                        .imageUrl(user.getImageUrl())
-                        .createdAt(user.getCreatedAt())
-                        .updatedAt(LocalDateTime.now())
-                        .build();
-
-                userRepository.save(updatedUser);
-            }
+        User user = order.getUser();
+        if (user == null) {
+            throw new CustomException(ExceptionCode.USER_NOT_FOUND);
         }
+
+
+        int currentPoint = user.getPoint();
+        long additionalPoint =(long) (order.getTotalPrice() * POINT_PERCENTAGE);
+        int newPoint = currentPoint + (int) additionalPoint;
+
+        // 빌더 패턴을 사용하여 포인트를 설정한 새로운 User 객체 생성
+        User updatedUser = User.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .nickname(user.getNickname())
+                .point(newPoint)
+                .imageUrl(user.getImageUrl())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        userRepository.save(updatedUser);
+
+
     }
 
 
     @Override
     public User getUserInfo(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
     }
 
 
     @Override
     public Order getOrderInfo(Long orderId) {
-        return orderRepository.findById(orderId).orElse(null);
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND));
     }
 
 
@@ -107,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
 
         // 주문 생성
         Order order = orderRepository.save(Order.builder()
@@ -174,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.delete(order);
             return true;
         } else {
-            return false;
+            throw new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND);
         }
     }
 

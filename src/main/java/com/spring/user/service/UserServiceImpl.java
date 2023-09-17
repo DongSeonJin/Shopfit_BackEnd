@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("없는 유저입니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
         return user;
     }
 
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService{
     public void updateUser(UserUpdateDTO userUpdateDTO) {
 
         User user = userRepository.findById(userUpdateDTO.getUserId())
-                .orElseThrow(() -> new UserIdNotFoundException("해당되는 사용자를 찾을 수 없습니다 : " + userUpdateDTO.getUserId()));
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
 
         User updatingUser = User.builder()
                 .userId(userUpdateDTO.getUserId())
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService{
     public UserPointResponseDTO getUserPointById(Long userId) {
         // 유저 ID로 유저 정보를 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserIdNotFoundException("해당되는 사용자를 찾을 수 없습니다 : " + userId));
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
 
 
         // 조회한 유저 정보에서 포인트를 가져와서 DTO에 담아 반환
@@ -155,26 +155,27 @@ public class UserServiceImpl implements UserService{
     public boolean usePoints(User user, int usedPoints) {
         int currentPoints = user.getPoint();
 
-        if (currentPoints >= usedPoints) {
-            int updatedPoints = currentPoints - usedPoints;
-
-            // 엔티티 객체 복제
-            User updatingUser = User.builder()
-                    .userId(user.getUserId())
-                    .email(user.getEmail())
-                    .nickname(user.getNickname())
-                    .password(user.getPassword())
-                    .imageUrl(user.getImageUrl())
-                    .point(updatedPoints) // 포인트만 업데이트
-                    .createdAt(user.getCreatedAt())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-
-            userRepository.save(updatingUser); // 수정된 유저 정보 저장
-            return true;
-        } else {
-            return false;
+        if(currentPoints < usedPoints) {
+            throw new CustomException(ExceptionCode.INSUFFICIENT_POINT_EXCEPTION);
         }
+
+        int updatedPoints = currentPoints - usedPoints;
+
+        // 엔티티 객체 복제
+        User updatingUser = User.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .password(user.getPassword())
+                .imageUrl(user.getImageUrl())
+                .point(updatedPoints) // 포인트만 업데이트
+                .createdAt(user.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        userRepository.save(updatingUser); // 수정된 유저 정보 저장
+        return true;
+
     }
 
 

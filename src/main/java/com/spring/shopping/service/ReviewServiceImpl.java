@@ -1,5 +1,7 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.ReviewDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.Review;
@@ -32,6 +34,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDTO> getReviewsByProduct(Product product) {
+        if (product == null) {
+            throw new CustomException(ExceptionCode.PRODUCT_CAN_NOT_BE_NULL);
+        }
+
         List<Review> reviews = reviewRepository.findByProduct(product);
         return reviews.stream()
                 .map(this::convertToDTO)
@@ -40,6 +46,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDTO> getReviewsByUser(User user) {
+        if (user == null) {
+            throw new CustomException(ExceptionCode.USER_CAN_NOT_BE_NULL);
+        }
+
         List<Review> reviews = reviewRepository.findByUser(user);
         return reviews.stream()
                 .map(this::convertToDTO)
@@ -62,8 +72,10 @@ public class ReviewServiceImpl implements ReviewService {
         String comment = reviewDTO.getComment();
 
         // 2. 사용자(User)와 제품(Product) 확인
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
 
         // 3. 리뷰 생성 및 저장
         Review review = Review.builder()
