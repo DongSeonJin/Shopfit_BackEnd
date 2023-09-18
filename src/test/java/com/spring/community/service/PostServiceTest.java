@@ -31,9 +31,6 @@ import static org.mockito.Mockito.*;
 //@ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
 
-
-
-
     @Autowired
     private PostService postService;
 

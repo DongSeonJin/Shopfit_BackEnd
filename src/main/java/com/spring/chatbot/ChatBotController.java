@@ -46,7 +46,6 @@ public class ChatBotController {
     }
 
     // 클라이언트의 요청을 받아 처리 후 응답 반환.
-    //@CrossOrigin
     @RequestMapping("chatBot")
     public ResponseEntity<String> chat(@org.springframework.web.bind.annotation.RequestBody String requestBody) {
         jakarta.servlet.http.HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest()
@@ -206,6 +205,13 @@ public class ChatBotController {
         return response;
     }
 
+    // 웰컴메세지 생성 메서드
+    private static JSONObject createWelcomeMessage() {
+        String welcomeMessage = "안녕하세요";
+
+        return createResponseMessage(welcomeMessage);
+    }
+
     // 네이버 챗봇 API 에 메세지를 전송하는 메서드
     // 입력된 요청 (requestBody) 을 네이버 챗봇 API 로 전송하고, 그 결과를 반환한다.
     public JSONObject sendMessageToNaverChatBot(String requestBody) {
@@ -232,6 +238,13 @@ public class ChatBotController {
                 responseObject = new JSONObject();
                 responseObject.put("error", "챗봇에서 응답하지 않습니다. " + response.getStatusCode());
             }
+
+            // 웰컴 메세지를 생성하여 응답에 추가하기
+            JSONObject welcomeMessage = createWelcomeMessage();
+            JSONArray bubbles = new JSONArray();
+            bubbles.add(welcomeMessage);
+            responseObject.put("bubbles", bubbles);
+
         } catch (Exception e) {
             System.out.println("네이버 챗봇 요청 실패: " + e.getMessage());
             responseObject = new JSONObject();
