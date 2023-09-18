@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -113,6 +115,23 @@ public class UserServiceImpl implements UserService{
         } else {
             throw new IllegalArgumentException("login failed");
         }
+    }
+
+    @Transactional
+    public void logout(String accessToken, String refreshToken) {
+        if(!tokenProvider.validToken(accessToken)){
+            throw new IllegalArgumentException("로그아웃 : 유효하지 않은 토큰입니다.");
+        }
+
+        RefreshToken deleteRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+
+        if (deleteRefreshToken == null) {
+            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+        }else {
+            refreshTokenRepository.deleteByRefreshToken(deleteRefreshToken.getRefreshToken());
+        }
+
+
     }
 
     @Override
