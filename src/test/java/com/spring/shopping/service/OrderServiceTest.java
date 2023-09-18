@@ -160,7 +160,6 @@ public class OrderServiceTest {
                 .imageUrl("test.jpg")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .isAdmin(false)
                 .build();
 
         // userRepository.findById(mockedUserId)가 호출될 때 가짜 사용자 반환하도록 설정

@@ -68,11 +68,11 @@ public class NewsControllerTest {
         ResultActions resultActions = mockMvc.perform(get(url)
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 10
+        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 3
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.length()").value(10));
+                .andExpect(jsonPath("$.content.length()").value(3));
     }
 
     @Test
@@ -131,11 +131,4 @@ public class NewsControllerTest {
 //    VALUES
 //            (1, 'Breaking News: Exciting Discoveries on Mars', 'Scientists have made groundbreaking discoveries...', 'https://image-url.com/1', 'https://google.com', '2023-08-10 10:30:00'),
 //            (2, 'New Study Reveals Surprising Benefits of Chocolate', 'A recent study suggests that chocolate...', 'https://image-url.com/2', 'https://news-url.com/2', '2023-08-09 15:45:00'),
-//            (3, 'Tech Giant Unveils Revolutionary AI Product', 'The leading tech company introduced a cutting-edge AI...', 'https://image-url.com/3', 'https://news-url.com/3', '2023-08-08 09:20:00'),
-//            (4, 'Global Conference Addresses Climate Change Challenges', 'World leaders gathered to discuss strategies...', 'https://image-url.com/4', 'https://news-url.com/4', '2023-08-07 14:10:00'),
-//            (5, 'New Art Exhibition Celebrates Diversity', 'Art enthusiasts are in for a treat as...', 'https://image-url.com/5', 'https://news-url.com/5', '2023-08-06 11:55:00'),
-//            (6, 'Space Tourism Industry Continues to Expand', 'More and more people are venturing into space...', 'https://image-url.com/6', 'https://news-url.com/6', '2023-08-05 08:30:00'),
-//            (7, 'Health and Wellness Trends for the Coming Year', 'Experts predict the top health and wellness trends...', 'https://image-url.com/7', 'https://news-url.com/7', '2023-08-04 16:25:00'),
-//            (8, 'New Music Album Tops Charts Worldwide', 'The latest music release has quickly climbed...', 'https://image-url.com/8', 'https://news-url.com/8', '2023-08-03 13:15:00'),
-//            (9, 'Innovative Startup Raises Millions in Funding', 'A startup company has secured a substantial...', 'https://image-url.com/9', 'https://news-url.com/9', '2023-08-02 12:00:00'),
-//            (10, 'Cultural Festival Brings Communities Together', 'Residents from various backgrounds came together...', 'https://image-url.com/10', 'https://news-url.com/10', '2023-08-01 07:40:00');
+//            (3, 'Tech Giant Unveils Revolutionary AI Product', 'The leading tech company introduced a cutting-edge AI...', 'https://image-url.com/3', 'https://news-url.com/3', '2023-08-08 09:20:00');
