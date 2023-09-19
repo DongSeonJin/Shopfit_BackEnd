@@ -19,10 +19,16 @@ public class TokenProvider {
 
     private final JwtProperties jwtProperties;
 
-    public String generateToken(User user, Duration expiredAt){
+    public String generateAccessToken(User user, Duration expiredAt){ //엑세스 토큰 생성
         // 아래 메서드 작성 완료되면 추가로 작성
         Date now = new Date();
         return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
+    }
+
+    public String generateRefreshToken(User user, Duration expiredAt){ // 리프레시 토큰 생성
+
+        Date now = new Date();
+        return makeToken(new Date(now.getTime() + expiredAt.toDays()), user);
     }
 
     private String makeToken(Date expiry, User user){

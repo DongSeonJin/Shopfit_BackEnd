@@ -2,6 +2,7 @@ package com.spring.shopping.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
+import com.spring.shopping.DTO.ProductStockUpdateRequestDTO;
 import com.spring.shopping.DTO.ProductUpdateRequestDTO;
 import com.spring.shopping.entity.Product;
 import com.spring.shopping.entity.ProductImage;
@@ -41,14 +42,13 @@ public class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private WebApplicationContext context;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     // 전체 조회 테스트
     @Test
@@ -60,12 +60,34 @@ public class ProductControllerTest {
         ResultActions resultActions = mockMvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 10
+        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 3
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.length()").value(10));
+                .andExpect(jsonPath("$.content.length()").value(3));
     }
+
+    // 정렬 전체 조회 테스트
+    @Test
+    public void getAllProductsSortedTest() throws Exception {
+        // given: 필요한 테스트 데이터 및 상황 설정
+        int sortType = 1; // 낮은 가격 순
+        int pageNum = 1; // 페이지 번호
+
+        String url = "/shopping/sort/" + sortType + "/" + pageNum;
+
+        // when: URL로 GET 요청 수행
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then: 응답 코드가 200이고, 반환된 JSON 배열의 길이가 3인지 확인
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(3));
+    }
+
+
 
     // 카테고리별 조회 테스트
     @Test
@@ -77,19 +99,41 @@ public class ProductControllerTest {
         ResultActions resultActions = mockMvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 4
+        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 1
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.length()").value(4));
+                .andExpect(jsonPath("$.content.length()").value(1));
     }
 
-    // 상품 1개 상세조회 테스트
+    // 카테고리 별 조회 및 정렬 테스트
+    @Test
+    public void getProductsByCategoryAndSortedTest() throws Exception {
+        // given: 필요한 테스트 데이터 및 상황 설정
+        Long categoryId = 1L; // 카테고리 ID 설정
+        int sortType = 1; // 예시로 1
+        int pageNum = 1; // 페이지 번호
 
+        String url = "/shopping/category/" + categoryId + "/sort/" + sortType + "/" + pageNum;
+
+        // when: URL로 GET 요청 수행
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then: 응답 코드가 200이고, 반환된 JSON 배열의 길이가 1인지 확인
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(1));
+
+    }
+
+
+    // 상품 1개 상세조회 테스트
     @Test
     public void getProductDetailTest() throws Exception {
         // given: 테스트용 데이터베이스에 존재하는 상품의 ID fixture, 요청 경로 세팅
-        long productId = 3L;
+        long productId = 1L;
         String url = "/shopping/products/" + productId;
 
         // when: 세팅한 경로로 Get 요청 수행 후 결과 저장
@@ -99,8 +143,8 @@ public class ProductControllerTest {
         // then: 값 비교
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.price").value(40000)) // 가격은 40000
-                .andExpect(jsonPath("$.reviews",hasSize(1))); // 리뷰 개수는 1개
+                .andExpect(jsonPath("$.price").value(500000)) // 가격은 500000
+                .andExpect(jsonPath("$.reviews",hasSize(2))); // 리뷰 개수는 2개
 
     }
 
@@ -108,7 +152,7 @@ public class ProductControllerTest {
     @Test
     public void searchProductsTest() throws Exception {
         // given: 테스트용 데이터베이스에 존재하는 상품의 키워드, 페이지번호 및 url fixture 설정
-        String keyword = "chicken";
+        String keyword = "찜";
         int pageNum = 1;
         String url = "/shopping/search/" + keyword + "/" + pageNum;
 
@@ -116,12 +160,34 @@ public class ProductControllerTest {
         ResultActions resultActions = mockMvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 3개
+        // then: 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 1개
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.length()").value(3));
+                .andExpect(jsonPath("$.content.length()").value(1));
     }
+
+//    카테고리 내 검색 테스트
+@Test
+public void searchProductsByCategoryTest() throws Exception {
+    // given: 테스트 데이터 설정
+    Long categoryId = 1L;
+    String keyword = "찜";
+    int pageNum = 1;
+
+
+    // when: 컨트롤러 메서드 호출
+    ResultActions resultActions = mockMvc.perform(get("/shopping/category/{categoryId}/search/{keyword}/{pageNum}", categoryId, keyword, pageNum)
+                    .contentType(MediaType.APPLICATION_JSON));
+
+    // then : 응답코드 200, 본문 내용은 배열, 그 배열의 길이는 1개
+    resultActions
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray())
+            .andExpect(jsonPath("$.content.length()").value(1));
+
+
+}
 
     // 저장 테스트
     @Test
@@ -147,7 +213,7 @@ public class ProductControllerTest {
                 .productImageUrls(productImageUrls)
                 .build();
 
-        String url = "/shopping/save";
+        String url = "/shopping";
 
         // 데이터 직렬화
         final String requestBody = objectMapper.writeValueAsString(requestDTO);
@@ -160,8 +226,7 @@ public class ProductControllerTest {
 
         // then : 응답코드 200
         resultActions
-                .andExpect(status().isOk())
-                .andExpect(content().string("상품 및 이미지 저장에 성공했습니다."));
+                .andExpect(status().isOk());
 
     }
 
@@ -173,14 +238,13 @@ public class ProductControllerTest {
         long productId = 1L;
 
         //when: 삭제로직 실행
-        ResultActions resultActions = mockMvc.perform(delete("/shopping/delete/" + productId)
+        ResultActions resultActions = mockMvc.perform(delete("/shopping/" + productId)
                         .contentType(MediaType.APPLICATION_JSON));
 
 
         // then: 응답코드 200
         resultActions
-                .andExpect(status().isOk())
-                .andExpect(content().string("상품이 삭제되었습니다"));
+                .andExpect(status().isOk());
     }
 
     // 수정을 위해 기존 데이터 가져오기 테스트
@@ -188,7 +252,7 @@ public class ProductControllerTest {
     public void testGetUpdateProduct() throws Exception {
         // given
         long productId = 3L;
-        String url = "/shopping/update/"+ productId;
+        String url = "/shopping/"+ productId;
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -198,8 +262,7 @@ public class ProductControllerTest {
 
         // then : 응답코드 200
         resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.price").value(40000)); // 가격은 40000
+                .andExpect(status().isOk());
     }
 
     // 수정 로직 테스트
@@ -208,7 +271,7 @@ public class ProductControllerTest {
     public void testUpdateProduct() throws Exception {
         // given : fixture 및 url 세팅
         long productId = 3L;
-        String url = "/shopping/update/"+ productId;
+        String url = "/shopping/"+ productId;
 
         // 업데이트할 상품 정보
         ProductUpdateRequestDTO requestDTO = new ProductUpdateRequestDTO();
@@ -238,18 +301,33 @@ public class ProductControllerTest {
     public void testDeleteImage() throws Exception {
         // given : fixture 및 url 세팅
         long productImageId = 2L;
-        String url = "/shopping/delete/img/" + productImageId;
+        String url = "/shopping/img/" + productImageId;
 
         // when: DELETE 요청으로 이미지 삭제 수행
         ResultActions resultActions = mockMvc.perform(delete(url)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                        .contentType(MediaType.APPLICATION_JSON));
 
         // then: 응답코드 200
         resultActions.andExpect(status().isOk());
     }
 
+    // 상품의 재고 수정 테스트
+    @Test
+    public void updateProductStockTest() throws Exception {
+        // given: 테스트 데이터 설정
+        Long productId = 1L;
+        ProductStockUpdateRequestDTO requestDTO = new ProductStockUpdateRequestDTO();
+        // requestDTO에 필요한 데이터 설정
 
+        // when: 컨트롤러 메서드 호출
+        ResultActions resultActions = mockMvc.perform(post("/shopping/stock/{productId}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"productId\": 1, \"stockQuantity\": 10}")); // JSON 문자열 직접 지정
+
+        resultActions
+                .andExpect(status().isOk());
+
+    }
 
 
 }
@@ -257,37 +335,30 @@ public class ProductControllerTest {
 ///*Dummy Data input query (TEST DB ONLY)*/
 //INSERT INTO product (category_id, product_name, thumbnail_url, price, stock_quantity, created_at, updated_at)
 //    VALUES
-//            (1, '찜닭', 'smartphone.jpg', 500000, 50, NOW(), NOW()),
-//        (2, '프로틴', 'tshirt.jpg', 20000, 100, NOW(), NOW()),
-//        (2, '영양제', 'jeans.jpg', 40000, 75, NOW(), NOW()),
-//        (3, '덤벨', 'blender.jpg', 80000, 30, NOW(), NOW()),
-//        (1, 'Chicken Breast', 'chicken_breast.jpg', 15000, 100, NOW(), NOW()),
-//        (1, 'Grilled Chicken', 'grilled_chicken.jpg', 18000, 80, NOW(), NOW()),
-//        (1, 'Chicken Nuggets', 'chicken_nuggets.jpg', 12000, 120, NOW(), NOW()),
-//        (2, 'Protein Powder', 'protein_powder.jpg', 30000, 150, NOW(), NOW()),
-//        (2, 'Energy Drink', 'energy_drink.jpg', 2500, 200, NOW(), NOW()),
-//        (3, 'Dumbbells', 'dumbbells.jpg', 50000, 50, NOW(), NOW());
+//            (1, '찜닭', '1.jpg', 500000, 50, NOW(), NOW()),
+//        (2, '프로틴', '2.jpg', 20000, 100, NOW(), NOW()),
+//        (2, '영양제', '3.jpg', 40000, 75, NOW(), NOW());
+//
+//        insert into shop_category(category_id, category_name)
+//        values
+//        (1, "닭가슴살"),
+//        (2, "음료/보충제"),
+//        (3, "운동용품");
 //
 //        INSERT INTO product_image (product_id, image_url) VALUES
 //        (1, 'product1_image1.jpg'),
 //        (1, 'product1_image2.jpg'),
-//        (2, 'product2_image1.jpg'),
-//        (3, 'product3_image1.jpg'),
-//        (3, 'product3_image2.jpg'),
-//        (3, 'product3_image3.jpg'),
-//        (4, 'product4_image1.jpg');
+//        (2, 'product2_image1.jpg');
 //
 //        INSERT INTO review (user_id, product_id, rating, comment, created_at, updated_at)
 //        VALUES
 //        (1, 1, 5, '맛있어요!', NOW(), NOW()),
 //        (2, 1, 4, '괜찮아요', NOW(), NOW()),
-//        (3, 2, 5, '좋아요', NOW(), NOW()),
-//        (4, 3, 3, '별로에요', NOW(), NOW()),
-//        (1, 4, 4, '운동하기 좋아요', NOW(), NOW());
+//        (3, 2, 5, '좋아요', NOW(), NOW());
 //
 //        INSERT INTO users (email, password, nickname, point, image_url, created_at, updated_at, is_admin)
 //        VALUES
 //        ('user1@example.com', 'password1', 'user1', 1000, 'user1.jpg', NOW(), NOW(), false),
 //        ('user2@example.com', 'password2', 'user2', 1500, 'user2.jpg', NOW(), NOW(), false),
 //        ('user3@example.com', 'password3', 'user3', 5000, 'user3.jpg', NOW(), NOW(), false),
-//        ('user4@example.com', 'password4', 'user4', 1000, 'user4.jpg', NOW(), NOW(), false);
+

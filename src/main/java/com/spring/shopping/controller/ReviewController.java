@@ -53,13 +53,13 @@ public class ReviewController {
     // 리뷰 생성
     @PostMapping("/create")
     public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) {
-        try {
+//        try {
             // ReviewDTO를 사용하여 리뷰를 생성하고 반환
             ReviewDTO createdReview = reviewService.createReview(reviewDTO);
             return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            // 사용자나 제품을 찾을 수 없는 경우 예외 처리
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        } catch (IllegalArgumentException e) {
+//            // 사용자나 제품을 찾을 수 없는 경우 예외 처리
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } 예외처리 -> 서비스레이어에서 처리하도록 수정함
     }
 }

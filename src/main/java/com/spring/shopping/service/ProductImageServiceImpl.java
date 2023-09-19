@@ -1,5 +1,7 @@
 package com.spring.shopping.service;
 
+import com.spring.exception.CustomException;
+import com.spring.exception.ExceptionCode;
 import com.spring.shopping.entity.ProductImage;
 import com.spring.shopping.repository.ProductImageRepository;
 import com.spring.shopping.repository.ProductRepository;
@@ -26,7 +28,7 @@ public class ProductImageServiceImpl implements ProductImageService{
     public void deleteImageById(Long imageId) {
         // 이미지 ID를 사용하여 데이터베이스에서 해당 이미지를 조회하고 삭제하는 로직
         ProductImage image = productImageRepository.findById(imageId)
-                .orElseThrow(() -> new IllegalArgumentException("Image not found with ID: " + imageId));
+                .orElseThrow(() -> new CustomException(ExceptionCode.IMAGE_ID_NOT_FOUND));
 
         // 이미지 삭제
         productImageRepository.delete(image);
