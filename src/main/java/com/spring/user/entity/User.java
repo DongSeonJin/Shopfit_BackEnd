@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
     @Column(name = "nickname")
     @Pattern(regexp = "^[가-힣a-zA-Z0-9]*$", message = "잘못된 닉네임 형식입니다.")
-    @Size(min = 3, max = 7, message = "닉네임은 최소 3글자, 최대 7글자까지 설정해주세요.")
+    @Size(min = 3, max = 10, message = "닉네임은 최소 3글자, 최대 10글자까지 설정해주세요.")
     private String nickname;
 
     @Column(name = "point")

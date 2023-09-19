@@ -15,10 +15,12 @@ public class ReplyResponseDTO {
     private long replyId;
     private String content;
     private String nickname;
+    private String profileImage;
 
     public ReplyResponseDTO(Reply reply) {
         this.replyId = reply.getReplyId();
         this.content = reply.getContent();
         this.nickname = reply.getUser().getNickname();
+        this.profileImage = reply.getUser().getImageUrl();
     }
 }
