@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService{
     //  TransactionRequiredException이 발생합니다. if문 내부에 토큰 삭제구문이 있으므로 transactional 걸어줘야함.
     @Transactional
     @Override
-    public TokenResponseDTO login(LoginRequestDTO loginRequest) {
+    public LoginResponseDTO login(LoginRequestDTO loginRequest) {
         // 폼에서 입력한 로그인 아이디를 이용해 DB에 저장된 전체 정보 얻어오기
         User userInfo = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(()
                 -> new CustomException(ExceptionCode.USER_NOT_FOUND));
@@ -108,12 +108,25 @@ public class UserServiceImpl implements UserService{
             refreshTokenRepository.save(existingToken.orElse(newRefreshToken).update(newRefreshToken.getRefreshToken()));
                                         // null이라면 new토큰 저장             // 이미 있다면 업데이트후 저장
 
+            System.out.println("DB에 저장되는 newRefreshToken값 :" + newRefreshToken.getRefreshToken());
+
+            System.out.println("react에 보내주는 token 값 : " + refreshToken);
+
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO().builder()
+                                                    .accessToken(accessToken)
+                                                    .refreshToken(refreshToken)
+                                                    .authority(String.valueOf(userInfo.getAuthority()))
+                                                    .userId(userInfo.getUserId())
+                                                    .email(userInfo.getEmail())
+                                                    .nickname(userInfo.getNickname())
+                                                    .build();
+
 
 
             // accessToken과 refreshToken 둘다 저장, user정보도 넘김
-            return new TokenResponseDTO(accessToken, refreshToken, userInfo);
+            return loginResponseDTO;
         } else {
-            throw new IllegalArgumentException("login failed");
+            throw new IllegalArgumentException("이메일 또는 비밀번호를 확인해주세요.");
         }
     }
 
