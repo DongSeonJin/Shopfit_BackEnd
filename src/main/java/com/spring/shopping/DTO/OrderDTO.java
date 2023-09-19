@@ -22,7 +22,7 @@ public class OrderDTO {
     private LocalDateTime orderDate;
     private String orderStatus;
 
-    private List<OrderProduct> orderProducts; // 리스트로 주문 상품들을 관리
+    private List<OrderProductDTO> orderProducts; // 리스트로 주문 상품들을 관리
 
 
 }
