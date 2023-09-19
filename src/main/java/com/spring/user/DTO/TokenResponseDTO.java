@@ -10,11 +10,5 @@ public class TokenResponseDTO {
 
     private String accessToken;
     private String refreshToken;
-    private User user;
 
-    public TokenResponseDTO(User user){
-        this.accessToken = getAccessToken();
-        this.refreshToken = getRefreshToken();
-        this.user = getUser();
-    }
 }

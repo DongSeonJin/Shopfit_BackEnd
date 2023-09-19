@@ -28,7 +28,7 @@ public class TokenProvider {
     public String generateRefreshToken(User user, Duration expiredAt){ // 리프레시 토큰 생성
 
         Date now = new Date();
-        return makeToken(new Date(now.getTime() + expiredAt.toDays()), user);
+        return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
     }
 
     private String makeToken(Date expiry, User user){

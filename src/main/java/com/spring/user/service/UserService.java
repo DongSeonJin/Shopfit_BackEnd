@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     void signup(AddUserRequestDTO dto);
 
-    TokenResponseDTO login(LoginRequestDTO loginRequestDTO);
+    LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
     User createUser(User user);
     List<User> getAllUsers();
 

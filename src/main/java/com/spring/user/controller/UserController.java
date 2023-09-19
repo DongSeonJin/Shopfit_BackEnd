@@ -29,7 +29,6 @@ public class UserController {
     private final UserServiceImpl userService;
 
     private final UserDetailService userDetailService;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final TokenProvider tokenProvider;
@@ -79,19 +78,19 @@ public class UserController {
 //
 //    }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(HttpServletRequest request, HttpServletResponse response){
-        new SecurityContextLogoutHandler().logout(request, response,
-                SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/login";
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken,
+                                         @RequestBody String refreshToken){
+            userService.logout(accessToken, refreshToken);
+        return ResponseEntity.ok("로그아웃 되었습니다.");
     }
 
 
      @PostMapping("/login")
      public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
-        TokenResponseDTO tokenResponseDTO = userService.login(loginRequest);
+        LoginResponseDTO loginResponseDTO = userService.login(loginRequest);
 
-        return ResponseEntity.ok(tokenResponseDTO);
+        return ResponseEntity.ok(loginResponseDTO);
      }
 
 
