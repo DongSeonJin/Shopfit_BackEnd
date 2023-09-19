@@ -24,7 +24,7 @@ public enum ExceptionCode { // 예외 발생시, body에 실어 날려줄 상태
     ORDER_PRODUCT_NOT_FOUND(404, "SHOP_008", "주어진 order로 주문상품을 찾을 수 없습니다."),
     PRODUCT_CAN_NOT_BE_NULL(400, "SHOP_009", "상품은 null이 될 수 없습니다."),
     ORDER_CAN_NOT_BE_NULL(400, "SHOP_010", "주문은 null이 될 수 없습니다."),
-    COUPON_ISSUANCE_EXCEPTION(403,"SHOP_011", "쿠폰 발급 한도를 초과하였습니다."),
+    COUPON_ISSUANCE_EXCEPTION(403,"SHOP_011", "준비된 쿠폰이 모두 소진되었습니다."),
     PRODUCT_SAVE_EXCEPTION(500, "SHOP_012", "상품 저장 중 예외가 발생하였습니다."),
     STOCK_UPDATE_EXCEPTION(500, "SHOP_013", "상품 재고 수정 중 예외가 발생하였습니다."),
     STOCK_QUANTITY_INVALID(400, "SHOP_014", "재고수량은 음수일 수 없습니다."),

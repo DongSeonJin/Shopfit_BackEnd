@@ -201,14 +201,10 @@ public class UserServiceImpl implements UserService{
     public UserPointResponseDTO getUserPointById(Long userId) {
         // 유저 ID로 유저 정보를 조회
         User user = userRepository.findById(userId)
-
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
-
-
 
         // 조회한 유저 정보에서 포인트를 가져와서 DTO에 담아 반환
         return new UserPointResponseDTO(user.getUserId(), user.getPoint());
-
     }
 
     // 유저 포인트 사용 시 포인트 수정
