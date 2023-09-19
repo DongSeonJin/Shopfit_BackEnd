@@ -24,9 +24,6 @@ public class ReplyServiceImpl implements ReplyService {
     public List<Reply> findAllByPostId(long postId) {
         List<Reply> replyList = replyRepository.findAllByPost_PostId(postId);
 
-        if (replyList.isEmpty()) {
-            throw new CustomException(ExceptionCode.POST_NOT_FOUND);
-        }
         return replyList;
     }
 
