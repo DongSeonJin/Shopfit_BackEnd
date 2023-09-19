@@ -3,10 +3,13 @@ package com.spring.shopping.service;
 import com.spring.exception.CustomException;
 import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.OrderDTO;
+import com.spring.shopping.DTO.OrderProductDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
+import com.spring.shopping.entity.Product;
 import com.spring.shopping.repository.OrderProductRepository;
 import com.spring.shopping.repository.OrderRepository;
+import com.spring.shopping.repository.ProductRepository;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,15 +28,18 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final OrderProductRepository orderProductRepository;
+    private final ProductRepository productRepository;
 
     // 상품 구매 시 적립되는 포인트 계산을 위한 상수(10%)
     private static final double POINT_PERCENTAGE = 0.10;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, OrderProductRepository orderProductRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository,
+                            OrderProductRepository orderProductRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.orderProductRepository = orderProductRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -137,13 +143,8 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // 주문 상품 생성 및 연결
         List<OrderProduct> orderProducts = orderDTO.getOrderProducts().stream()
-                .map(orderProductDTO -> OrderProduct.builder()
-                        .order(savedOrder)
-                        .product(orderProductDTO.getProduct())
-                        .quantity(orderProductDTO.getQuantity())
-                        .build())
+                .map(orderProductDTO -> convertToOrderProduct(orderProductDTO, savedOrder))
                 .collect(Collectors.toList());
 
         orderProductRepository.saveAll(orderProducts);
@@ -204,6 +205,17 @@ public class OrderServiceImpl implements OrderService {
                 .phoneNumber(order.getPhoneNumber())
                 .orderDate(order.getOrderDate())
                 .orderStatus(order.getOrderStatus())
+                .build();
+    }
+
+    public OrderProduct convertToOrderProduct(OrderProductDTO dto, Order savedOrder) {
+        Product product = productRepository.findById(dto.getProductId())
+                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
+
+        return OrderProduct.builder()
+                .order(savedOrder)
+                .product(product) // productService는 ProductService 클래스로 가정
+                .quantity(dto.getQuantity())
                 .build();
     }
 
