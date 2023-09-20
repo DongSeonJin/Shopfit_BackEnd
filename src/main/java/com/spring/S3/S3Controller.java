@@ -63,8 +63,8 @@ public class S3Controller {
             return "?type=f&w=480&h=480&align=4&faceopt=true&quality=100&anilimit=100";
         } else if (option == 2 ){  //2. 상품 상세이미지 업로드 (이미지 최적화 적용 -> 가로기준(720) 변경, 강제확대 설정)
             return "?type=w&w=720&quality=100&extopt=3&anilimit=100";
-        } else if (option == 3) { //3. 프로필 이미지 업로드 (이미지 최적화 적용 -> 리사이즈 & 크롭 200*200)
-            return "?type=f&w=200&h=200&quality=100&align=4&anilimit=100";
+        } else if (option == 3) { //3. 프로필 이미지 업로드 (이미지 최적화 적용 -> 리사이즈 & 크롭 350*350)
+            return "?type=f&w=350&h=350&quality=100&align=4&anilimit=100";
         } else {
             throw new IllegalArgumentException("잘못된 이미지 최적화 옵션입니다.");
         }
