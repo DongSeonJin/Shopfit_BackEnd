@@ -4,16 +4,18 @@ import com.spring.user.service.UserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig {
 
     //등록할 시큐리티 서비스 멤버변수로 작성하기
@@ -32,11 +34,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
         return http
                 .authorizeHttpRequests(authorization -> {authorization // 인증, 인가 설정
-                        //.requestMatchers("/login", "/signup", "/user")
-                        .anyRequest() //모든 요청을
-                        .permitAll(); // 허가한다.
-
-                        //.authenticated();
+                        .requestMatchers(HttpMethod.DELETE, "/news/**").hasRole("ADMIN")
+//                        .requestMatchers("/shopping/update/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/shopping").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/post/like/**").hasRole("USER")
+                        .anyRequest()
+                        .permitAll();
                         })
 
                 .formLogin(formLoginConfig -> {formLoginConfig // 폼 기반 로그인 설정
