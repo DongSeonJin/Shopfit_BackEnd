@@ -77,7 +77,7 @@ public class ProductController {
     }
 
         // 개별 상품 상세 조회
-        @GetMapping("/products/{productId}")
+        @GetMapping("/detail/{productId}")
         public ResponseEntity<ProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
             ProductDetailResponseDTO productDetail = productService.getProductDetailById(productId);
             return ResponseEntity.ok(productDetail);
@@ -133,7 +133,7 @@ public class ProductController {
 
 
     // 수정을 위해 기존 데이터 가져오기
-    @GetMapping("/update/{productId}")
+    @GetMapping("/updatePage/{productId}")
     public ResponseEntity<ProductUpdateResponseDTO> getUpdateProduct(@PathVariable long productId) {
         Product product = productService.getProductInfo(productId);
 //        if(product == null) {
