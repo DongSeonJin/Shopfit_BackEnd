@@ -51,6 +51,11 @@ public class WebSecurityConfig {
                                     .disable(); // 세션 X 토큰기반 이므로 폼로그인 막아야함
                         })
 
+                .logout(logoutConfig -> {logoutConfig
+                        .disable();
+                })
+
+
                 .sessionManagement(sessionConfig ->{
                     sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })

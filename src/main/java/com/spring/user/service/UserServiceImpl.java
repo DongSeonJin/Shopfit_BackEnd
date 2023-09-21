@@ -128,11 +128,15 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     public void logout(String accessToken, String refreshToken) {
+        System.out.println("엑세스토큰: " + accessToken);
+        System.out.println("리프레시토큰 : " + refreshToken);
+        refreshToken = refreshToken.replace("\"", ""); // remove double quotes
         if(!tokenProvider.validToken(accessToken)){
             throw new IllegalArgumentException("로그아웃 : 유효하지 않은 토큰입니다.");
         }
 
         RefreshToken deleteRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+
 
         if (deleteRefreshToken == null) {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
