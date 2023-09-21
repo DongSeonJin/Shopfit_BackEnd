@@ -76,7 +76,6 @@ public class UserServiceImpl implements UserService{
                 .build()
         );
 
-        System.out.println(dto.getAuthority());
     }
 
     //  persist, merge, remove와 같은 JPA 연산을 트랜잭션이 활성화된 상태가 아닌 곳에서 호출할 때
@@ -108,9 +107,6 @@ public class UserServiceImpl implements UserService{
             refreshTokenRepository.save(existingToken.orElse(newRefreshToken).update(newRefreshToken.getRefreshToken()));
                                         // null이라면 new토큰 저장             // 이미 있다면 업데이트후 저장
 
-            System.out.println("DB에 저장되는 newRefreshToken값 :" + newRefreshToken.getRefreshToken());
-
-            System.out.println("react에 보내주는 token 값 : " + refreshToken);
 
             LoginResponseDTO loginResponseDTO = new LoginResponseDTO().builder()
                                                     .accessToken(accessToken)

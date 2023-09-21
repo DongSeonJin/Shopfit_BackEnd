@@ -1,5 +1,6 @@
 package com.spring.user.config.jwt;
 
+import com.spring.user.entity.Authority;
 import com.spring.user.entity.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class TokenProvider {
                 .setExpiration(expiry) //만기시각
                 .setSubject(user.getEmail()) // 기본적으로는 아이디를 줍니다
                 .claim("id", user.getUserId()) // 클레임에는 PK제공
+                .claim("role", user.getAuthority().getKey())
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey()) // 알고리즘과 비밀키 같이입력
                 .compact(); // 생성메서드는 빌더패턴이지만 .build()가 아닌 .compact();
     }
@@ -59,8 +61,11 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String token){ // 토큰 입력시 인증정보 읽어오기
         Claims claims = getClaims(token); // getClaims()는 아래에 추가로 작성할것임
+        // 토큰에 권한정보를 담았으므로 권한정보를 빼오는 로직.
+        String roleKey = claims.get("role", String.class); // "role" 클레임에서 권한 정보를 가져옵니다.
+
         Set<SimpleGrantedAuthority> authorities =
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+                Collections.singleton(new SimpleGrantedAuthority(roleKey));
 
         return new UsernamePasswordAuthenticationToken(
                 new org.springframework.security.core.userdetails.User(claims.getSubject(),
