@@ -24,4 +24,8 @@ public class LoginResponseDTO {
         this.nickname = user.getNickname();
         this.authority = String.valueOf(user.getAuthority());
     }
+
+
+    public LoginResponseDTO(User user, String refreshToken, String accessToken) {
+    }
 }

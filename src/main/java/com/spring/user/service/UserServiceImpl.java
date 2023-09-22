@@ -43,6 +43,8 @@ public class UserServiceImpl implements UserService{
 
 
 
+
+
     @Override
     public void signup(AddUserRequestDTO dto) { // 회원 email, password를 저장하고 password는 암호화
 
@@ -128,14 +130,16 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     public void logout(String accessToken, String refreshToken) {
+        refreshToken = refreshToken.replace("\"", ""); // ""로 감싸져서 있어서 토큰 검증이안됨. 영문을모르겠음
         if(!tokenProvider.validToken(accessToken)){
-            throw new IllegalArgumentException("로그아웃 : 유효하지 않은 토큰입니다.");
+            throw new IllegalArgumentException("유효하지 않은 엑세스토큰입니다.");
         }
 
         RefreshToken deleteRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
 
+
         if (deleteRefreshToken == null) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new IllegalArgumentException("유효하지 않은 리프레시토큰입니다.");
         }else {
             refreshTokenRepository.deleteByRefreshToken(deleteRefreshToken.getRefreshToken());
         }
@@ -194,6 +198,11 @@ public class UserServiceImpl implements UserService{
                 .build();
 
         userRepository.save(updatingUser);
+    }
+
+    @Override
+    public LoginResponseDTO socialLogin(LoginResponseDTO loginResponseDTO) {
+        return null;
     }
 
     @Override
