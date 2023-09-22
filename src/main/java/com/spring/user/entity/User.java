@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Pattern(regexp = ".+@.+\\..+", message = "잘못된 이메일 형식입니다.")
     private String email;
 
-    @Column(name = "password", nullable = false, unique = true)
+    @Column(name = "password", unique = true)
     @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*./]*$", message = "잘못된 비밀번호 형식입니다.")
     @Size(min = 10, message = "비밀번호는 최소 10자 이상이여야 합니다.")
     private String password;

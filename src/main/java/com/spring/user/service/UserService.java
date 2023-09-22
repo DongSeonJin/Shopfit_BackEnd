@@ -8,6 +8,7 @@ import java.util.List;
 public interface UserService {
     void signup(AddUserRequestDTO dto);
 
+
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
     User createUser(User user);
     List<User> getAllUsers();
@@ -18,11 +19,15 @@ public interface UserService {
 
     User getUserById(Long id);
     void updateUser(UserUpdateDTO userUpdateDTO);
+
+    LoginResponseDTO socialLogin(LoginResponseDTO loginResponseDTO);
     void deleteUser(Long id);
     UserPointResponseDTO getUserPointById(Long userId);
     boolean usePoints(User user, int usedPoints);
     boolean authenticateUser(LoginRequestDTO loginRequest);
 
     boolean isNicknameAvailable(String nickname);
+
+
 
 }

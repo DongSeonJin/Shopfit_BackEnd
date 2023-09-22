@@ -1,9 +1,11 @@
 package com.spring.user.controller;
 
+import com.mysql.cj.log.Log;
 import com.spring.exception.CustomException;
 import com.spring.exception.ExceptionCode;
 import com.spring.user.DTO.*;
 import com.spring.user.config.jwt.TokenProvider;
+import com.spring.user.config.ouath.DecodeSocialLoginToken;
 import com.spring.user.entity.Authority;
 import com.spring.user.entity.User;
 import com.spring.user.exception.UserIdNotFoundException;
@@ -19,6 +21,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.Duration;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -33,50 +37,16 @@ public class UserController {
 
     private final TokenProvider tokenProvider;
 
+    private final DecodeSocialLoginToken decodeSocialLoginToken;
 
 
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public ResponseEntity<String> signup(@RequestBody AddUserRequestDTO requestDTO){
-//        User userEmail = userService.getUserByEmail(requestDTO.getEmail()); // 존재하는 이메일인지 확인
-//        User userNickname = userService.getUserByNickname(requestDTO.getNickname());
-//
-//        String password = requestDTO.getPassword();
-//        String passwordCheck = requestDTO.getConfirmPassword();
-//
-//        requestDTO.setAuthority(Authority.valueOf("USER")); // 회원가입은 기본 USER
-//
-//        if(!password.equals(passwordCheck)){
-//            throw new CustomException(ExceptionCode.PASSWORD_WRONG);
-//        }
-//
-//        if(userEmail != null){
-//            throw new CustomException(ExceptionCode.EXIST_EMAIL);
-//        }
-//
-//        if(userNickname != null){
-//            throw new CustomException(ExceptionCode.EXIST_NICKNAME);
-//        }
-//
-//        User user = userService.signup(requestDTO);
-
         userService.signup(requestDTO); // 위 로직 전부 서비스레이어로 옮김
-
-
-
         return ResponseEntity.ok("회원가입 성공");
     }
 
-//    @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    public ResponseEntity<?> login(@RequestBody AddUserRequestDTO addUserRequestDTO){
-//        String requestEmail = addUserRequestDTO.getEmail();
-//        String requestPW = addUserRequestDTO.getPassword();
-//
-//        String userPW = userDetailService.loadUserByUsername(requestEmail).getPassword();
-//
-//        return ResponseEntity.ok("로그인 성공");
-//
-//    }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken,
@@ -91,6 +61,13 @@ public class UserController {
         LoginResponseDTO loginResponseDTO = userService.login(loginRequest);
 
         return ResponseEntity.ok(loginResponseDTO);
+     }
+
+     @PostMapping("/login/google")
+     public ResponseEntity<?> googleLogin(@RequestBody String token) throws GeneralSecurityException, IOException {
+         System.out.println("token은~~~~:" + token);
+
+         return ResponseEntity.ok(decodeSocialLoginToken.decodingToken(token));
      }
 
 
