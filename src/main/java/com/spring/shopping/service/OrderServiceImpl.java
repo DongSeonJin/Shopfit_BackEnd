@@ -157,28 +157,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    // 결제금액 계산 - 포인트/쿠폰 추가 후 수정 예정
-    @Override
-    public Long calculateActualOrderAmount(Order order) {
-        List<OrderProduct> orderProducts = order.getOrderProducts();
-        Long totalAmount = 0L;
-
-        for (OrderProduct orderProduct : orderProducts) {
-            Long productPrice = orderProduct.getProduct().getPrice();
-            Long quantity = orderProduct.getQuantity();
-            totalAmount += productPrice * quantity;
-        }
-        // 배송비 추가
-        Long shippingCost = calculateShippingCost(order.getAddress()); // 배송비 계산 메서드
-        totalAmount += shippingCost;
-
-        // 포인트 사용
-        // Long pointsUsed = order.getPointsUsed(); // 주문에서 사용한 포인트
-        // totalAmount -= pointsUsed;
-
-        return totalAmount;
-    }
-
     // 배송비 계산, 고정
     @Override
     public Long calculateShippingCost(String address) {
