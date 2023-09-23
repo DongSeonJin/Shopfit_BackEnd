@@ -32,6 +32,9 @@ public class UserServiceImpl implements UserService{
 
     private final TokenProvider tokenProvider;
 
+    public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(7); // 이틀(리프레시 토큰의 유효기간)
+    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2); // 시간(억세스 토큰의 유효기간)
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository,
                            BCryptPasswordEncoder bCryptPasswordEncoder, TokenProvider tokenProvider) {
@@ -96,8 +99,8 @@ public class UserServiceImpl implements UserService{
                                             // 폼에서 날려준 평문       // 디비에 들어있던 암호문
         if(bCryptPasswordEncoder.matches(loginRequest.getPassword(), userInfo.getPassword())){
 
-            String accessToken = tokenProvider.generateAccessToken(userInfo, Duration.ofHours(2));//2시간동안 유효한 엑세스토큰 발급
-            String refreshToken = tokenProvider.generateRefreshToken(userInfo, Duration.ofDays(7));//7일동안 유효한 리프레시토큰 발급
+            String accessToken = tokenProvider.generateAccessToken(userInfo, ACCESS_TOKEN_DURATION);//2시간동안 유효한 엑세스토큰 발급
+            String refreshToken = tokenProvider.generateRefreshToken(userInfo, REFRESH_TOKEN_DURATION);//7일동안 유효한 리프레시토큰 발급
 
 
             //새로운 리프레시토큰 refreshToken 엔터티 객체에 담기

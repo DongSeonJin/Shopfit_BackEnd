@@ -22,6 +22,9 @@ public class TokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
+    public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(7); // 이틀(리프레시 토큰의 유효기간)
+    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2); // 시간(억세스 토큰의 유효기간)
+
     public RefreshTokenRotationDTO createNewAccessToken(String refreshToken) {
         // !!!! 리프레시 토큰도 JWT스펙으로 만들어지기 때문에, TokenProvider에 의한 유효성 검증이 가능합니다. !!!!
         if(!tokenProvider.validToken(refreshToken)){
@@ -43,7 +46,7 @@ public class TokenService {
 //        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_FOUND));
         //유효하다면 refreshToken과 accessToken 둘다 만들고 리턴
         String newRefreshToken = updateRefreshToken(user); //refreshToken은 DB도 갱신해야하므로 하단에 메서드 분리.
-        String newAccessToken = tokenProvider.generateAccessToken(user, Duration.ofHours(2));
+        String newAccessToken = tokenProvider.generateAccessToken(user, ACCESS_TOKEN_DURATION);
 
 
 
@@ -53,7 +56,7 @@ public class TokenService {
 
 
     public String updateRefreshToken(User userInfo){
-        String refreshToken = tokenProvider.generateRefreshToken(userInfo, Duration.ofDays(7));//7일동안 유효한 리프레시토큰 발급
+        String refreshToken = tokenProvider.generateRefreshToken(userInfo, REFRESH_TOKEN_DURATION);//7일동안 유효한 리프레시토큰 발급
 
 
         //새로운 리프레시토큰 refreshToken 엔터티 객체에 담기
