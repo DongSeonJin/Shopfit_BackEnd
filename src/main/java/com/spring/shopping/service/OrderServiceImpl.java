@@ -4,15 +4,16 @@ import com.spring.exception.CustomException;
 import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.OrderDTO;
 import com.spring.shopping.DTO.OrderProductDTO;
+import com.spring.shopping.DTO.PaymentDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.shopping.entity.OrderProduct;
 import com.spring.shopping.entity.Product;
+import com.spring.shopping.repository.CouponRepository;
 import com.spring.shopping.repository.OrderProductRepository;
 import com.spring.shopping.repository.OrderRepository;
 import com.spring.shopping.repository.ProductRepository;
 import com.spring.user.entity.User;
 import com.spring.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +31,19 @@ public class OrderServiceImpl implements OrderService {
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
 
+    private final CouponRepository couponRepository;
+
     // 상품 구매 시 적립되는 포인트 계산을 위한 상수(10%)
     private static final double POINT_PERCENTAGE = 0.10;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository,
-                            OrderProductRepository orderProductRepository, ProductRepository productRepository) {
+                            OrderProductRepository orderProductRepository, ProductRepository productRepository, CouponRepository couponRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.orderProductRepository = orderProductRepository;
         this.productRepository = productRepository;
+        this.couponRepository = couponRepository;
     }
 
     @Override
@@ -178,7 +182,35 @@ public class OrderServiceImpl implements OrderService {
     // 배송비 계산, 고정
     @Override
     public Long calculateShippingCost(String address) {
-        return 3000L;                                           // 고정 배송비 3000원
+        return 3000L;                                     // 고정 배송비 3000원
+    }
+
+    // 주문금액 검증
+    @Override
+    public boolean verifyPaymentAmount(PaymentDTO paymentDTO) {
+        // 주문 정보를 조회하여 totalPrice를 가져옵니다.
+        Optional<Order> orderOptional = orderRepository.findByOrderId(paymentDTO.getOrderId());
+        if (orderOptional.isPresent()) {
+            Long totalPrice = orderOptional.get().getTotalPrice();
+            Long paidAmount = paymentDTO.getPaidAmount();
+            Long usingPoint = 0L;
+            Long couponDiscount = 0L;
+            Long shippingCost = 3000L;
+
+            if (paymentDTO.getUsingPoint() != null) {           // couponId가 null이 아닐 때,
+                usingPoint = paymentDTO.getUsingPoint();
+            }
+
+            if (paymentDTO.getCouponId() != null) {             // couponId가 null이 아닐 때,
+                couponDiscount = couponRepository.findDiscountValueByCouponId(paymentDTO.getCouponId()).orElse(0L);
+            }
+
+            return totalPrice + shippingCost == paidAmount + usingPoint + couponDiscount;
+
+        } else {
+            // 주문 정보가 없는 경우에는 검증 실패
+            return false;
+        }
     }
 
 
