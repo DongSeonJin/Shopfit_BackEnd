@@ -10,7 +10,9 @@
 <details>
 <summary><b> DB 설계</b></summary>
 
-  
+
+  ![image](https://github.com/DongSeonJin/PJ-backend/assets/129161150/9b56c37f-6a12-48c7-9c1a-5cb9ffb8e2ff)
+
 </details>
 
 ---
