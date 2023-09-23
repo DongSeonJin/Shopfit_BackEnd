@@ -1,10 +1,17 @@
 # #FIT
-![#fit_logo](https://github.com/KwonAYeong/KwonAYeong/assets/129161150/42aa0ef9-694a-474c-b0d7-1ba8d856fdac)
+<img src="https://jrbttqbtrjca19387408.cdn.ntruss.com/%23fit_logo.gif?type=m&w=200&h=200&quality=100&anilimit=100" align="center">
+
 ---
 
 ### 💪🏻 프로젝트 소개
 건강한 삶을 위해 운동, 올바른 식단 등에 대한 관심이 늘어남에 따라 이러한 정보들을 한번에 제공하는 서비스의 필요성을 느끼게 되었습니다. <br />
 따라서 헬스와 관련된 다양한 기능을 제공하는 웹 어플리케이션을 만들게 되었습니다.
+
+<details>
+<summary><b> DB 설계</b></summary>
+
+  
+</details>
 
 ---
 
