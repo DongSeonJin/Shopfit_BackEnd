@@ -2,6 +2,7 @@ package com.spring.shopping.service;
 
 import com.spring.shopping.DTO.OrderDTO;
 import com.spring.shopping.DTO.OrderProductDTO;
+import com.spring.shopping.DTO.PaymentDTO;
 import com.spring.shopping.entity.Order;
 import com.spring.user.entity.User;
 
@@ -21,11 +22,11 @@ public interface OrderService {
 
     OrderDTO createOrder(OrderDTO orderDTO);
 
-    // 주문금액 결제금액 비교
-    Long calculateActualOrderAmount(Order order);
-
     // 배송비; 고정
     Long calculateShippingCost(String address);
 
     boolean deleteOrder(Long orderId);
+
+    // 주문금액 검증
+    boolean verifyPaymentAmount(PaymentDTO paymentDTO);
 }
