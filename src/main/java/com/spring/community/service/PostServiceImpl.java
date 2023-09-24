@@ -2,13 +2,11 @@ package com.spring.community.service;
 
 import com.spring.community.DTO.*;
 import com.spring.community.entity.Post;
-import com.spring.community.exception.PostIdNotFoundException;
 import com.spring.community.repository.DynamicLikeRepository;
 import com.spring.community.repository.PostJPARepository;
 import com.spring.community.repository.ReplyRepository;
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
-import org.openqa.selenium.remote.ErrorCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
@@ -40,7 +38,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public IndividualPostResponseDTO getPostById(Long postId) {
         Post post = postJPARepository.findById(postId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.POST_NOT_FOUND)); // enum 활용 예시
+                .orElseThrow(() -> new BusinessException(ExceptionCode.POST_NOT_FOUND)); // enum 활용 예시
 
         return new IndividualPostResponseDTO(post);
     }
@@ -89,7 +87,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public void deletePostById(Long id) {
         if (!postJPARepository.existsById(id)) {
-            throw new CustomException(ExceptionCode.POST_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.POST_NOT_FOUND);
         }
         postJPARepository.deleteById(id);
     }
@@ -103,7 +101,7 @@ public class PostServiceImpl implements PostService{
 
         // 해당 postId 게시글 없으면 예외처리
         if (!optionalPost.isPresent()) {
-            throw new CustomException(ExceptionCode.POST_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.POST_NOT_FOUND);
         }
 
         // 수정 전 게시글 가져오기

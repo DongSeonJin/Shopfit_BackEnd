@@ -1,7 +1,6 @@
 package com.spring.shopping.service;
 
-import com.spring.exception.CustomException;
-import com.spring.exception.ExceptionCode;
+import com.spring.exception.BusinessException;
 import com.spring.shopping.DTO.CouponDTO;
 import com.spring.shopping.entity.Coupon;
 import com.spring.shopping.repository.CouponCountRepository;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -75,7 +73,7 @@ public class CouponServiceTest {
         when(couponCountRepository.increment()).thenReturn(101L);
 
         // 예외를 기대하는 경우
-        assertThrows(CustomException.class, () -> couponService.confirm(1L));
+        assertThrows(BusinessException.class, () -> couponService.confirm(1L));
     }
 
     @Test

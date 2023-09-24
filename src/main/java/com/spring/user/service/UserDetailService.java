@@ -1,6 +1,6 @@
 package com.spring.user.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,6 @@ public class UserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         return userRepository.findByEmail(email) // 로그인 아이디 입력되면 회원정보 리턴
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
     }
 }

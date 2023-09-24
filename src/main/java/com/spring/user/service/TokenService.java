@@ -1,6 +1,6 @@
 package com.spring.user.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.user.DTO.RefreshTokenRotationDTO;
 import com.spring.user.config.jwt.TokenProvider;
@@ -28,10 +28,9 @@ public class TokenService {
     public RefreshTokenRotationDTO createNewAccessToken(String refreshToken) {
         // !!!! 리프레시 토큰도 JWT스펙으로 만들어지기 때문에, TokenProvider에 의한 유효성 검증이 가능합니다. !!!!
         if(!tokenProvider.validToken(refreshToken)){
-            throw new CustomException(ExceptionCode.TOKEN_NOT_VALID); // 재로그인 요청 메시지 전달
+            throw new BusinessException(ExceptionCode.TOKEN_NOT_VALID); // 재로그인 요청 메시지 전달
         }// 유효하지 않은 토큰이면 예외 발생후 종료
         // 리프레시토큰이 유효하지 않다면, 다시 발급해줘야하지만 로그인 로직에 발급 기능이 있고, 재로그인을 요구한다면 필수는 아니다.
-        System.out.println("refreshToken : " + refreshToken);
 
         Long userId = refreshTokenRepository.findUserIdByRefreshToken(refreshToken);
 

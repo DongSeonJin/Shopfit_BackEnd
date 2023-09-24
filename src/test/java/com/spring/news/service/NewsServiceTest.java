@@ -1,6 +1,6 @@
 package com.spring.news.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.news.entity.News;
 import com.spring.news.repository.NewsRepository;
 import org.junit.jupiter.api.Test;
@@ -69,7 +69,7 @@ public class  NewsServiceTest {
         newsService.deleteNewsById(newsId);
 
         // then: 삭제된 id로 조회 시 CustomException 예외 발생
-        assertThrows(CustomException.class, () -> newsService.getNewsById(newsId));
+        assertThrows(BusinessException.class, () -> newsService.getNewsById(newsId));
     }
 
 

@@ -1,6 +1,6 @@
 package com.spring.shopping.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.WishlistDTO;
 import com.spring.shopping.entity.Product;
@@ -35,9 +35,9 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public WishlistDTO addToWishlist(Long userId, Long productId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.USER_ID_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
 
         Wishlist wishlistItem = new Wishlist(user, product);
         wishlistRepository.save(wishlistItem);
@@ -48,7 +48,7 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public void removeFromWishlist(Long wishlistId) {
         if(wishlistId == null) {
-            throw new CustomException(ExceptionCode.WISHLIST_ID_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.WISHLIST_ID_NOT_FOUND);
         }
         wishlistRepository.deleteById(wishlistId);
     }
@@ -56,12 +56,12 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public WishlistDTO removeFromWishlist(Long userId, Long productId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.USER_ID_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
 
         Wishlist wishlistItem = wishlistRepository.findByUserAndProduct(user, product)
-                .orElseThrow(() -> new CustomException(ExceptionCode.WISHLIST_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.WISHLIST_NOT_FOUND));
 
         wishlistRepository.delete(wishlistItem);
         return convertToDTO(wishlistItem);

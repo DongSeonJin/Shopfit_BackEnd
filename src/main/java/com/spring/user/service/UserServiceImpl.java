@@ -1,6 +1,6 @@
 package com.spring.user.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.user.DTO.*;
 import com.spring.user.config.jwt.TokenProvider;
@@ -14,8 +14,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -60,15 +58,15 @@ public class UserServiceImpl implements UserService{
         dto.setAuthority(Authority.valueOf("USER")); // 회원가입은 기본 USER
 
         if(!password.equals(passwordCheck)){
-            throw new CustomException(ExceptionCode.PASSWORD_WRONG);
+            throw new BusinessException(ExceptionCode.PASSWORD_WRONG);
         }
 
         if(existEmail){
-            throw new CustomException(ExceptionCode.EXIST_EMAIL);
+            throw new BusinessException(ExceptionCode.EXIST_EMAIL);
         }
 
         if(userNickname != null){
-            throw new CustomException(ExceptionCode.EXIST_NICKNAME);
+            throw new BusinessException(ExceptionCode.EXIST_NICKNAME);
         }
 
 
@@ -90,7 +88,7 @@ public class UserServiceImpl implements UserService{
     public LoginResponseDTO login(LoginRequestDTO loginRequest) {
         // 폼에서 입력한 로그인 아이디를 이용해 DB에 저장된 전체 정보 얻어오기
         User userInfo = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(()
-                -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
 
         // 유저가 폼에서 날려주는 정보는 id랑 비번인데, 먼저 아이디를 통해 위에서 정보를 얻어오고
         // 비밀번호는 암호화 구문끼리 비교해야 하므로, 이 경우 bCryptEncoder의 .matchs(평문, 암호문) 를 이용하면
@@ -169,13 +167,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(()
-                -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
     }
 
     @Override
     public User getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(()
-                -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
 
         return user;
     }
@@ -187,7 +185,7 @@ public class UserServiceImpl implements UserService{
 
         User user = userRepository.findById(userUpdateDTO.getUserId())
 
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
 
         User updatingUser = User.builder()
                 .userId(userUpdateDTO.getUserId())
@@ -211,7 +209,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteUser(Long id) {
         User user = this.userRepository.findById(id).orElseThrow(
-                () -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                () -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
         this.userRepository.delete(user);
     }
 
@@ -241,7 +239,7 @@ public class UserServiceImpl implements UserService{
     public UserPointResponseDTO getUserPointById(Long userId) {
         // 유저 ID로 유저 정보를 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
 
         // 조회한 유저 정보에서 포인트를 가져와서 DTO에 담아 반환
         return new UserPointResponseDTO(user.getUserId(), user.getPoint());
@@ -253,7 +251,7 @@ public class UserServiceImpl implements UserService{
         int currentPoints = user.getPoint();
 
         if(currentPoints < usedPoints) {
-            throw new CustomException(ExceptionCode.INSUFFICIENT_POINT_EXCEPTION);
+            throw new BusinessException(ExceptionCode.INSUFFICIENT_POINT_EXCEPTION);
         }
 
         int updatedPoints = currentPoints - usedPoints;

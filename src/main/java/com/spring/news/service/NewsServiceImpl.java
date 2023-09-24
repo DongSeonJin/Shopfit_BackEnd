@@ -1,6 +1,6 @@
 package com.spring.news.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.news.entity.News;
 import com.spring.news.repository.NewsRepository;
@@ -46,7 +46,7 @@ public class NewsServiceImpl implements NewsService{
     @Override
     public News getNewsById(long newsId) {
         return newsRepository.findById(newsId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.NEWS_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.NEWS_ID_NOT_FOUND));
     }
 
     @Override
