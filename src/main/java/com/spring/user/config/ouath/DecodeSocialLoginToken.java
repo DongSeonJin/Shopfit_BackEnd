@@ -11,17 +11,19 @@ import com.spring.exception.ExceptionCode;
 import com.spring.user.DTO.LoginResponseDTO;
 import com.spring.user.config.jwt.TokenProvider;
 import com.spring.user.entity.Authority;
+import com.spring.user.entity.RefreshToken;
 import com.spring.user.entity.User;
+import com.spring.user.repository.RefreshTokenRepository;
 import com.spring.user.repository.UserRepository;
 import com.spring.user.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +35,13 @@ public class DecodeSocialLoginToken {
 
     private final TokenService tokenService;
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(7); // 이틀(리프레시 토큰의 유효기간)
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2); // 시간(억세스 토큰의 유효기간)
-    public static final String CLIENT_ID = "711393533645-css3t7bs3k4e5fhl3pnmgqn6nj6or42s.apps.googleusercontent.com";
+
+    @Value("${jwt.client_id}")
+    private String CLIENT_ID;
 
 
     public LoginResponseDTO decodingToken(String token) throws IOException, GeneralSecurityException {
@@ -69,17 +75,20 @@ public class DecodeSocialLoginToken {
                                 .nickname(name)
                                 .authority(Authority.USER)
                                 .build();
-                        userRepository.save(newUser);
-                        return newUser;
+                        newUser = userRepository.save(newUser);
+                        return newUser; // if문 리턴이 아닌, user객체에 newUser 할당.
                     });
 
-
+            // 엑세스 토큰 생성
+            String accessToken = tokenProvider.generateAccessToken(user, ACCESS_TOKEN_DURATION);
             // 리프레시토큰 생성 및 저장
             String refreshToken = tokenProvider.generateRefreshToken(user, REFRESH_TOKEN_DURATION);
-            // 리프레시토큰 이미 존재한다면 업데이트, 없다면 저장 함수
-            tokenService.updateRefreshToken(user);
-            // 엑세스 토큰 생성 및 저장
-            String accessToken = tokenProvider.generateAccessToken(user, ACCESS_TOKEN_DURATION);
+
+            RefreshToken newRefreshToken = new RefreshToken(user.getUserId(), refreshToken);
+            // 객체에 담아서 저장
+            refreshTokenRepository.save(newRefreshToken);
+
+
 
 
 
