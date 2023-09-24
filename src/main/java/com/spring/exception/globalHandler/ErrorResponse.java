@@ -1,7 +1,10 @@
 package com.spring.exception.globalHandler;
 
+import com.spring.exception.ExceptionCode;
 import lombok.*;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 // globalExceptionHandler(전역예외처리)에서 예외 발생 처리시 보내줄 응답 객체(status, code, message)
 public class ErrorResponse {
 
@@ -9,12 +12,17 @@ public class ErrorResponse {
     private String code;
     private String message;
 
+
     public ErrorResponse(int status, String code, String message) {
         this.status = status;
         this.code = code;
         this.message = message;
 
     }
+
+//    public static ErrorResponse of(final ExceptionCode code){
+//        return new ErrorResponse(code);
+//    }
 
 
     public int getStatus(){
