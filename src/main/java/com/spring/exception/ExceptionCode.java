@@ -45,10 +45,15 @@ public enum ExceptionCode { // 예외 발생시, body에 실어 날려줄 상태
     USER_NOT_FOUND(404, "USER_004", "해당 유저를 찾을 수 없습니다."),
     TOKEN_NOT_VALID(401, "TOKEN_001", "토큰이 만료되었습니다. 다시 로그인 해주세요."),
     USER_CAN_NOT_BE_NULL(400, "USER_005", "사용자는 null이 될 수 없습니다."),
-    USER_ID_NOT_FOUND(404, "USER_006", "해당되는 id의 사용자를 찾을 수 없습니다.");
+    USER_ID_NOT_FOUND(404, "USER_006", "해당되는 id의 사용자를 찾을 수 없습니다."),
 
 
 // ==================================== user ==============================================
+
+    NULL_POINT_ERROR(404, "G010", "NullPointerException 발생"),
+
+    // @RequestBody 및 @RequestParam, @PathVariable 값이 유효하지 않음
+    NOT_VALID_ERROR(404, "G011", "Validation Exception 발생");
     // 1. status = 날려줄 상태코드
     // 2. code = 해당 오류가 어느부분과 관련있는지 카테고리화 해주는 코드. 예외 원인 식별하기 편하기에 추가
     // 3. message = 발생한 예외에 대한 설명.

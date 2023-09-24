@@ -1,6 +1,6 @@
 package com.spring.shopping.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.ProductDetailResponseDTO;
 import com.spring.shopping.DTO.ProductSaveRequestDTO;
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService{
         );
 
         if (productsByCategoryAndSorting.isEmpty()) {
-            throw new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.CATEGORY_ID_NOT_FOUND);
         }
 
         if (productsByCategoryAndSorting.getTotalPages() < pageNum) {
@@ -111,7 +111,7 @@ public class ProductServiceImpl implements ProductService{
         } else if (sortType == 4) { // 리뷰 기준 내림차순 (리뷰 많은 순)
             return Sort.by(Sort.Direction.DESC, "reviewCount");
         } else {
-            throw new CustomException(ExceptionCode.SORT_INVALID);
+            throw new BusinessException(ExceptionCode.SORT_INVALID);
         }
     }
 
@@ -126,7 +126,7 @@ public class ProductServiceImpl implements ProductService{
         );
 
         if (productsByCategory.isEmpty()) {
-            throw new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.CATEGORY_ID_NOT_FOUND);
         }
 
         if (productsByCategory.getTotalPages() < pageNum) {
@@ -145,7 +145,7 @@ public class ProductServiceImpl implements ProductService{
         Product product = productRepository.findByProductId(productId);
 
         if (product == null) {
-            throw new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
         }
 
         return ProductDetailResponseDTO.from(product);
@@ -197,7 +197,7 @@ public class ProductServiceImpl implements ProductService{
         try {
             // 상품 정보 추출
             ShopCategory category = shopCategoryRepository.findById(requestDTO.getCategoryId())
-                    .orElseThrow(() -> new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND));
+                    .orElseThrow(() -> new BusinessException(ExceptionCode.CATEGORY_ID_NOT_FOUND));
 
             Product newProduct = Product.builder()
                     .shopCategory(category)
@@ -221,7 +221,7 @@ public class ProductServiceImpl implements ProductService{
 
             return true;
         } catch (Exception e) {
-            throw new CustomException(ExceptionCode.PRODUCT_SAVE_EXCEPTION);
+            throw new BusinessException(ExceptionCode.PRODUCT_SAVE_EXCEPTION);
         }
     }
 
@@ -240,11 +240,11 @@ public class ProductServiceImpl implements ProductService{
         try {
             // 기존 상품 정보 가져오기
             Product product = productRepository.findById(requestDTO.getProductId())
-                    .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
+                    .orElseThrow(() -> new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
 
             // 카테고리 정보 불러오기
             ShopCategory category = shopCategoryRepository.findById(requestDTO.getCategoryId())
-                    .orElseThrow(() -> new CustomException(ExceptionCode.CATEGORY_ID_NOT_FOUND));
+                    .orElseThrow(() -> new BusinessException(ExceptionCode.CATEGORY_ID_NOT_FOUND));
 
 
 
@@ -283,7 +283,7 @@ public class ProductServiceImpl implements ProductService{
 
             return true;
         } catch (Exception e) {
-            throw new CustomException(ExceptionCode.PRODUCT_SAVE_EXCEPTION);
+            throw new BusinessException(ExceptionCode.PRODUCT_SAVE_EXCEPTION);
          }
     }
 
@@ -292,7 +292,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product getProductInfo(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
     }
 
     @Override
@@ -307,13 +307,13 @@ public class ProductServiceImpl implements ProductService{
             Product product = productRepository.findByIdPessimistic(requestDTO.getProductId());
 
             if (product == null) {
-                throw new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
+                throw new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
             }
 
             Long stockQuantity = requestDTO.getStockQuantity();
 
             if (stockQuantity < 0) {
-                throw new CustomException(ExceptionCode.STOCK_QUANTITY_INVALID);
+                throw new BusinessException(ExceptionCode.STOCK_QUANTITY_INVALID);
             }
 
             // 상품의 재고(stock) 수량을 업데이트합니다.
@@ -333,7 +333,7 @@ public class ProductServiceImpl implements ProductService{
 
             return true; // 업데이트 성공
         } catch (Exception e) {
-            throw new CustomException(ExceptionCode.STOCK_UPDATE_EXCEPTION);
+            throw new BusinessException(ExceptionCode.STOCK_UPDATE_EXCEPTION);
         }
     }
 }

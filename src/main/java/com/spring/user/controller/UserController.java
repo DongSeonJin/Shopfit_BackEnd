@@ -1,29 +1,19 @@
 package com.spring.user.controller;
 
-import com.mysql.cj.log.Log;
-import com.spring.exception.CustomException;
-import com.spring.exception.ExceptionCode;
 import com.spring.user.DTO.*;
 import com.spring.user.config.jwt.TokenProvider;
 import com.spring.user.config.ouath.DecodeSocialLoginToken;
-import com.spring.user.entity.Authority;
 import com.spring.user.entity.User;
-import com.spring.user.exception.UserIdNotFoundException;
 import com.spring.user.service.UserDetailService;
 import com.spring.user.service.UserServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.time.Duration;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
@@ -65,7 +55,6 @@ public class UserController {
 
      @PostMapping("/login/google")
      public ResponseEntity<?> googleLogin(@RequestBody String token) throws GeneralSecurityException, IOException {
-         System.out.println("token은~~~~:" + token);
 
          return ResponseEntity.ok(decodeSocialLoginToken.decodingToken(token));
      }
@@ -76,12 +65,9 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
 
-//        if (user != null) {
             UserResponseDTO userResponseDTO = UserResponseDTO.from(user);
             return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        } 예외 처리를 서비스 레이어에서 하도록 수정함
+
     }
 
     // 회원 정보 수정
@@ -89,14 +75,9 @@ public class UserController {
     public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO) {
 
         userUpdateDTO.setUserId(id);
-//        try {
             userService.updateUser(userUpdateDTO);
             return new ResponseEntity<>("유저 정보가 성공적으로 업데이트되었습니다.", HttpStatus.OK);
-//        } catch (UserIdNotFoundException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>("유저 정보 업데이트 중에 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-//        } 예외 처리를 서비스 레이어에서 하도록 수정함
+
     }
 
     // 닉네임 중복 검증

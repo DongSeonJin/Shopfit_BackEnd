@@ -4,9 +4,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.user.DTO.LoginResponseDTO;
 import com.spring.user.config.jwt.TokenProvider;
@@ -33,7 +32,6 @@ public class DecodeSocialLoginToken {
 
     private final UserRepository userRepository;
 
-    private final TokenService tokenService;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -54,7 +52,6 @@ public class DecodeSocialLoginToken {
 
 
         GoogleIdToken idToken = verifier.verify(token);
-        System.out.println("idToken은 :" + idToken);
 
 
 
@@ -62,11 +59,11 @@ public class DecodeSocialLoginToken {
             Payload payload = idToken.getPayload();
             String name = (String) payload.get("name");  // name 정보 가져오기
 
-            System.out.println("디코딩된 토큰" + idToken.getPayload());
+//            System.out.println("디코딩된 토큰" + idToken.getPayload());
 
             String email = payload.getEmail();
 
-            System.out.println("얻은 이메일" + email);
+//            System.out.println("얻은 이메일" + email);
 
             User user = userRepository.findByEmail(email) // JPA 는 기본 Optional객체 반환
                     .orElseGet(() -> { //없는 유저라면 null값이므로 새로 저장 로직. (람다식)
@@ -104,7 +101,7 @@ public class DecodeSocialLoginToken {
 
         } else {
             System.out.println("Invalid ID token.");
-            throw new CustomException(ExceptionCode.TOKEN_NOT_VALID);
+            throw new BusinessException(ExceptionCode.TOKEN_NOT_VALID);
         }
 
 

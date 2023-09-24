@@ -3,8 +3,6 @@ package com.spring.community.controller;
 import com.spring.community.DTO.ReplyResponseDTO;
 import com.spring.community.DTO.ReplyUpdateRequestDTO;
 import com.spring.community.entity.Reply;
-import com.spring.exception.CustomException;
-import com.spring.exception.ExceptionCode;
 import com.spring.community.exception.NotFoundReplyByReplyIdException;
 import com.spring.community.service.PostService;
 import com.spring.community.service.ReplyService;

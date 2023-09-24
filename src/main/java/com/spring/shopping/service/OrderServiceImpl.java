@@ -1,6 +1,6 @@
 package com.spring.shopping.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.OrderDTO;
 import com.spring.shopping.DTO.OrderProductDTO;
@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> getOrdersByUser(User user) {
         if (user == null) {
-            throw new CustomException(ExceptionCode.USER_CAN_NOT_BE_NULL);
+            throw new BusinessException(ExceptionCode.USER_CAN_NOT_BE_NULL);
         }
 
         List<Order> orders = orderRepository.findByUser(user);
@@ -75,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
             updateUserPoint(orderId);
         }
         if (updatedRows <= 0) {
-            throw new CustomException(ExceptionCode.ORDERSTATUS_UPDATE_FAILED);
+            throw new BusinessException(ExceptionCode.ORDERSTATUS_UPDATE_FAILED);
         }
         return updatedRows;
     }
@@ -84,11 +84,11 @@ public class OrderServiceImpl implements OrderService {
     public void updateUserPoint(Long orderId) {
         //orderId를 이용하여 해당 주문을 가져오기
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.ORDER_ID_NOT_FOUND));
 
         User user = order.getUser();
         if (user == null) {
-            throw new CustomException(ExceptionCode.USER_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.USER_NOT_FOUND);
         }
 
 
@@ -117,14 +117,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public User getUserInfo(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.USER_ID_NOT_FOUND));
     }
 
 
     @Override
     public Order getOrderInfo(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.ORDER_ID_NOT_FOUND));
     }
 
 
@@ -132,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId())
-                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.USER_NOT_FOUND));
 
         // 주문 생성
         Order order = orderRepository.save(Order.builder()
@@ -200,7 +200,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.delete(order);
             return true;
         } else {
-            throw new CustomException(ExceptionCode.ORDER_ID_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.ORDER_ID_NOT_FOUND);
         }
     }
 
@@ -220,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
 
     public OrderProduct convertToOrderProduct(OrderProductDTO dto, Order savedOrder) {
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND));
 
         return OrderProduct.builder()
                 .order(savedOrder)

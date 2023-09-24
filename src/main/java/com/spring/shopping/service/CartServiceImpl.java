@@ -1,6 +1,6 @@
 package com.spring.shopping.service;
 
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.shopping.DTO.CartDTO;
 import com.spring.shopping.DTO.CartListResponseDTO;
@@ -50,9 +50,9 @@ public class CartServiceImpl implements CartService{
             return convertToDTO(cartItem);
         } else {
             if (!userOptional.isPresent()) {
-                throw new CustomException(ExceptionCode.USER_ID_NOT_FOUND);
+                throw new BusinessException(ExceptionCode.USER_ID_NOT_FOUND);
             } else if (!productOptional.isPresent()) {
-                throw new CustomException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
+                throw new BusinessException(ExceptionCode.PRODUCT_ID_NOT_FOUND);
             }
         }
         return null; // 사용자나 상품이 없는 경우
@@ -80,7 +80,7 @@ public class CartServiceImpl implements CartService{
             }
             return cartDTOList; // 변환된 CartDTO 리스트를 반환
         } else {
-            throw new CustomException(ExceptionCode.USER_ID_NOT_FOUND); // 사용자가 존재하지 않으면 예외 처리
+            throw new BusinessException(ExceptionCode.USER_ID_NOT_FOUND); // 사용자가 존재하지 않으면 예외 처리
         }
     }
 

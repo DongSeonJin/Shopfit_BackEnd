@@ -2,10 +2,9 @@ package com.spring.community.service;
 
 import com.spring.community.DTO.LikeRequestDTO;
 import com.spring.community.repository.DynamicLikeRepository;
-import com.spring.exception.CustomException;
+import com.spring.exception.BusinessException;
 import com.spring.exception.ExceptionCode;
 import com.spring.user.repository.UserRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +23,10 @@ public class LikeServiceImpl implements LikeService{
     @Override
     public void saveLike(LikeRequestDTO likeRequestDTO){ // 좋아요 중복 예외처리 추가예정
         if (!userRepository.existsById(likeRequestDTO.getUserId())) {
-            throw new CustomException(ExceptionCode.USER_NOT_FOUND);
+            throw new BusinessException(ExceptionCode.USER_NOT_FOUND);
         }
         if (isLiked(likeRequestDTO) == 1) {
-            throw new CustomException(ExceptionCode.ALREADY_LIKED);
+            throw new BusinessException(ExceptionCode.ALREADY_LIKED);
         }
 
         dynamicLikeRepository.createDynamicLike(likeRequestDTO);
