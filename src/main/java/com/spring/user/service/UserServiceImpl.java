@@ -195,6 +195,7 @@ public class UserServiceImpl implements UserService{
                 .password(user.getPassword())
                 .imageUrl(userUpdateDTO.getImageUrl())
                 .point(user.getPoint())
+                .authority(user.getAuthority())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
                 .build();
