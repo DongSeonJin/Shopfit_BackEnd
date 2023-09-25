@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -81,9 +82,15 @@ public class DecodeSocialLoginToken {
             // 리프레시토큰 생성 및 저장
             String refreshToken = tokenProvider.generateRefreshToken(user, REFRESH_TOKEN_DURATION);
 
+
+
             RefreshToken newRefreshToken = new RefreshToken(user.getUserId(), refreshToken);
-            // 객체에 담아서 저장
-            refreshTokenRepository.save(newRefreshToken);
+
+            // DB에서 userId에 해당하는 refresh토큰 검색
+            Optional<RefreshToken> existingToken = Optional.ofNullable(refreshTokenRepository.findByUserId(user.getUserId()));
+
+            // 기존 토근이 있든 없든 갱신하거나 새로 저장합니다.
+            refreshTokenRepository.save(existingToken.orElse(newRefreshToken).update(newRefreshToken.getRefreshToken()));
 
 
 
