@@ -91,8 +91,6 @@ public class DecodeSocialLoginToken {
 
             // 기존 토근이 있든 없든 갱신하거나 새로 저장합니다.
             refreshTokenRepository.save(existingToken.orElse(newRefreshToken).update(newRefreshToken.getRefreshToken()));
-            // 객체에 담아서 저장
-            refreshTokenRepository.save(newRefreshToken);
 
 
 
