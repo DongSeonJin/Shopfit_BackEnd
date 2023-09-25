@@ -53,17 +53,15 @@ dependencies {
 	implementation 'com.google.api-client:google-api-client:1.32.1'				//여기까지 소셜로그인
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.4' // validation(유효성검증)
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
-
-
-
 }
 
-
-test {
-	enabled = false
-}
+//
+//test {
+//	enabled = false
+//}
 
 
 tasks.named('test') {
 	useJUnitPlatform()
+	systemProperty "jasypt.encryptor.password", System.getProperty("jasypt.encryptor.password") // 테스트코드 실행시킬 때 jasypt.encryptor.password 를 VM options 에서 가져오고 프로퍼티에 등록
 }
