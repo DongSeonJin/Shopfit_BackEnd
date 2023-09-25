@@ -172,18 +172,18 @@ public class OrderServiceImpl implements OrderService {
             Long totalPrice = orderOptional.get().getTotalPrice();
             Long paidAmount = paymentDTO.getPaidAmount();
             Long usingPoint = 0L;
-            Long couponDiscount = 0L;
+            Long usingCoupon = 0L;
             Long shippingCost = 3000L;
 
             if (paymentDTO.getUsingPoint() != null) {           // couponId가 null이 아닐 때,
                 usingPoint = paymentDTO.getUsingPoint();
             }
 
-            if (paymentDTO.getCouponId() != null) {             // couponId가 null이 아닐 때,
-                couponDiscount = couponRepository.findDiscountValueByCouponId(paymentDTO.getCouponId()).orElse(0L);
+            if (paymentDTO.getUsingCoupon() != null) {             // couponId가 null이 아닐 때,
+                usingCoupon = paymentDTO.getUsingCoupon();
             }
 
-            return totalPrice + shippingCost == paidAmount + usingPoint + couponDiscount;
+            return totalPrice + shippingCost == paidAmount + usingPoint + usingCoupon;
 
         } else {
             // 주문 정보가 없는 경우에는 검증 실패
