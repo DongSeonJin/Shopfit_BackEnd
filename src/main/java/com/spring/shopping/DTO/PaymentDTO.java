@@ -11,6 +11,6 @@ import lombok.*;
 public class PaymentDTO {
     private Long orderId;
     private Long paidAmount;
-    private Long couponId;
+    private Long usingCoupon;
     private Long usingPoint;
 }
