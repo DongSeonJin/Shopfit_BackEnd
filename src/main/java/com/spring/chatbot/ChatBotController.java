@@ -207,7 +207,8 @@ public class ChatBotController {
 
     // 웰컴메세지 생성 메서드
     private static JSONObject createWelcomeMessage() {
-        String welcomeMessage = "안녕하세요";
+        String welcomeMessage = "'#fit'에 오신 걸 환영합니다!\n" +
+                "헬스와 피트니스에 관한 질문이나 정보를 언제든 물어보세요!";
 
         return createResponseMessage(welcomeMessage);
     }
