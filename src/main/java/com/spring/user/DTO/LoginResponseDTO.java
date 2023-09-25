@@ -17,12 +17,14 @@ public class LoginResponseDTO {
     private String email;
     private String nickname;
     private String authority;
+    private String imageUrl;
 
     public LoginResponseDTO(User user){
         this.userId = user.getUserId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();
         this.authority = String.valueOf(user.getAuthority());
+        this.imageUrl = user.getImageUrl();
     }
 
 

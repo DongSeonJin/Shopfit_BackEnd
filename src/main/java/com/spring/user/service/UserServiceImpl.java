@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService{
                                                     .userId(userInfo.getUserId())
                                                     .email(userInfo.getEmail())
                                                     .nickname(userInfo.getNickname())
+                                                    .imageUrl(userInfo.getImageUrl())
                                                     .build();
 
 
