@@ -15,6 +15,14 @@
 
 </details>
 
+<details>
+<summary><b>CI/CD</b></summary>
+
+
+  ![image](https://kr.object.ncloudstorage.com/post-bucket/imageslide/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202023-09-27%20%EC%98%A4%ED%9B%84%204.11.28.png)
+
+</details>
+
 ---
 
 ### 💻 배포 주소
