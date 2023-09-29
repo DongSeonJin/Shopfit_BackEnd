@@ -1,26 +1,33 @@
 package com.spring.user.service;
 
-import com.spring.user.DTO.AddUserRequestDTO;
+import com.spring.user.DTO.*;
 import com.spring.user.entity.User;
-import com.spring.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-@RequiredArgsConstructor
-@Service
-public class UserService {
+public interface UserService {
+    void signup(AddUserRequestDTO dto);
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public void save(AddUserRequestDTO dto) {
+    LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
+    User createUser(User user);
+    List<User> getAllUsers();
 
-         userRepository.save(User.builder()
-                .email(dto.getEmail())
-                .password(bCryptPasswordEncoder.encode(dto.getPassword()))
-                .build()
-         );
-    }
+    User getUserByNickname(String nickname);
+
+    User getUserByEmail(String email);
+
+    User getUserById(Long id);
+    void updateUser(UserUpdateDTO userUpdateDTO);
+
+    LoginResponseDTO socialLogin(LoginResponseDTO loginResponseDTO);
+    void deleteUser(Long id);
+    UserPointResponseDTO getUserPointById(Long userId);
+    boolean usePoints(User user, int usedPoints);
+    boolean authenticateUser(LoginRequestDTO loginRequest);
+
+    boolean isNicknameAvailable(String nickname);
+
+
+
 }

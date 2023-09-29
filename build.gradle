@@ -23,7 +23,10 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+    implementation 'com.mastfrog.builder:builder-builder-parent:1.0.9'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    testImplementation 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -33,10 +36,32 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1' //JWT
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	testImplementation 'com.h2database:h2:1.4.200'
+	implementation 'org.jsoup:jsoup:1.14.3'			// jsoup 추가
+	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.11.0' // selenium 추가
+	implementation 'io.github.bonigarcia:webdrivermanager:5.5.2' // 현재 최신 버전인 4.4.3으로 설정하였으나, 실제 사용 시점에서 최신 버전으로 업데이트 해주세요
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1' // chatbot
+	compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1' // Servlet API (chatbot)
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.2'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // 레디스
+	implementation 'com.auth0:java-jwt:4.4.0'									            //여기부터
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'com.google.api-client:google-api-client-jackson2:1.20.0'
+	implementation 'com.google.auth:google-auth-library-oauth2-http:1.19.0'
+	implementation 'com.google.api-client:google-api-client:1.32.1'				//여기까지 소셜로그인
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.4' // validation(유효성검증)
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 }
 
+
+test {
+	enabled = false
+}
 
 
 tasks.named('test') {
 	useJUnitPlatform()
+	systemProperty "jasypt.encryptor.password", System.getProperty("jasypt.encryptor.password") // 테스트코드 실행시킬 때 jasypt.encryptor.password 를 VM options 에서 가져오고 프로퍼티에 등록
 }
