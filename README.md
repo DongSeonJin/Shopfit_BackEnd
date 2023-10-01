@@ -41,9 +41,9 @@
 * 팀원 - 한국인
 ----
 
-### ⚙️ Stacks
+## ⚙️ Stacks
 
-## Frontend
+### Frontend
 ![CSS](https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![html](https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=Javascript&logoColor=white)
@@ -54,7 +54,7 @@
 ![axios](https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
 ![json](https://img.shields.io/badge/json-000000?style=for-the-badge&logo=json&logoColor=white)
 
-## Backend
+### Backend
 ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Conda-Forge&logoColor=white)
 ![SpringBoot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
@@ -64,7 +64,7 @@
 ![jpa](https://img.shields.io/badge/jpa-<yellow>?style=for-the-badge)
 ![jwt](https://img.shields.io/badge/jwt-<green>?style=for-the-badge)
 
-## Tool
+### Tool
 ![IntelliJ](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white)
 ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white)
 ![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white)
@@ -72,7 +72,7 @@
 ![postman](https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
 ![figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 
-## CI/CD
+### CI/CD
 
 ![jenkins](https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
 ![gradle](https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white)
@@ -80,20 +80,20 @@
 ![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
 ![nginx](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 
-## NAVER CLOUD
+### NAVER CLOUD
 ![image optimizer](https://img.shields.io/badge/image%20optimizer-<red>?style=for-the-badge)
 ![object storage](https://img.shields.io/badge/object%20storage-<red>?style=for-the-badge)
 ![vpc](https://img.shields.io/badge/vpc-<red>?style=for-the-badge)
 ![cloud DB for mysql](https://img.shields.io/badge/cloud%20DB%20for%20mysql-<red>?style=for-the-badge)
 
-## Communitcation
+### Communitcation
 ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white)
 ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white)
 ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
 
 ---
-### 📺 화면 구성 및 시연 영상
+## 📺 화면 구성 및 시연 영상
 
 커뮤니티
 
