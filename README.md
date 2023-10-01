@@ -92,5 +92,11 @@
 ### 📺 화면 구성 및 시연 영상
 커뮤니티
 ![Shopfit_커뮤니티](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/47afaf6b-b3a0-40a8-b8dd-c653087ae155)
+쇼핑
+![Shopfit_쇼핑](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/108a6be4-0f62-4348-978a-dfbc52568a26)
+뉴스
+![Shopfit_뉴스](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/9baf2171-f909-4849-b784-490af72cda1c)
+검색기능
+![Shopfit_검색](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/c85d9568-6e8f-417e-9788-75452c18099a)
 
 
