@@ -90,4 +90,7 @@
 
 ---
 ### 📺 화면 구성 및 시연 영상
+커뮤니티
+![Shopfit_커뮤니티](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/47afaf6b-b3a0-40a8-b8dd-c653087ae155)
+
 
