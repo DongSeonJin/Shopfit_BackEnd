@@ -57,7 +57,6 @@
 ### Backend
 ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Conda-Forge&logoColor=white)
 ![SpringBoot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
-![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![redis](https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![apachetomcat](https://img.shields.io/badge/apachetomcat-F8DC75?style=for-the-badge&logo=apachetomcat&logoColor=white)
 ![mybatis](https://img.shields.io/badge/mybatis-<red>?style=for-the-badge)
@@ -80,7 +79,8 @@
 ![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
 ![nginx](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 
-### NAVER CLOUD
+### DB & NAVER CLOUD
+![mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![image optimizer](https://img.shields.io/badge/image%20optimizer-<red>?style=for-the-badge)
 ![object storage](https://img.shields.io/badge/object%20storage-<red>?style=for-the-badge)
 ![vpc](https://img.shields.io/badge/vpc-<red>?style=for-the-badge)
