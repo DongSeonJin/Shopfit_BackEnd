@@ -86,7 +86,7 @@
 ![vpc](https://img.shields.io/badge/vpc-<red>?style=for-the-badge)
 ![cloud DB for mysql](https://img.shields.io/badge/cloud%20DB%20for%20mysql-<red>?style=for-the-badge)
 
-### Communitcation
+### Communication
 ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white)
 ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white)
