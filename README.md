@@ -62,6 +62,7 @@
 ![mybatis](https://img.shields.io/badge/mybatis-<red>?style=for-the-badge)
 ![jpa](https://img.shields.io/badge/jpa-<yellow>?style=for-the-badge)
 ![jwt](https://img.shields.io/badge/jwt-<green>?style=for-the-badge)
+![junit](https://img.shields.io/badge/junit5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 
 ### Tool
 ![IntelliJ](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white)
