@@ -64,3 +64,5 @@ jobs:
         application_name: ${{ secrets.AWS_APPLICATION_NAME }}
         environment_name: ${{ secrets.AWS_ENVIRONMENT_NAME }}
         region: ap-northeast-2
+        version_label: 'my-app-${{ github.sha }}'
+        deployment_package: Dockerrun.aws.json
