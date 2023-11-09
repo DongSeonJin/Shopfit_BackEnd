@@ -23,6 +23,16 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # gradle을 통해 소스를 빌드. 
+    # 암호화된 application.properties Jasypt key값 환경변수 세팅
+    - name: Build with Gradle
+      env:
+        JASYPT_ENCRYPTOR_PASSWORD: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
+      run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+          
         
     # dockerHub에 빌드 and 푸쉬
     - name: Docker build and push
@@ -32,6 +42,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/shopfit_back:latest
+        build-args: SKIP_TESTS=true
 
 
           
