@@ -10,10 +10,7 @@ public class CORSConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/**")
-                .allowedOrigins(
-                        "http://d33178k8dxtdif.cloudfront.net",
-                        "http://shopfit.s3-website.ap-northeast-2.amazonaws.com"
-                )
+                .allowedOrigins("http://d33178k8dxtdif.cloudfront.net")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
