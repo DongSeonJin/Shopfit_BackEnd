@@ -1,15 +1,14 @@
 # #FIT
 <img src="https://jrbttqbtrjca19387408.cdn.ntruss.com/%23fit_logo.gif?type=m&w=200&h=200&quality=100&anilimit=100" align="center">
 
----
-
 ### 💪🏻 프로젝트 소개
 건강한 삶을 위해 운동, 올바른 식단 등에 대한 관심이 늘어남에 따라 이러한 정보들을 한번에 제공하는 서비스의 필요성을 느끼게 되었습니다. <br />
 따라서 헬스와 관련된 다양한 기능을 제공하는 웹 어플리케이션을 만들게 되었습니다.
 
 * 개발기간 : 2023.07.17 ~ 2023.09.27
 
-* 단체 : 네이버클라우드캠프(비트캠프)
+* 단체 : 네이버클라우드캠프
+  
 
 <details>
 <summary><b> DB 설계</b></summary>
@@ -22,9 +21,12 @@
 <details>
 <summary><b>CI/CD</b></summary>
 
-
+  ### 네이버클라우드
   ![image](https://kr.object.ncloudstorage.com/post-bucket/imageslide/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202023-09-27%20%EC%98%A4%ED%9B%84%204.11.28.png)
-
+  ### AWS(재배포)
+  ![CI](https://github.com/DongSeonJin/Shopfit_BackEnd/assets/129161266/cdbbca9d-468c-4974-ba4d-04a8d19f8d4b)
+  ![CD](https://github.com/DongSeonJin/Shopfit_BackEnd/assets/129161266/a3b2273a-14bb-42f5-b349-1bd8480786e6)
+  
 </details>
 
 ---
@@ -40,6 +42,24 @@
 * 팀원 - 오연수
 * 팀원 - 한국인
 ----
+
+## 📺 화면 구성 및 시연 영상
+
+커뮤니티
+
+![Shopfit_커뮤니티](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/47afaf6b-b3a0-40a8-b8dd-c653087ae155)
+
+쇼핑
+
+![Shopfit_쇼핑](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/108a6be4-0f62-4348-978a-dfbc52568a26)
+
+뉴스
+
+![Shopfit_뉴스](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/9baf2171-f909-4849-b784-490af72cda1c)
+
+검색기능
+
+![Shopfit_검색](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/c85d9568-6e8f-417e-9788-75452c18099a)
 
 ## ⚙️ Stacks
 
@@ -93,22 +113,6 @@
 ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
 
 ---
-## 📺 화면 구성 및 시연 영상
 
-커뮤니티
-
-![Shopfit_커뮤니티](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/47afaf6b-b3a0-40a8-b8dd-c653087ae155)
-
-쇼핑
-
-![Shopfit_쇼핑](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/108a6be4-0f62-4348-978a-dfbc52568a26)
-
-뉴스
-
-![Shopfit_뉴스](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/9baf2171-f909-4849-b784-490af72cda1c)
-
-검색기능
-
-![Shopfit_검색](https://github.com/DongSeonJin/ShopFit_BackEnd/assets/129161266/c85d9568-6e8f-417e-9788-75452c18099a)
 
 
