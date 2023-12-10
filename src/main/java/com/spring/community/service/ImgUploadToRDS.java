@@ -12,15 +12,15 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 
 public class ImgUploadToRDS {// imgUrl을 이미지 파일로 변환해주는 코드
-    private static final String BUCKET_NAME = "shopfit-community-img";
-    private static final String AWS_ACCESS_KEY = "AKIA56N4DSBPUIG2AQFZ";
-    private static final String AWS_SECRET_KEY = "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";
-    private static final String AWS_REGION = "ap-northeast-2";
+    private static final String BUCKET_NAME = "";
+    private static final String AWS_ACCESS_KEY = "";
+    private static final String AWS_SECRET_KEY = "";
+    private static final String AWS_REGION = "";
 
 
-    private static final String RDS_URL = "jdbc:mysql://database-1.c05ixap9tiuz.ap-northeast-2.rds.amazonaws.com:3306/nc06-final-project?serverTimezone=Asia/Seoul&characterEncoding=UTF-8";
-    private static final String USERNAME = "TeamWorkout";
-    private static final String PASSWORD = "shopfitdb123";
+    private static final String RDS_URL = "";
+    private static final String USERNAME = "";
+    private static final String PASSWORD = "";
 
     public static List<String> getImageUrls(){
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
