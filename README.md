@@ -10,15 +10,15 @@
 * 단체 : 네이버클라우드캠프
   
 
-<details>
+
 <summary><b> DB 설계</b></summary>
 
 
   ![image](https://github.com/DongSeonJin/PJ-backend/assets/129161150/9b56c37f-6a12-48c7-9c1a-5cb9ffb8e2ff)
 
-</details>
 
-<details>
+
+
 <summary><b>CI/CD</b></summary>
 
   ### 네이버클라우드
@@ -26,8 +26,7 @@
   ### AWS(재배포)
   ![CI](https://github.com/DongSeonJin/Shopfit_BackEnd/assets/129161266/cdbbca9d-468c-4974-ba4d-04a8d19f8d4b)
   ![CD](https://github.com/DongSeonJin/Shopfit_BackEnd/assets/129161266/a3b2273a-14bb-42f5-b349-1bd8480786e6)
-  
-</details>
+
 
 ---
 
