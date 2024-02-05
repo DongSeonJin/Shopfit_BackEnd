@@ -13,8 +13,10 @@
 
 <summary><b> DB 설계</b></summary>
 
+<details>
+  <img src=https://github.com/DongSeonJin/PJ-backend/assets/129161150/9b56c37f-6a12-48c7-9c1a-5cb9ffb8e2ff>
+</details>
 
-  ![image](https://github.com/DongSeonJin/PJ-backend/assets/129161150/9b56c37f-6a12-48c7-9c1a-5cb9ffb8e2ff)
 
 
 
@@ -22,7 +24,7 @@
 <summary><b>CI/CD</b></summary>
 
   ### 네이버클라우드
-  ![image](https://kr.object.ncloudstorage.com/post-bucket/imageslide/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202023-09-27%20%EC%98%A4%ED%9B%84%204.11.28.png)
+  ![image](https://github.com/DongSeonJin/Shopfit_BackEnd/assets/129161266/ac2971c4-ea81-49ee-99bf-ffa2536aa4ce)
   ### AWS(재배포)
   ![CI](https://github.com/DongSeonJin/Shopfit_BackEnd/assets/129161266/cdbbca9d-468c-4974-ba4d-04a8d19f8d4b)
   ![CD](https://github.com/DongSeonJin/Shopfit_BackEnd/assets/129161266/a3b2273a-14bb-42f5-b349-1bd8480786e6)
